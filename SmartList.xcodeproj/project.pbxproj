@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8944969B2E46547600482CF8 /* MainPresenter.swift */; };
+		894496A42E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894496A32E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift */; };
 		897A8B272E3FCDAA00A4852C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A8B262E3FCDAA00A4852C /* AppDelegate.swift */; };
 		897A8B292E3FCDAA00A4852C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A8B282E3FCDAA00A4852C /* SceneDelegate.swift */; };
 		897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A8B2A2E3FCDAA00A4852C /* MainViewController.swift */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.release.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.release.xcconfig"; sourceTree = "<group>"; };
 		8944969B2E46547600482CF8 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
+		894496A32E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeFolderChiefVCInteractor.swift; sourceTree = "<group>"; };
 		897A8B232E3FCDAA00A4852C /* SmartList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		897A8B262E3FCDAA00A4852C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		897A8B282E3FCDAA00A4852C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 			children = (
 				894496A02E465C3F00482CF8 /* View */,
 				894496A12E465C4800482CF8 /* Presenter */,
+				894496A22E4669BA00482CF8 /* Interactor */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -93,6 +96,14 @@
 				8944969B2E46547600482CF8 /* MainPresenter.swift */,
 			);
 			path = Presenter;
+			sourceTree = "<group>";
+		};
+		894496A22E4669BA00482CF8 /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				894496A32E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift */,
+			);
+			path = Interactor;
 			sourceTree = "<group>";
 		};
 		897A8B1A2E3FCDAA00A4852C = {
@@ -242,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */,
+				894496A42E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift in Sources */,
 				897A8B272E3FCDAA00A4852C /* AppDelegate.swift in Sources */,
 				897A8B292E3FCDAA00A4852C /* SceneDelegate.swift in Sources */,
 				8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */,

@@ -3,7 +3,7 @@
 import UIKit
 
 protocol MainView: AnyObject {
-    func showListViews()
+    func showFolderChief(_ folderChiefVC: UIViewController)
 }
 
 class MainViewController: UIViewController {
@@ -11,16 +11,19 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("loadid")
-        
+        navigationItem.title = "SmartList"
+        presenter = MainPresenter(view: self, dependency: .init(makeFolderChiefVC: MakeFolderChiefVCInteractor()))
+        presenter.didLoad()
     }
 
 
 }
 
 extension MainViewController: MainView {
-    func showListViews() {
-        
+    func showFolderChief(_ folderChiefVC: UIViewController) {
+        addChild(folderChiefVC)
+        view.addSubview(folderChiefVC.view)
+        folderChiefVC.didMove(toParent: self)
     }
     
 }

@@ -10,7 +10,7 @@ protocol MainPresentation {
 
 class MainPresenter {
     struct Dependency {
-        
+        let makeFolderChiefVC: MakeFolderChiefVCUseCase!
     }
     
     weak var view: MainView?
@@ -24,7 +24,13 @@ class MainPresenter {
 
 extension MainPresenter: MainPresentation {
     func didLoad() {
-        
+        dependency.makeFolderChiefVC.execute() { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let vc):
+                self.view?.showFolderChief(vc)
+            }
+        }
     }
     
 }
