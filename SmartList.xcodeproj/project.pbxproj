@@ -14,9 +14,11 @@
 		897A8B2E2E3FCDAA00A4852C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B2C2E3FCDAA00A4852C /* Main.storyboard */; };
 		897A8B302E3FCDAB00A4852C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B2F2E3FCDAB00A4852C /* Assets.xcassets */; };
 		897A8B332E3FCDAB00A4852C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B312E3FCDAB00A4852C /* LaunchScreen.storyboard */; };
+		DEFDA82604052065246E6E07 /* Pods_SmartList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.release.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.release.xcconfig"; sourceTree = "<group>"; };
 		8944969B2E46547600482CF8 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		897A8B232E3FCDAA00A4852C /* SmartList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		897A8B262E3FCDAA00A4852C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -26,6 +28,8 @@
 		897A8B2F2E3FCDAB00A4852C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		897A8B322E3FCDAB00A4852C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		897A8B342E3FCDAB00A4852C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmartList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D99CE01142F9740F98A4FCBF /* Pods-SmartList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.debug.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,12 +37,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEFDA82604052065246E6E07 /* Pods_SmartList.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6E5B7F9A1359AB96139DB7A0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D99CE01142F9740F98A4FCBF /* Pods-SmartList.debug.xcconfig */,
+				2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		7CEFE9EA5E55367EDA05EB8B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		8944969D2E465BB700482CF8 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +100,8 @@
 			children = (
 				897A8B252E3FCDAA00A4852C /* SmartList */,
 				897A8B242E3FCDAA00A4852C /* Products */,
+				6E5B7F9A1359AB96139DB7A0 /* Pods */,
+				7CEFE9EA5E55367EDA05EB8B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,9 +133,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 897A8B372E3FCDAB00A4852C /* Build configuration list for PBXNativeTarget "SmartList" */;
 			buildPhases = (
+				CF7D0B3218182E3ADDFA4AB8 /* [CP] Check Pods Manifest.lock */,
 				897A8B1F2E3FCDAA00A4852C /* Sources */,
 				897A8B202E3FCDAA00A4852C /* Frameworks */,
 				897A8B212E3FCDAA00A4852C /* Resources */,
+				BBC7A2DC805D4B35335D09B1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -167,6 +193,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BBC7A2DC805D4B35335D09B1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SmartList/Pods-SmartList-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SmartList/Pods-SmartList-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SmartList/Pods-SmartList-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF7D0B3218182E3ADDFA4AB8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SmartList-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		897A8B1F2E3FCDAA00A4852C /* Sources */ = {
@@ -323,12 +391,14 @@
 		};
 		897A8B382E3FCDAB00A4852C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D99CE01142F9740F98A4FCBF /* Pods-SmartList.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MZ56GJQ89B;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SmartList/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -351,12 +421,14 @@
 		};
 		897A8B392E3FCDAB00A4852C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MZ56GJQ89B;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SmartList/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
