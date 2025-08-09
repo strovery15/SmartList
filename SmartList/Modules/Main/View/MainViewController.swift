@@ -11,8 +11,6 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "SmartList"
-        presenter = MainPresenter(view: self, dependency: .init(makeFolderChiefVC: MakeFolderChiefVCInteractor()))
         presenter.didLoad()
     }
 
