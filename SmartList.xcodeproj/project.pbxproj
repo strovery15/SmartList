@@ -16,8 +16,23 @@
 		897A8B302E3FCDAB00A4852C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B2F2E3FCDAB00A4852C /* Assets.xcassets */; };
 		897A8B332E3FCDAB00A4852C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B312E3FCDAB00A4852C /* LaunchScreen.storyboard */; };
 		89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EA42E47166E00791ED4 /* AppDependencies.swift */; };
-		DEFDA82604052065246E6E07 /* Pods_SmartList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */; };
+		89976EAA2E47389400791ED4 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 89976EA92E47389400791ED4 /* RealmSwift */; settings = {ATTRIBUTES = (Required, ); }; };
+		89976EAD2E473A3200791ED4 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 89976EA92E47389400791ED4 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		89976EAC2E473A2D00791ED4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				89976EAD2E473A3200791ED4 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.release.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.release.xcconfig"; sourceTree = "<group>"; };
@@ -41,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEFDA82604052065246E6E07 /* Pods_SmartList.framework in Frameworks */,
+				89976EAA2E47389400791ED4 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,12 +167,16 @@
 				897A8B202E3FCDAA00A4852C /* Frameworks */,
 				897A8B212E3FCDAA00A4852C /* Resources */,
 				BBC7A2DC805D4B35335D09B1 /* [CP] Embed Pods Frameworks */,
+				89976EAC2E473A2D00791ED4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = SmartList;
+			packageProductDependencies = (
+				89976EA92E47389400791ED4 /* RealmSwift */,
+			);
 			productName = SmartList;
 			productReference = 897A8B232E3FCDAA00A4852C /* SmartList.app */;
 			productType = "com.apple.product-type.application";
@@ -186,6 +205,9 @@
 				Base,
 			);
 			mainGroup = 897A8B1A2E3FCDAA00A4852C;
+			packageReferences = (
+				89976EA62E47389400791ED4 /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			productRefGroup = 897A8B242E3FCDAA00A4852C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -487,6 +509,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		89976EA62E47389400791ED4 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		89976EA92E47389400791ED4 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 89976EA62E47389400791ED4 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 897A8B1B2E3FCDAA00A4852C /* Project object */;
 }
