@@ -16,8 +16,25 @@
 		897A8B302E3FCDAB00A4852C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B2F2E3FCDAB00A4852C /* Assets.xcassets */; };
 		897A8B332E3FCDAB00A4852C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 897A8B312E3FCDAB00A4852C /* LaunchScreen.storyboard */; };
 		89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EA42E47166E00791ED4 /* AppDependencies.swift */; };
-		DEFDA82604052065246E6E07 /* Pods_SmartList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */; };
+		89976EAA2E47389400791ED4 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 89976EA92E47389400791ED4 /* RealmSwift */; settings = {ATTRIBUTES = (Required, ); }; };
+		89976EAD2E473A3200791ED4 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 89976EA92E47389400791ED4 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		89976EB52E4755AB00791ED4 /* FolderEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EB42E4755AB00791ED4 /* FolderEntity.swift */; };
+		89976EB92E476AA800791ED4 /* MemoBodyEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EB82E476AA800791ED4 /* MemoBodyEntity.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		89976EAC2E473A2D00791ED4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				89976EAD2E473A3200791ED4 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.release.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.release.xcconfig"; sourceTree = "<group>"; };
@@ -32,6 +49,8 @@
 		897A8B322E3FCDAB00A4852C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		897A8B342E3FCDAB00A4852C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89976EA42E47166E00791ED4 /* AppDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencies.swift; sourceTree = "<group>"; };
+		89976EB42E4755AB00791ED4 /* FolderEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderEntity.swift; sourceTree = "<group>"; };
+		89976EB82E476AA800791ED4 /* MemoBodyEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoBodyEntity.swift; sourceTree = "<group>"; };
 		BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmartList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D99CE01142F9740F98A4FCBF /* Pods-SmartList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.debug.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -41,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEFDA82604052065246E6E07 /* Pods_SmartList.framework in Frameworks */,
+				89976EAA2E47389400791ED4 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,12 +151,22 @@
 				897A8B262E3FCDAA00A4852C /* AppDelegate.swift */,
 				897A8B282E3FCDAA00A4852C /* SceneDelegate.swift */,
 				89976EA42E47166E00791ED4 /* AppDependencies.swift */,
+				89976EB32E47558400791ED4 /* Entity */,
 				8944969D2E465BB700482CF8 /* Modules */,
 				897A8B2F2E3FCDAB00A4852C /* Assets.xcassets */,
 				897A8B312E3FCDAB00A4852C /* LaunchScreen.storyboard */,
 				897A8B342E3FCDAB00A4852C /* Info.plist */,
 			);
 			path = SmartList;
+			sourceTree = "<group>";
+		};
+		89976EB32E47558400791ED4 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				89976EB42E4755AB00791ED4 /* FolderEntity.swift */,
+				89976EB82E476AA800791ED4 /* MemoBodyEntity.swift */,
+			);
+			path = Entity;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,12 +181,16 @@
 				897A8B202E3FCDAA00A4852C /* Frameworks */,
 				897A8B212E3FCDAA00A4852C /* Resources */,
 				BBC7A2DC805D4B35335D09B1 /* [CP] Embed Pods Frameworks */,
+				89976EAC2E473A2D00791ED4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = SmartList;
+			packageProductDependencies = (
+				89976EA92E47389400791ED4 /* RealmSwift */,
+			);
 			productName = SmartList;
 			productReference = 897A8B232E3FCDAA00A4852C /* SmartList.app */;
 			productType = "com.apple.product-type.application";
@@ -186,6 +219,9 @@
 				Base,
 			);
 			mainGroup = 897A8B1A2E3FCDAA00A4852C;
+			packageReferences = (
+				89976EA62E47389400791ED4 /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			productRefGroup = 897A8B242E3FCDAA00A4852C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -255,12 +291,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89976EB92E476AA800791ED4 /* MemoBodyEntity.swift in Sources */,
 				89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */,
 				897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */,
 				894496A42E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift in Sources */,
 				897A8B272E3FCDAA00A4852C /* AppDelegate.swift in Sources */,
 				897A8B292E3FCDAA00A4852C /* SceneDelegate.swift in Sources */,
 				8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */,
+				89976EB52E4755AB00791ED4 /* FolderEntity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,6 +525,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		89976EA62E47389400791ED4 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		89976EA92E47389400791ED4 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 89976EA62E47389400791ED4 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 897A8B1B2E3FCDAA00A4852C /* Project object */;
 }
