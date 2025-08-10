@@ -2,7 +2,7 @@
 
 import Foundation
 
-protocol MainPresentation {
+protocol MainPresentation: AnyObject {
     func didLoad()
 //    func addFolder(folderName: String)
 //    func toSetting()
