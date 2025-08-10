@@ -20,6 +20,9 @@
 		89976EAD2E473A3200791ED4 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 89976EA92E47389400791ED4 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		89976EB52E4755AB00791ED4 /* FolderEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EB42E4755AB00791ED4 /* FolderEntity.swift */; };
 		89976EB92E476AA800791ED4 /* MemoBodyEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EB82E476AA800791ED4 /* MemoBodyEntity.swift */; };
+		89976EC02E48211600791ED4 /* FolderPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EBF2E48211600791ED4 /* FolderPresenter.swift */; };
+		89976EC32E48215500791ED4 /* Folder.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89976EC22E48215500791ED4 /* Folder.storyboard */; };
+		89976EC52E4829B400791ED4 /* FolderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89976EC42E4829B400791ED4 /* FolderViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +54,9 @@
 		89976EA42E47166E00791ED4 /* AppDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencies.swift; sourceTree = "<group>"; };
 		89976EB42E4755AB00791ED4 /* FolderEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderEntity.swift; sourceTree = "<group>"; };
 		89976EB82E476AA800791ED4 /* MemoBodyEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoBodyEntity.swift; sourceTree = "<group>"; };
+		89976EBF2E48211600791ED4 /* FolderPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPresenter.swift; sourceTree = "<group>"; };
+		89976EC22E48215500791ED4 /* Folder.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Folder.storyboard; sourceTree = "<group>"; };
+		89976EC42E4829B400791ED4 /* FolderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderViewController.swift; sourceTree = "<group>"; };
 		BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmartList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D99CE01142F9740F98A4FCBF /* Pods-SmartList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.debug.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				8944969E2E465BCE00482CF8 /* Main */,
+				89976EBA2E48202000791ED4 /* Folder */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -169,6 +176,40 @@
 			path = Entity;
 			sourceTree = "<group>";
 		};
+		89976EBA2E48202000791ED4 /* Folder */ = {
+			isa = PBXGroup;
+			children = (
+				89976EBD2E4820EB00791ED4 /* View */,
+				89976EBE2E4820F400791ED4 /* Presenter */,
+				89976EC12E48212000791ED4 /* Interactor */,
+			);
+			path = Folder;
+			sourceTree = "<group>";
+		};
+		89976EBD2E4820EB00791ED4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				89976EC42E4829B400791ED4 /* FolderViewController.swift */,
+				89976EC22E48215500791ED4 /* Folder.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		89976EBE2E4820F400791ED4 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				89976EBF2E48211600791ED4 /* FolderPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		89976EC12E48212000791ED4 /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -236,6 +277,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89976EC32E48215500791ED4 /* Folder.storyboard in Resources */,
 				897A8B332E3FCDAB00A4852C /* LaunchScreen.storyboard in Resources */,
 				897A8B302E3FCDAB00A4852C /* Assets.xcassets in Resources */,
 				897A8B2E2E3FCDAA00A4852C /* Main.storyboard in Resources */,
@@ -296,6 +338,8 @@
 				897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */,
 				894496A42E466AB300482CF8 /* MakeFolderChiefVCInteractor.swift in Sources */,
 				897A8B272E3FCDAA00A4852C /* AppDelegate.swift in Sources */,
+				89976EC02E48211600791ED4 /* FolderPresenter.swift in Sources */,
+				89976EC52E4829B400791ED4 /* FolderViewController.swift in Sources */,
 				897A8B292E3FCDAA00A4852C /* SceneDelegate.swift in Sources */,
 				8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */,
 				89976EB52E4755AB00791ED4 /* FolderEntity.swift in Sources */,
