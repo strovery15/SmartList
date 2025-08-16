@@ -1,6 +1,7 @@
 
 
 import Foundation
+import TabPageViewController
 
 protocol MainPresentation: AnyObject {
     func didLoad()
@@ -10,8 +11,8 @@ protocol MainPresentation: AnyObject {
 
 class MainPresenter {
     struct Dependency {
-        let makeFolderChiefVC: MakeFolderChiefVCUseCase!
-        let getFolderEntities: GetFolderEntitiesUseCase!
+        let makeFolderChiefVC: UseCase<[FolderEntity], TabPageViewController, Never>
+        let getFolderEntities: UseCase<Void, [FolderEntity], Never>
     }
     
     weak var view: MainView?
@@ -37,7 +38,7 @@ extension MainPresenter: MainPresentation {
             }
         }
         
-        dependency.getFolderEntities.execute() {  result in
+        dependency.getFolderEntities.execute(()) {  result in
             switch result {
             case .success(let entities):
                 folderEntities = entities

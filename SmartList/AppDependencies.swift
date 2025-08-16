@@ -2,7 +2,7 @@
 
 import UIKit
 
-class AppDependencies {
+final class AppDependencies {
     
     static let shared = AppDependencies()
     
@@ -12,7 +12,7 @@ class AppDependencies {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainViewController else {
             fatalError()
         }
-        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderChiefVC: MakeFolderChiefVCInteractor(), getFolderEntities: GetFolderEntitiesInteractor()))
+        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderChiefVC: UseCase(MakeFolderChiefVCUseCase()), getFolderEntities: UseCase(GetFolderEntitiesUseCase())))
         return viewController
     }
     
