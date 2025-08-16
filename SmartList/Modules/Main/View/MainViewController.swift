@@ -1,6 +1,7 @@
 
 
 import UIKit
+//import RealmSwift
 
 protocol MainView: AnyObject {
     func showFolderChief(_ folderChiefVC: UIViewController)
@@ -11,6 +12,15 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+//        let realm = try! Realm()
+//        var folderEntity1 = FolderEntity()
+//        var folderEntity2 = FolderEntity()
+//        folderEntity1.name = "ファースト"
+//        folderEntity2.name = "セカンド"
+//        try! realm.write {
+//            realm.add(folderEntity1)
+//            realm.add(folderEntity2)
+//        }
         presenter.didLoad()
     }
 

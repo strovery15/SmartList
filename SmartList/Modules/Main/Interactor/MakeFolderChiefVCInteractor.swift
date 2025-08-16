@@ -3,12 +3,12 @@
 import TabPageViewController
 
 protocol MakeFolderChiefVCUseCase {
-    func execute(_ parameter: [UIViewController], completion: ((Result<TabPageViewController, Never>) -> ())?)
+    func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ())?)
 }
 
 class MakeFolderChiefVCInteractor: MakeFolderChiefVCUseCase {
     
-    func execute(_ parameter: [UIViewController], completion: ((Result<TabPageViewController, Never>) -> ())?) {
+    func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ())?) {
         let folderChiefVC = TabPageViewController()
         folderChiefVC.tabItems = makeTabItems(parameter)
         folderChiefVC.option.tabHeight = 50
@@ -21,16 +21,20 @@ class MakeFolderChiefVCInteractor: MakeFolderChiefVCUseCase {
         completion?(.success(folderChiefVC))
     }
     
-    private func makeTabItems(_ folderViewCons: [UIViewController]) -> [(UIViewController, String)] {
+    private func makeTabItems(_ folderEntities: [FolderEntity]) -> [(UIViewController, String)] {
         var tabItems: [(UIViewController, String)] = []
-//        let numberView = UIViewController()
-//        let fruitView = UIViewController()
-//        let prefectureView = UIViewController()
-//        let subjectView = UIViewController()
+        let appDependencies = AppDependencies.shared
         
-        tabItems = [(numberView, "Number"), (fruitView, "fruit"), (prefectureView, "都道府県"), (subjectView, "教科")]
+        let folderViewCons = appDependencies.assembleFolderModules(folderEntities) as! [FolderViewController]
+        for folderEntity in folderEntities {
+            let folderViewCon = folderViewCons.first(where: {
+                $0.folderEntity.name == folderEntity.name
+            })
+            if let folderViewCon = folderViewCon {
+                tabItems.append((folderViewCon, folderEntity.name))
+            }
+        }
         
         return tabItems
     }
-    
 }

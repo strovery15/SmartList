@@ -3,13 +3,13 @@
 import Foundation
 import RealmSwift
 
-class MemoBodyEntity: Object {
+class MemoEntity: Object {
     @objc dynamic var id = UUID().uuidString
-    @objc dynamic var body = ""
+    @objc dynamic var memobody = ""
 }
 
 class MemoTitleEntity: Object {
-    //idはMemoBodyEntity.idと共通
+    //MemoEntity.idと共通id
     @objc dynamic var id = ""
     @objc dynamic var title = ""
 }

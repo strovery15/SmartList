@@ -12,7 +12,7 @@ class AppDependencies {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainViewController else {
             fatalError()
         }
-        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderChiefVC: MakeFolderChiefVCInteractor()))
+        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderChiefVC: MakeFolderChiefVCInteractor(), getFolderEntities: GetFolderEntitiesInteractor()))
         return viewController
     }
     
@@ -22,7 +22,7 @@ class AppDependencies {
         let storyboard = UIStoryboard(name: "Folder", bundle: nil)
         
         for entity in folderEntities {
-            var viewController = storyboard.instantiateViewController(identifier: "Folder") { coder in
+            let viewController = storyboard.instantiateViewController(identifier: "Folder") { coder in
                 return FolderViewController(coder: coder, folderEntity: entity)
             }
             viewController.presenter = presenter
