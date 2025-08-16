@@ -2,12 +2,12 @@
 
 import UIKit
 
-protocol AppDependencies {
-    func assembleMainModule() -> UIViewController
-    func assembleFolderModules(_ folderEntities: [FolderEntity]) -> [UIViewController]
-}
-
-struct AppDefaultDependencies: AppDependencies {
+class AppDependencies {
+    
+    static let shared = AppDependencies()
+    
+    private init() {}
+    
     func assembleMainModule() -> UIViewController {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainViewController else {
             fatalError()
@@ -22,8 +22,8 @@ struct AppDefaultDependencies: AppDependencies {
         let storyboard = UIStoryboard(name: "Folder", bundle: nil)
         
         for entity in folderEntities {
-            let viewController = storyboard.instantiateViewController(identifier: "Folder") { coder in
-                return FolderViewController(coder: coder, presenter: presenter, folderEntity: entity)
+            var viewController = storyboard.instantiateViewController(identifier: "Folder") { coder in
+                return FolderViewController(coder: coder, folderEntity: entity)
             }
             viewController.presenter = presenter
             viewCons.append(viewController)

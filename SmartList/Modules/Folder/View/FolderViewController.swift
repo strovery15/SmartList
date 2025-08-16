@@ -12,9 +12,8 @@ class FolderViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    init?(coder: NSCoder, presenter: FolderPresentation, folderEntity: FolderEntity) {
+    init?(coder: NSCoder, folderEntity: FolderEntity) {
         super.init(coder: coder)
-        self.presenter = presenter
         self.folderEntity = folderEntity
     }
     

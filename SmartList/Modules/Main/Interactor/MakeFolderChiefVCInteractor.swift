@@ -3,14 +3,14 @@
 import TabPageViewController
 
 protocol MakeFolderChiefVCUseCase {
-    func execute(completion: ((Result<TabPageViewController, Never>) -> ())?)
+    func execute(_ parameter: [UIViewController], completion: ((Result<TabPageViewController, Never>) -> ())?)
 }
 
 class MakeFolderChiefVCInteractor: MakeFolderChiefVCUseCase {
     
-    func execute(completion: ((Result<TabPageViewController, Never>) -> ())?) {
+    func execute(_ parameter: [UIViewController], completion: ((Result<TabPageViewController, Never>) -> ())?) {
         let folderChiefVC = TabPageViewController()
-        folderChiefVC.tabItems = makeTabItems()
+        folderChiefVC.tabItems = makeTabItems(parameter)
         folderChiefVC.option.tabHeight = 50
         folderChiefVC.option.tabMargin = 20
         folderChiefVC.option.fontSize = 14
@@ -21,12 +21,12 @@ class MakeFolderChiefVCInteractor: MakeFolderChiefVCUseCase {
         completion?(.success(folderChiefVC))
     }
     
-    private func makeTabItems() -> [(UIViewController, String)] {
+    private func makeTabItems(_ folderViewCons: [UIViewController]) -> [(UIViewController, String)] {
         var tabItems: [(UIViewController, String)] = []
-        let numberView = UIViewController()
-        let fruitView = UIViewController()
-        let prefectureView = UIViewController()
-        let subjectView = UIViewController()
+//        let numberView = UIViewController()
+//        let fruitView = UIViewController()
+//        let prefectureView = UIViewController()
+//        let subjectView = UIViewController()
         
         tabItems = [(numberView, "Number"), (fruitView, "fruit"), (prefectureView, "都道府県"), (subjectView, "教科")]
         
