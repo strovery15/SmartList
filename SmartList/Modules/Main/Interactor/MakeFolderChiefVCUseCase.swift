@@ -2,11 +2,7 @@
 
 import TabPageViewController
 
-protocol MakeFolderChiefVCUseCase {
-    func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ())?)
-}
-
-class MakeFolderChiefVCInteractor: MakeFolderChiefVCUseCase {
+class MakeFolderChiefVCUseCase: UseCaseProtocol {
     
     func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ())?) {
         let folderChiefVC = TabPageViewController()
