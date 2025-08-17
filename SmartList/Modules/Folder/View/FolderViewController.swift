@@ -12,15 +12,14 @@ class FolderViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    init?(coder: NSCoder, presenter: FolderPresentation, folderEntity: FolderEntity) {
-        super.init(coder: coder)
-        self.presenter = presenter
-        self.folderEntity = folderEntity
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    init?(coder: NSCoder, folderEntity: FolderEntity) {
+//        super.init(coder: coder)
+//        self.folderEntity = folderEntity
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
