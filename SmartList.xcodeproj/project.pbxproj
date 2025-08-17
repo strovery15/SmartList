@@ -11,8 +11,9 @@
 		89052CCF2E50B74100CB0597 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 89052CCE2E50B74100CB0597 /* RealmSwift */; };
 		89052CD02E50B74100CB0597 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 89052CCE2E50B74100CB0597 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		89052CD32E50CD3F00CB0597 /* UseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89052CD22E50CD3F00CB0597 /* UseCase.swift */; };
+		89052CD52E51A7CE00CB0597 /* AddFolderEntityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89052CD42E51A7CE00CB0597 /* AddFolderEntityUseCase.swift */; };
 		8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8944969B2E46547600482CF8 /* MainPresenter.swift */; };
-		894496A42E466AB300482CF8 /* MakeFolderChiefVCUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894496A32E466AB300482CF8 /* MakeFolderChiefVCUseCase.swift */; };
+		894496A42E466AB300482CF8 /* MakeFolderChiefViewConUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894496A32E466AB300482CF8 /* MakeFolderChiefViewConUseCase.swift */; };
 		897A8B272E3FCDAA00A4852C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A8B262E3FCDAA00A4852C /* AppDelegate.swift */; };
 		897A8B292E3FCDAA00A4852C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A8B282E3FCDAA00A4852C /* SceneDelegate.swift */; };
 		897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A8B2A2E3FCDAA00A4852C /* MainViewController.swift */; };
@@ -45,8 +46,9 @@
 		2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.release.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.release.xcconfig"; sourceTree = "<group>"; };
 		89052C9F2E50511600CB0597 /* GetFolderEntitiesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFolderEntitiesUseCase.swift; sourceTree = "<group>"; };
 		89052CD22E50CD3F00CB0597 /* UseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCase.swift; sourceTree = "<group>"; };
+		89052CD42E51A7CE00CB0597 /* AddFolderEntityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFolderEntityUseCase.swift; sourceTree = "<group>"; };
 		8944969B2E46547600482CF8 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
-		894496A32E466AB300482CF8 /* MakeFolderChiefVCUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeFolderChiefVCUseCase.swift; sourceTree = "<group>"; };
+		894496A32E466AB300482CF8 /* MakeFolderChiefViewConUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeFolderChiefViewConUseCase.swift; sourceTree = "<group>"; };
 		897A8B232E3FCDAA00A4852C /* SmartList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		897A8B262E3FCDAA00A4852C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		897A8B282E3FCDAA00A4852C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -141,8 +143,9 @@
 		894496A22E4669BA00482CF8 /* Interactor */ = {
 			isa = PBXGroup;
 			children = (
-				894496A32E466AB300482CF8 /* MakeFolderChiefVCUseCase.swift */,
+				894496A32E466AB300482CF8 /* MakeFolderChiefViewConUseCase.swift */,
 				89052C9F2E50511600CB0597 /* GetFolderEntitiesUseCase.swift */,
+				89052CD42E51A7CE00CB0597 /* AddFolderEntityUseCase.swift */,
 			);
 			path = Interactor;
 			sourceTree = "<group>";
@@ -350,8 +353,9 @@
 				89052CA02E50511600CB0597 /* GetFolderEntitiesUseCase.swift in Sources */,
 				89976EB92E476AA800791ED4 /* MemoEntity.swift in Sources */,
 				89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */,
+				89052CD52E51A7CE00CB0597 /* AddFolderEntityUseCase.swift in Sources */,
 				897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */,
-				894496A42E466AB300482CF8 /* MakeFolderChiefVCUseCase.swift in Sources */,
+				894496A42E466AB300482CF8 /* MakeFolderChiefViewConUseCase.swift in Sources */,
 				897A8B272E3FCDAA00A4852C /* AppDelegate.swift in Sources */,
 				89976EC02E48211600791ED4 /* FolderPresenter.swift in Sources */,
 				89976EC52E4829B400791ED4 /* FolderViewController.swift in Sources */,

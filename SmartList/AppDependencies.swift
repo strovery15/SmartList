@@ -4,15 +4,14 @@ import UIKit
 
 final class AppDependencies {
     
-    static let shared = AppDependencies()
-    
     private init() {}
+    static let shared = AppDependencies()
     
     func assembleMainModule() -> UIViewController {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainViewController else {
             fatalError()
         }
-        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderChiefVC: UseCase(MakeFolderChiefVCUseCase()), getFolderEntities: UseCase(GetFolderEntitiesUseCase())))
+        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderChiefViewCon: UseCase(MakeFolderChiefViewConUseCase()), getFolderEntities: UseCase(GetFolderEntitiesUseCase()), addFolderEntity: UseCase(AddFolderEntityUseCase())))
         return viewController
     }
     
@@ -22,10 +21,11 @@ final class AppDependencies {
         let storyboard = UIStoryboard(name: "Folder", bundle: nil)
         
         for entity in folderEntities {
-            let viewController = storyboard.instantiateViewController(identifier: "Folder") { coder in
-                return FolderViewController(coder: coder, folderEntity: entity)
+            guard let viewController = storyboard.instantiateInitialViewController() as? FolderViewController else {
+                fatalError()
             }
             viewController.presenter = presenter
+            viewController.folderEntity = entity
             viewCons.append(viewController)
         }
         return viewCons
