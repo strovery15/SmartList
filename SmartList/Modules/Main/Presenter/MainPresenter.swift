@@ -17,9 +17,9 @@ protocol MainPresentation: AnyObject {
 
 class MainPresenter {
     struct Dependency {
-        let makeFolderChiefViewCon: UseCase<[FolderEntity], TabPageViewController, Never>
-        let getFolderEntities: UseCase<Void, [FolderEntity], Never>
-        let addFolderEntity: UseCase<String, Void, Never>
+        let makeFolderChiefViewCon: MakeFolderChiefViewConUseCase
+        let getFolderEntities: GetFolderEntitiesUseCase
+        let addFolderEntity: AddFolderEntityUseCase
     }
     
     weak var view: MainView?
@@ -50,7 +50,7 @@ extension MainPresenter: MainPresentation {
         var getFolderEntities_Trigger = Trigger.off {
             didSet {
                 if getFolderEntities_Trigger == Trigger.on {
-                    dependency.getFolderEntities.execute(()) { result in
+                    dependency.getFolderEntities.execute() { result in
                         switch result {
                         case .success(let entities):
                             folderEntities = entities
@@ -82,7 +82,7 @@ extension MainPresenter: MainPresentation {
         var getFolderEntities_Trigger = Trigger.off {
             didSet {
                 if getFolderEntities_Trigger == Trigger.on {
-                    dependency.getFolderEntities.execute(()) { result in
+                    dependency.getFolderEntities.execute() { result in
                         switch result {
                         case .success(let entities):
                             folderEntities = entities

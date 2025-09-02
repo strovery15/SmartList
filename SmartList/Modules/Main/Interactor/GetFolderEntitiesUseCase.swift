@@ -2,13 +2,17 @@
 
 import RealmSwift
 
-class GetFolderEntitiesUseCase: UseCaseProtocol {
+protocol GetFolderEntitiesUseCase {
+    func execute(completion: ((Result<[FolderEntity], Never>) -> ()))
+}
+
+class GetFolderEntitiesInteractor: GetFolderEntitiesUseCase {
     
-    func execute(_ parameter: Void, completion: ((Result<[FolderEntity], Never>) -> ())?) {
+    func execute(completion: ((Result<[FolderEntity], Never>) -> ())) {
         let realm = try! Realm()
         var folderEntities: [FolderEntity] = []
         let results = realm.objects(FolderEntity.self)
         folderEntities = Array(results)
-        completion?(.success(folderEntities))
+        completion(.success(folderEntities))
     }
 }
