@@ -13,18 +13,44 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let realm = try! Realm()
-//        var folderEntity1 = FolderEntity()
-//        var folderEntity2 = FolderEntity()
-//        folderEntity1.name = "ファースト"
-//        folderEntity2.name = "セカンド"
-//        try! realm.write {
-//            realm.add(folderEntity1)
-//            realm.add(folderEntity2)
-//        }
+        
+        
+//        practiceFunc()
+        presenter.didLoad()
+        print("--------------------------------")
+    }
+    
+    func practiceFunc() {
+        let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
+        let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
+        let prefecture = ["愛知県", "東京都", "福岡県", "兵庫県", "北海道", "山口県", "茨城県", "沖縄県", "石川県"]
+        
+        let realm = try! Realm()
+        let folderEntity1 = createFolderEntiy(folderName: "Number", number)
+        let folderEntity2 = createFolderEntiy(folderName: "fruit", fruit)
+        let folderEntity3 = createFolderEntiy(folderName: "都道府県", prefecture)
+        
+        try! realm.write {
+            realm.add(folderEntity1)
+            realm.add(folderEntity2)
+            realm.add(folderEntity3)
+        }
+    }
+    
+    func createFolderEntiy(folderName: String,_ items: [String]) -> FolderEntity {
+        let folderEntity = FolderEntity()
+        folderEntity.name = folderName
+        for item in items {
+            let memoTitleEntity = MemoTitleEntity()
+            memoTitleEntity.title = item
+            folderEntity.memoTitles.append(memoTitleEntity)
+        }
+        return folderEntity
+    }
+    
+    func configureLayout() {
         let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
         self.navigationItem.rightBarButtonItem = barButton
-        presenter.didLoad()
     }
     
     @objc func barButtonAction(_ sender: UIBarButtonItem) {

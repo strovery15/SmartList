@@ -2,9 +2,13 @@
 
 import TabPageViewController
 
-class MakeFolderChiefViewConUseCase: UseCaseProtocol {
+protocol MakeFolderChiefViewConUseCase {
+    func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ()))
+}
+
+class MakeFolderChiefViewConInteractor: MakeFolderChiefViewConUseCase {
     
-    func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ())?) {
+    func execute(_ parameter: [FolderEntity], completion: ((Result<TabPageViewController, Never>) -> ())) {
         let folderChiefVC = TabPageViewController()
         folderChiefVC.tabItems = makeTabItems(parameter)
         folderChiefVC.option.tabHeight = 50
@@ -14,7 +18,7 @@ class MakeFolderChiefViewConUseCase: UseCaseProtocol {
         folderChiefVC.option.currentColor = .white
         folderChiefVC.option.defaultColor = .systemGray4
         folderChiefVC.option.tabBackgroundColor = .systemTeal
-        completion?(.success(folderChiefVC))
+        completion(.success(folderChiefVC))
     }
     
     private func makeTabItems(_ folderEntities: [FolderEntity]) -> [(UIViewController, String)] {
@@ -24,7 +28,7 @@ class MakeFolderChiefViewConUseCase: UseCaseProtocol {
         let folderViewCons = appDependencies.assembleFolderModules(folderEntities) as! [FolderViewController]
         for folderEntity in folderEntities {
             let folderViewCon = folderViewCons.first(where: {
-                $0.folderEntity.name == folderEntity.name
+                $0.folderId == folderEntity.id
             })
             if let folderViewCon = folderViewCon {
                 tabItems.append((folderViewCon, folderEntity.name))

@@ -3,47 +3,179 @@
 import UIKit
 
 protocol FolderView: AnyObject {
-    
+    func setRepository(_ entities: [MemoTitleEntity])
 }
 
 class FolderViewController: UIViewController {
+    
     var presenter: FolderPresentation!
-    var folderEntity: FolderEntity!
+    var folderId: FolderEntity.ID!
+    var memoTitlesRepository: MemoTitlesRepository!
+    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var editMenuButton: UIButton!
     
-//    init?(coder: NSCoder, folderEntity: FolderEntity) {
-//        super.init(coder: coder)
-//        self.folderEntity = folderEntity
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-
+    enum Section {
+        case main
+    }
+    
+    init?(coder: NSCoder, folderId: FolderEntity.ID) {
+        super.init(coder: coder)
+        self.folderId = folderId
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureLayout()
+        presenter.didLoad(view: self, folderId)
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        presenter.didAppear(self)
+        presenter.didAppear(view: self)
     }
-
+    
+    func configureLayout() {
+        view.backgroundColor = .systemGray6
+        
+        editMenuButton.backgroundColor = .blue
+        
+        let Gesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
+        collectionView.addGestureRecognizer(Gesture)
+        collectionView.allowsSelection = false
+        
+        editMenuButton.menu = createMenu()
+        editMenuButton.showsMenuAsPrimaryAction = true
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDelete(_:)), name: .notifyDelete, object: nil)
+    }
+    
+    @objc func longPressRecognizer(gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {return}
+            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+    
+    func createMenu() -> UIMenu {
+        var menus = [UIMenuElement]()
+        menus.append(UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: {_ in
+            print("移動")
+        }))
+        menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter.deleteFolder(id: folderId)
+        }))
+        return UIMenu(title: "", options: .singleSelection, children: menus)
+    }
+    
+    @objc func notifyDelete(_ notificaiton: Notification) {
+        let id = notificaiton.userInfo!["id"] as! MemoTitleEntity.ID
+        collectionViewDeleteItem(id: id)
+    }
+    
 }
 
 extension FolderViewController: FolderView {
-    
+    func setRepository(_ entities: [MemoTitleEntity]) {
+        self.memoTitlesRepository = MemoTitlesRepository(entities)
+        configureCollectionViewLayout()
+        configureDataSource()
+        applySnapshot()
+    }
 }
 
-extension FolderViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        folderEntity.memoTitles.count
+extension FolderViewController {
+    //CollectionViewのセットアップ
+    func configureCollectionViewLayout() {
+        var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        configuration.separatorConfiguration.bottomSeparatorInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+        
+        configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration in
+            let action = UIContextualAction(style: .destructive, title: "削除") {
+                [weak self] _, _, completionHandler in
+                let memoTitleId = self?.dataSource.itemIdentifier(for: indexPath)!
+                self?.collectionViewDeleteItem(id: memoTitleId!)
+                completionHandler(true)
+            }
+            action.backgroundColor = UIColor.systemRed
+            let swipeActionConfi = UISwipeActionsConfiguration(actions: [action])
+            swipeActionConfi.performsFirstActionWithFullSwipe = false
+            return swipeActionConfi
+        }
+        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+        collectionView.collectionViewLayout = layout
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.textLabel?.text = folderEntity.memoTitles[indexPath.row].title
-        return cell
+    func configureDataSource() {
+        let itemCellRegistration =
+        UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> {
+            cell, indexpath, entity in
+            
+            cell.id = entity.id
+            cell.title = entity.title
+        }
+        self.dataSource = UICollectionViewDiffableDataSource(
+            collectionView: self.collectionView,
+            cellProvider: { [weak self] collectionView, indexpath, memoId in
+                let memoTitle = self?.memoTitlesRepository.getMemoTitle(memoId)
+                return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexpath, item: memoTitle)
+            })
+    }
+    
+    func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity.ID>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(memoTitlesRepository.memoTitleIDs, toSection: .main)
+        
+        dataSource.reorderingHandlers.canReorderItem = { _ in true }
+        dataSource.reorderingHandlers.didReorder = { [weak self] transAction in
+            guard let self = self else { return }
+            let oldArray = transAction.initialSnapshot.itemIdentifiers
+            let newArray = transAction.finalSnapshot.itemIdentifiers
+            let difference = newArray.difference(from: oldArray)
+            collectionViewReorderItem(difference)
+        }
+        dataSource.apply(snapshot, animatingDifferences: true)
+        
+    }
+}
+
+extension FolderViewController: UICollectionViewDelegate {
+    //CollectionViewの操作・アクション
+    func collectionViewDeleteItem(id: MemoTitleEntity.ID) {
+        var snapshot = self.dataSource.snapshot()
+        snapshot.deleteItems([id])
+        self.dataSource.apply(snapshot, animatingDifferences: true)
+        self.memoTitlesRepository.memoTitles.removeAll { $0.id == id}
+        presenter.didDeleteMemo(folderId: folderId, memoId: id)
+    }
+    
+    func collectionViewReorderItem(_ difference: CollectionDifference<MemoTitleEntity.ID>) {
+        var sourceIndex = 0
+        var destinationIndex = 0
+        for change in difference {
+            switch change {
+            case .insert(offset: let offset,_,_):
+                destinationIndex = offset
+            case .remove(offset: let offset,_,_):
+                sourceIndex = offset
+            }
+        }
+        let item = memoTitlesRepository.memoTitles.remove(at: sourceIndex)
+        memoTitlesRepository.memoTitles.insert(item, at: destinationIndex)
+        presenter.didReorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
     }
     
 }
