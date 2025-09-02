@@ -14,7 +14,7 @@ class AddFolderEntityInteractor: AddFolderEntityUseCase {
         newFolderEntity.name = parameter
         try! realm.write {
             realm.add(newFolderEntity)
+            completion(.success(()))
         }
-        completion(.success(()))
     }
 }

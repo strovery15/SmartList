@@ -14,7 +14,6 @@ class ReorderMemoTitleEntityInteractor: ReorderMemoTitleEntityUseCase {
         let predicate = NSPredicate(format: "id == %@", parameter1 as CVarArg)
         if let folderEntity = results.filter(predicate).first {
             try! realm.write {
-                print("yyyy")
                 folderEntity.memoTitles.move(from: parameter2, to: parameter3)
             }
         } else {

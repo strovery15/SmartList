@@ -32,6 +32,8 @@ class FolderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLayout()
+        configureCollectionViewLayout()
+        configureDataSource()
         presenter.didLoad(view: self, folderId)
     }
     
@@ -39,19 +41,40 @@ class FolderViewController: UIViewController {
         presenter.didAppear(view: self)
     }
     
+}
+
+extension FolderViewController: FolderView {
+    func setRepository(_ entities: [MemoTitleEntity]) {
+        self.memoTitlesRepository = MemoTitlesRepository(entities)
+        applySnapshot()
+    }
+}
+
+private extension FolderViewController {
     func configureLayout() {
         view.backgroundColor = .systemGray6
         
         editMenuButton.backgroundColor = .blue
+        editMenuButton.menu = createMenu()
+        editMenuButton.showsMenuAsPrimaryAction = true
         
         let Gesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
         collectionView.addGestureRecognizer(Gesture)
         collectionView.allowsSelection = false
         
-        editMenuButton.menu = createMenu()
-        editMenuButton.showsMenuAsPrimaryAction = true
-        
         NotificationCenter.default.addObserver(self, selector: #selector(notifyDelete(_:)), name: .notifyDelete, object: nil)
+    }
+    
+    func createMenu() -> UIMenu {
+        var menus = [UIMenuElement]()
+        menus.append(UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: {_ in
+            print("移動")
+        }))
+        menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter.deleteFolder(id: folderId)
+        }))
+        return UIMenu(title: "", options: .singleSelection, children: menus)
     }
     
     @objc func longPressRecognizer(gesture: UILongPressGestureRecognizer) {
@@ -68,31 +91,9 @@ class FolderViewController: UIViewController {
         }
     }
     
-    func createMenu() -> UIMenu {
-        var menus = [UIMenuElement]()
-        menus.append(UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: {_ in
-            print("移動")
-        }))
-        menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
-            guard let self = self else { return }
-            self.presenter.deleteFolder(id: folderId)
-        }))
-        return UIMenu(title: "", options: .singleSelection, children: menus)
-    }
-    
     @objc func notifyDelete(_ notificaiton: Notification) {
-        let id = notificaiton.userInfo!["id"] as! MemoTitleEntity.ID
-        collectionViewDeleteItem(id: id)
-    }
-    
-}
-
-extension FolderViewController: FolderView {
-    func setRepository(_ entities: [MemoTitleEntity]) {
-        self.memoTitlesRepository = MemoTitlesRepository(entities)
-        configureCollectionViewLayout()
-        configureDataSource()
-        applySnapshot()
+        let memoId = notificaiton.userInfo!["id"] as! MemoTitleEntity.ID
+        deleteCell(memoId)
     }
 }
 
@@ -105,8 +106,9 @@ extension FolderViewController {
         configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration in
             let action = UIContextualAction(style: .destructive, title: "削除") {
                 [weak self] _, _, completionHandler in
-                let memoTitleId = self?.dataSource.itemIdentifier(for: indexPath)!
-                self?.collectionViewDeleteItem(id: memoTitleId!)
+                guard let self = self else { return }
+                let memoId = self.dataSource.itemIdentifier(for: indexPath)!
+                self.deleteCell(memoId)
                 completionHandler(true)
             }
             action.backgroundColor = UIColor.systemRed
@@ -142,27 +144,26 @@ extension FolderViewController {
         dataSource.reorderingHandlers.canReorderItem = { _ in true }
         dataSource.reorderingHandlers.didReorder = { [weak self] transAction in
             guard let self = self else { return }
-            let oldArray = transAction.initialSnapshot.itemIdentifiers
-            let newArray = transAction.finalSnapshot.itemIdentifiers
-            let difference = newArray.difference(from: oldArray)
-            collectionViewReorderItem(difference)
+            reorderCell(transAction)
         }
         dataSource.apply(snapshot, animatingDifferences: true)
         
     }
-}
-
-extension FolderViewController: UICollectionViewDelegate {
-    //CollectionViewの操作・アクション
-    func collectionViewDeleteItem(id: MemoTitleEntity.ID) {
+    
+    //CollectionViewのCell操作
+    func deleteCell(_ id: MemoTitleEntity.ID) {
         var snapshot = self.dataSource.snapshot()
         snapshot.deleteItems([id])
         self.dataSource.apply(snapshot, animatingDifferences: true)
         self.memoTitlesRepository.memoTitles.removeAll { $0.id == id}
-        presenter.didDeleteMemo(folderId: folderId, memoId: id)
+        presenter.deleteMemo(folderId: folderId, memoId: id)
     }
     
-    func collectionViewReorderItem(_ difference: CollectionDifference<MemoTitleEntity.ID>) {
+    func reorderCell(_ transAction:  NSDiffableDataSourceTransaction<FolderViewController.Section, MemoTitleEntity.ID>) {
+        let oldArray = transAction.initialSnapshot.itemIdentifiers
+        let newArray = transAction.finalSnapshot.itemIdentifiers
+        let difference = newArray.difference(from: oldArray)
+        
         var sourceIndex = 0
         var destinationIndex = 0
         for change in difference {
@@ -175,7 +176,6 @@ extension FolderViewController: UICollectionViewDelegate {
         }
         let item = memoTitlesRepository.memoTitles.remove(at: sourceIndex)
         memoTitlesRepository.memoTitles.insert(item, at: destinationIndex)
-        presenter.didReorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
+        presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
     }
-    
 }
