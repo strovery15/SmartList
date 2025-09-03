@@ -62,7 +62,7 @@ private extension FolderViewController {
         collectionView.addGestureRecognizer(Gesture)
         collectionView.allowsSelection = false
         
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDelete(_:)), name: .notifyDelete, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteMemo(_:)), name: .notifyDeleteMemo, object: nil)
     }
     
     func createMenu() -> UIMenu {
@@ -72,7 +72,7 @@ private extension FolderViewController {
         }))
         menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.deleteFolder(id: folderId)
+            NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["id": self.folderId!])
         }))
         return UIMenu(title: "", options: .singleSelection, children: menus)
     }
@@ -91,9 +91,9 @@ private extension FolderViewController {
         }
     }
     
-    @objc func notifyDelete(_ notificaiton: Notification) {
-        let memoId = notificaiton.userInfo!["id"] as! MemoTitleEntity.ID
-        deleteCell(memoId)
+    @objc func notifyDeleteMemo(_ notification: Notification) {
+        let id = notification.userInfo!["id"] as! MemoTitleEntity.ID
+        deleteCell(id)
     }
 }
 
@@ -178,4 +178,8 @@ extension FolderViewController {
         memoTitlesRepository.memoTitles.insert(item, at: destinationIndex)
         presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
     }
+}
+
+extension Notification.Name {
+    static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
 }

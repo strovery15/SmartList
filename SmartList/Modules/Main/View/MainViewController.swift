@@ -17,6 +17,7 @@ class MainViewController: UIViewController {
         
 //        practiceFunc()
         presenter.didLoad()
+        configureLayout()
         print("--------------------------------")
     }
     
@@ -48,14 +49,7 @@ class MainViewController: UIViewController {
         return folderEntity
     }
     
-    func configureLayout() {
-        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem = barButton
-    }
     
-    @objc func barButtonAction(_ sender: UIBarButtonItem) {
-        presenter.addFolder(folderName: "サード")
-    }
 
 
 }
@@ -78,4 +72,22 @@ extension MainViewController: MainView {
         folderChiefVc.didMove(toParent: self)
     }
     
+}
+
+private extension MainViewController {
+    func configureLayout() {
+        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = barButton
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
+    }
+    
+    @objc func barButtonAction(_ sender: UIBarButtonItem) {
+        presenter.addFolder(folderName: "サード")
+    }
+    
+    @objc func notifyDeleteFolder(_ notification: Notification) {
+        let id = notification.userInfo!["id"] as! FolderEntity.ID
+        presenter.deleteFolder(folderId: id)
+    }
 }

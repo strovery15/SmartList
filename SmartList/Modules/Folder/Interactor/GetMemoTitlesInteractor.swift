@@ -3,11 +3,11 @@
 import Foundation
 import RealmSwift
 
-protocol GetMemoTitleEntitiesUseCase {
+protocol GetMemoTitlesUseCase {
     func execute(_ parameter: FolderEntity.ID, completion: ((Result<[MemoTitleEntity], Never>) -> ()))
 }
 
-class GetMemoTitleEntitiesInteractor: GetMemoTitleEntitiesUseCase {
+class GetMemoTitlesInteractor: GetMemoTitlesUseCase {
     func execute(_ parameter: FolderEntity.ID, completion: ((Result<[MemoTitleEntity], Never>) -> ())) {
         let realm = try! Realm()
         let results = realm.objects(FolderEntity.self)

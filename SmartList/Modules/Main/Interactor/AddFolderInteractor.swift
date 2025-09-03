@@ -3,11 +3,11 @@
 import Foundation
 import RealmSwift
 
-protocol AddFolderEntityUseCase {
+protocol AddFolderUseCase {
     func execute(_ parameter: String, completion: ((Result<Void, Never>) -> ()))
 }
 
-class AddFolderEntityInteractor: AddFolderEntityUseCase {
+class AddFolderInteractor: AddFolderUseCase {
     func execute(_ parameter: String, completion: ((Result<Void, Never>) -> ())) {
         let realm = try! Realm()
         var newFolderEntity = FolderEntity()
