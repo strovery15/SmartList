@@ -21,6 +21,13 @@ class MainViewController: UIViewController {
         print("--------------------------------")
     }
     
+    func configureLayout() {
+        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = barButton
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
+    }
+    
     func practiceFunc() {
         let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
         let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
@@ -48,10 +55,6 @@ class MainViewController: UIViewController {
         }
         return folderEntity
     }
-    
-    
-
-
 }
 
 extension MainViewController: MainView {
@@ -75,15 +78,34 @@ extension MainViewController: MainView {
 }
 
 private extension MainViewController {
-    func configureLayout() {
-        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem = barButton
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
-    }
     
     @objc func barButtonAction(_ sender: UIBarButtonItem) {
-        presenter.addFolder(folderName: "サード")
+        let alert = addfolderAlert()
+        present(alert, animated: true)
+    }
+    
+    func addfolderAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
+            guard let self = self else { return }
+            if let textfields = alert.textFields {
+                for textfield in textfields {
+                    if textfield.text!.isEmpty {
+                        presenter.addFolder(folderName: "新しいフォルダ")
+                    } else {
+                        presenter.addFolder(folderName: textfield.text!)
+                    }
+                }
+            }
+        }
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alert.addTextField() { textfield in
+            textfield.text = "新しいフォルダ"
+        }
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        
+        return alert
     }
     
     @objc func notifyDeleteFolder(_ notification: Notification) {
