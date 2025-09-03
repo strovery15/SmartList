@@ -3,11 +3,11 @@
 import Foundation
 import RealmSwift
 
-protocol ReorderMemoTitleEntityUseCase {
+protocol ReorderMemoTitleUseCase {
     func execute(_ parameter1: FolderEntity.ID,_ parameter2: Int, _ parameter3: Int)
 }
 
-class ReorderMemoTitleEntityInteractor: ReorderMemoTitleEntityUseCase {
+class ReorderMemoTitleInteractor: ReorderMemoTitleUseCase {
     func execute(_ parameter1: FolderEntity.ID,_ parameter2: Int, _ parameter3: Int) {
         let realm = try! Realm()
         let results = realm.objects(FolderEntity.self)

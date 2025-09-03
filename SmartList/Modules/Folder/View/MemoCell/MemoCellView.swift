@@ -60,7 +60,7 @@ class MemoCellView: UIView, UIContentView  {
 //        }))
         menus.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            NotificationCenter.default.post(name: .notifyDelete, object: nil, userInfo: ["id": self.memoConfiguration.id!])
+            NotificationCenter.default.post(name: .notifyDeleteMemo, object: nil, userInfo: ["id": self.memoConfiguration.id!])
             
         }))
         
@@ -71,5 +71,5 @@ class MemoCellView: UIView, UIContentView  {
 
 extension Notification.Name {
 //    static let notifyTransfer = Notification.Name("notifyTransfer")
-    static let notifyDelete = Notification.Name("notifyDelete")
+    static let notifyDeleteMemo = Notification.Name("notifyDeleteMemo")
 }
