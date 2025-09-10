@@ -56,7 +56,7 @@
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="BCP-ab-3LQ" id="JsR-cs-JKP"/>
-                        <outlet property="editMenuButton" destination="g31-bm-sKq" id="kW3-U7-fid"/>
+                        <outlet property="editFolderButton" destination="g31-bm-sKq" id="kW3-U7-fid"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

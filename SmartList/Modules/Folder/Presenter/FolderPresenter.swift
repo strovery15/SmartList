@@ -6,7 +6,7 @@ protocol FolderPresentation: AnyObject {
     func didLoad(view: FolderView,_ id: FolderEntity.ID)
     func didAppear(view: FolderView)
     func deleteMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
-    func reorderMemo(folderId: FolderEntity.ID, from: Int, to: Int)
+    func reorderMemo(folderId: FolderEntity.ID, difference: CollectionDifference<MemoTitleEntity.ID>)
 }
 
 class FolderPresenter {
@@ -44,8 +44,8 @@ extension FolderPresenter: FolderPresentation {
         dependency.deleteMemoTitle.execute(folderId, memoId)
     }
     
-    func reorderMemo(folderId: FolderEntity.ID, from: Int, to: Int) {
-        dependency.reorderMemoTitle.execute(folderId, from, to)
+    func reorderMemo(folderId: FolderEntity.ID, difference: CollectionDifference<MemoTitleEntity.ID>) {
+        dependency.reorderMemoTitle.execute(folderId, difference)
     }
     
 }
