@@ -17,6 +17,10 @@ class FolderViewController: UIViewController {
     var repository: MemoTitlesRepository!
     var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
+    //reordering用の変数
+    fileprivate var sourceIndex = 0
+    fileprivate var destinationIndex = 0
+    
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
             configureCollectionView()
@@ -94,14 +98,17 @@ extension FolderViewController {
     // CollectionView
     func configureCollectionView() {
         collectionView.allowsSelection = false
-        let Gesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
-        collectionView.addGestureRecognizer(Gesture)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapRecognizer))
+        collectionView.addGestureRecognizer(tapGesture)
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
+        collectionView.addGestureRecognizer(longPressGesture)
     }
     
     func configureCollectionViewLayout() {
         var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         configuration.separatorConfiguration.bottomSeparatorInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-        
         configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration in
             let action = UIContextualAction(style: .destructive, title: "削除") {
                 [weak self] _, _, completionHandler in
@@ -140,15 +147,7 @@ extension FolderViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity.ID>()
         snapshot.appendSections([.main])
         snapshot.appendItems(repository.memoTitleIDs, toSection: .main)
-        
         dataSource.reorderingHandlers.canReorderItem = { _ in true }
-        dataSource.reorderingHandlers.didReorder = { [weak self] transAction in
-            guard let self = self else { return }
-            let oldArray = transAction.initialSnapshot.itemIdentifiers
-            let newArray = transAction.finalSnapshot.itemIdentifiers
-            let difference = newArray.difference(from: oldArray)
-            presenter.reorderMemo(folderId: folderId, difference: difference)
-        }
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
@@ -158,18 +157,38 @@ extension FolderViewController {
         self.dataSource.apply(snapshot, animatingDifferences: true)
     }
     
+    @objc func tapRecognizer(gesture: UITapGestureRecognizer) {
+        if gesture.state == .ended {
+            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
+                let id = self.dataSource.itemIdentifier(for: indexPath)!
+                presenter.selectMemo(folderId: folderId, memoId: id)
+            }
+        }
+    }
+    
     @objc func longPressRecognizer(gesture: UILongPressGestureRecognizer) {
         switch gesture.state {
         case .began:
-            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {return}
-            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
+                sourceIndex = indexPath.row
+                collectionView.beginInteractiveMovementForItem(at: indexPath)
+            }
+            
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
         case .ended:
             collectionView.endInteractiveMovement()
+            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
+                destinationIndex = indexPath.row
+                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
+                sourceIndex = 0
+                destinationIndex = 0
+            }
+            
         default:
             collectionView.cancelInteractiveMovement()
         }
+        
     }
     
     // editFolderButton
@@ -187,8 +206,9 @@ extension FolderViewController {
         menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
             let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
+            
             let deleteAction = UIAlertAction(title: "削除", style: .destructive) { _ in
-                NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["id": self.folderId!])
+                self.presenter.deleteFolder(folderId: self.folderId)
             }
             alertController.addAction(deleteAction)
             
@@ -200,8 +220,4 @@ extension FolderViewController {
         editFolderButton.menu = UIMenu(title: "", options: .singleSelection, children: menus)
     }
     
-}
-    
-extension Notification.Name {
-    static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
 }

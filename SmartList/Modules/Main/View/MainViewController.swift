@@ -21,13 +21,6 @@ class MainViewController: UIViewController {
         print("--------------------------------")
     }
     
-    func configureLayout() {
-        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem = barButton
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
-    }
-    
     func practiceFunc() {
         let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
         let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
@@ -58,6 +51,7 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: MainView {
+    
     func showFolderChief(_ folderChiefVc: UIViewController) {
         addChild(folderChiefVc)
         view.addSubview(folderChiefVc.view)
@@ -79,9 +73,21 @@ extension MainViewController: MainView {
 
 private extension MainViewController {
     
+    func configureLayout() {
+        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = barButton
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
+    }
+    
     @objc func barButtonAction(_ sender: UIBarButtonItem) {
         let alert = addfolderAlert()
         present(alert, animated: true)
+    }
+
+    @objc func notifyDeleteFolder(_ notification: Notification) {
+        let id = notification.userInfo!["id"] as! FolderEntity.ID
+        presenter.deleteFolder(folderId: id)
     }
     
     func addfolderAlert() -> UIAlertController {
@@ -106,10 +112,5 @@ private extension MainViewController {
         alert.addAction(cancelAction)
         
         return alert
-    }
-    
-    @objc func notifyDeleteFolder(_ notification: Notification) {
-        let id = notification.userInfo!["id"] as! FolderEntity.ID
-        presenter.deleteFolder(folderId: id)
     }
 }
