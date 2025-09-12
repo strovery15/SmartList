@@ -17,7 +17,6 @@ class MainPresenter {
         case off
     }
     struct Dependency {
-        
         let makeFolderChiefViewCon: MakeFolderChiefViewConUseCase
         let getFolders: GetFoldersUseCase
         let addFolder: AddFolderUseCase

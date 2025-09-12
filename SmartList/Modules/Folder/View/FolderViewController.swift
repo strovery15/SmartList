@@ -35,24 +35,15 @@ class FolderViewController: UIViewController {
             setEditMenu()
         }
     }
-
-    init?(coder: NSCoder, folderId: FolderEntity.ID) {
-        super.init(coder: coder)
-        self.folderId = folderId
-    }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    deinit {
+        print("deinit")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         firstConfiguration()
-        presenter.didLoad(view: self, folderId)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        presenter.didAppear(view: self)
+        presenter.didLoad(id: folderId)
     }
     
 }
@@ -78,7 +69,7 @@ private extension FolderViewController {
         let id = notification.userInfo!["id"] as! MemoTitleEntity.ID
         let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
         
-        let deleteAction = UIAlertAction(title: "削除", style: .destructive) {[weak self] _ in
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             deleteSnapshot(id)
             presenter.deleteMemo(folderId: folderId, memoId: id)
@@ -109,7 +100,7 @@ extension FolderViewController {
     func configureCollectionViewLayout() {
         var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         configuration.separatorConfiguration.bottomSeparatorInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-        configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration in
+        configuration.leadingSwipeActionsConfigurationProvider = { [weak self] indexPath -> UISwipeActionsConfiguration in
             let action = UIContextualAction(style: .destructive, title: "削除") {
                 [weak self] _, _, completionHandler in
                 guard let self = self else { return }
@@ -207,7 +198,8 @@ extension FolderViewController {
             guard let self = self else { return }
             let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
             
-            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { _ in
+            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+                guard let self = self else { return }
                 self.presenter.deleteFolder(folderId: self.folderId)
             }
             alertController.addAction(deleteAction)

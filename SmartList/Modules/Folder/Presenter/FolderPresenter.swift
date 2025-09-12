@@ -3,8 +3,7 @@
 import Foundation
 
 protocol FolderPresentation: AnyObject {
-    func didLoad(view: FolderView,_ id: FolderEntity.ID)
-    func didAppear(view: FolderView)
+    func didLoad(id: FolderEntity.ID)
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
     func deleteFolder(folderId: FolderEntity.ID)
     func deleteMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
@@ -20,32 +19,28 @@ class FolderPresenter {
         let reorderMemoTitle: ReorderMemoTitleUseCase
     }
     
-    weak var currentView: FolderView?
+    weak var view: FolderView?
     let dependency: Dependency!
     
-    init(dependency: Dependency) {
+    init(view: FolderView, dependency: Dependency) {
+        self.view = view
         self.dependency = dependency
     }
 }
 
 extension FolderPresenter: FolderPresentation {
-    func didLoad(view: FolderView,_ id: FolderEntity.ID) {
-        self.currentView = view
+    func didLoad(id: FolderEntity.ID) {
         dependency.getMemoTitles.execute(id) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let entities):
-                self.currentView?.setRepository(entities)
+                self.view?.setRepository(entities)
             }
         }
     }
     
-    func didAppear(view: FolderView) {
-        self.currentView = view
-    }
-    
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID) {
-        dependency.router.presentMemoView(viewCon: currentView!, folderId: folderId, memoId: memoId)
+        dependency.router.presentMemoView(folderId: folderId, memoId: memoId)
     }
     
     func deleteFolder(folderId: FolderEntity.ID) {
