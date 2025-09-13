@@ -8,6 +8,12 @@ protocol MemoView: AnyObject {
 
 class MemoViewController: UIViewController {
     
+    @IBOutlet weak var textView: UITextView! {
+        didSet {
+            configureTextView()
+        }
+    }
+    
     var presenter: MemoPresentation!
     var folderId: FolderEntity.ID!
     var memoId: MemoEntity.ID?
@@ -15,7 +21,7 @@ class MemoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .blue
+        firstConfiguration()
         presenter.didLoad(folderId: folderId, memoId: memoId)
     }
     
@@ -24,7 +30,33 @@ class MemoViewController: UIViewController {
 extension MemoViewController: MemoView {
     
     func setText(memoId: MemoEntity.ID, text: String) {
-        print(memoId)
-        print(text)
+        self.memoId = memoId
+        textView.text = text
+    }
+}
+
+private extension MemoViewController {
+    
+    func firstConfiguration() {
+        view.backgroundColor = .blue
+        
+        let closeButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(closeButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = closeButton
+    }
+    
+    @objc func closeButtonAction(_ sender: UIBarButtonItem) {
+        let currentText = textView.text
+        print(currentText)
+        textView.resignFirstResponder()
+    }
+}
+
+extension MemoViewController: UITextViewDelegate {
+    
+    //textView
+    func configureTextView() {
+        textView.delegate = self
+        textView.text = ""
+        textView.font = UIFont.systemFont(ofSize: 20)
     }
 }

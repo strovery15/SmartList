@@ -22,6 +22,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let appDependencies = AppDependencies()
         let mainViewController = appDependencies.assembleMainModule()
         let navigation = UINavigationController(rootViewController: mainViewController)
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemTeal
+        navigation.navigationBar.standardAppearance = appearance
+        navigation.navigationBar.scrollEdgeAppearance = appearance
+        navigation.navigationBar.tintColor = .white
         
         window?.rootViewController = navigation
     }
