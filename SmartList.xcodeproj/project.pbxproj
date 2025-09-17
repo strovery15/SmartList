@@ -20,6 +20,7 @@
 		8962A2852E572F2200D208E6 /* MemoCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8962A2842E572F2200D208E6 /* MemoCellView.xib */; };
 		8962A2872E584C5600D208E6 /* DeleteMemoTitleInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8962A2862E584C5600D208E6 /* DeleteMemoTitleInteractor.swift */; };
 		8962A2892E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8962A2882E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift */; };
+		896F5EC02E7637BD00A749FD /* SaveMemoEntityInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */; };
 		8978BDCF2E54823600809825 /* MemoTitleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978BDCE2E54823600809825 /* MemoTitleEntity.swift */; };
 		8978BDD22E5487C900809825 /* MemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978BDD12E5487C900809825 /* MemoCell.swift */; };
 		8978BDD42E54892200809825 /* MemoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978BDD32E54892200809825 /* MemoCellView.swift */; };
@@ -68,6 +69,7 @@
 		8962A2842E572F2200D208E6 /* MemoCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemoCellView.xib; sourceTree = "<group>"; };
 		8962A2862E584C5600D208E6 /* DeleteMemoTitleInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMemoTitleInteractor.swift; sourceTree = "<group>"; };
 		8962A2882E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderMemoTitleInteractor.swift; sourceTree = "<group>"; };
+		896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveMemoEntityInteractor.swift; sourceTree = "<group>"; };
 		8978BDCE2E54823600809825 /* MemoTitleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntity.swift; sourceTree = "<group>"; };
 		8978BDD12E5487C900809825 /* MemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCell.swift; sourceTree = "<group>"; };
 		8978BDD32E54892200809825 /* MemoCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCellView.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				890F06592E74565C0063ED3A /* GetMemoEntityInteractor.swift */,
+				896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */,
 			);
 			path = Interactor;
 			sourceTree = "<group>";
@@ -436,6 +439,7 @@
 				89052CA02E50511600CB0597 /* GetFoldersInteractor.swift in Sources */,
 				8978BDD62E54984C00809825 /* GetMemoTitlesInteractor.swift in Sources */,
 				89976EB92E476AA800791ED4 /* MemoEntity.swift in Sources */,
+				896F5EC02E7637BD00A749FD /* SaveMemoEntityInteractor.swift in Sources */,
 				89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */,
 				8978BDCF2E54823600809825 /* MemoTitleEntity.swift in Sources */,
 				895CF3272E6879BA00DEB033 /* MemoTitleRepository.swift in Sources */,

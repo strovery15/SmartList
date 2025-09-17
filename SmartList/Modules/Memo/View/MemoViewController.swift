@@ -14,10 +14,14 @@ class MemoViewController: UIViewController {
         }
     }
     
+    var saveButton: UIBarButtonItem!
+    var visualEffectView: UIVisualEffectView!
+    
     var presenter: MemoPresentation!
     var folderId: FolderEntity.ID!
     var memoId: MemoEntity.ID?
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,15 +42,63 @@ extension MemoViewController: MemoView {
 private extension MemoViewController {
     
     func firstConfiguration() {
+        
         view.backgroundColor = .blue
         
-        let closeButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(closeButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem = closeButton
+        createVisualEffect()
+        saveButton = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
+        let closeButton = UIBarButtonItem(title: "閉じる", style: .plain, target: self, action: #selector(closeButton(_:)))
+        self.navigationItem.rightBarButtonItems = [saveButton, closeButton]
     }
     
-    @objc func closeButtonAction(_ sender: UIBarButtonItem) {
-        let currentText = textView.text
-        print(currentText)
+    func createVisualEffect() {
+        let blur = UIBlurEffect(style: .systemMaterialLight)
+        visualEffectView = UIVisualEffectView(effect: blur)
+        visualEffectView.frame = CGRect(x: 0, y: 0, width: 230, height: 230)
+        let viewWidth = UIScreen.main.bounds.width
+        let viewHeight = UIScreen.main.bounds.height
+        visualEffectView.center = CGPoint(x: viewWidth/2, y: viewHeight/2)
+        visualEffectView.layer.cornerRadius = 10
+        visualEffectView.clipsToBounds = true
+        
+        let subView = UIView(frame: view.frame)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 230, height: 50))
+        label.textAlignment = .center
+        
+        label.center = CGPoint(x: 115, y: 200)
+        label.text = "メモを保存しました"
+        label.textColor = .darkGray
+        
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
+        imageView.center = CGPoint(x: 115, y: 100)
+        imageView.image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 80, weight: .regular, scale: .large))
+        imageView.tintColor = .lightGray
+        subView.addSubview(label)
+        subView.addSubview(imageView)
+        visualEffectView.contentView.addSubview(subView)
+        
+        view.addSubview(visualEffectView)
+        visualEffectView.isHidden = true
+    }
+
+    @objc func saveButtonAction(_ sender: UIBarButtonItem) {
+        let text = textView.text
+        presenter.saveMemo(folderId: folderId, memoId: memoId!, text: text!)
+        saveButton.isEnabled = false
+        visualEffectView.isHidden = false
+        UIView.animate(withDuration: 0.3, delay: 0.6) { [self] in
+            visualEffectView.alpha = 0
+            visualEffectView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
+            saveButton.isEnabled = true
+            visualEffectView.isHidden = true
+            visualEffectView.transform = .identity
+            visualEffectView.alpha = 1.0
+        }
+    }
+    
+    @objc func closeButton(_ sender: UIBarButtonItem) {
         textView.resignFirstResponder()
     }
 }

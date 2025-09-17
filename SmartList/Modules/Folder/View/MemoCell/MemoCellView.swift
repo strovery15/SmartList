@@ -8,6 +8,8 @@ class MemoCellView: UIView, UIContentView  {
     @IBOutlet weak var memoTitleLabel: UILabel!
     @IBOutlet weak var menuButton: UIButton!
     
+    var memoTitleEntity: MemoTitleEntity!
+    
     var memoConfiguration: MemoCellConfiguration!
     var configuration: UIContentConfiguration  {
         get {
@@ -22,6 +24,7 @@ class MemoCellView: UIView, UIContentView  {
     init(configuration: MemoCellConfiguration) {
         super.init(frame: .zero)
         self.configuration = configuration
+        memoTitleEntity = memoConfiguration.entity
         loadView()
         configureLayout()
     }
@@ -43,7 +46,7 @@ class MemoCellView: UIView, UIContentView  {
     }
     
     func configureLayout() {
-        memoTitleLabel.text = memoConfiguration.title
+        memoTitleLabel.text = memoTitleEntity.title
         let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 25.0, weight: .regular, scale: .small)
         let systemImage = UIImage(systemName: "ellipsis", withConfiguration: symbolConfiguration)
         menuButton.setTitle("", for: .normal)
@@ -60,7 +63,7 @@ class MemoCellView: UIView, UIContentView  {
 //        }))
         menus.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            NotificationCenter.default.post(name: .notifyDeleteMemo, object: nil, userInfo: ["id": self.memoConfiguration.id!])
+            NotificationCenter.default.post(name: .notifyDeleteMemo, object: nil, userInfo: ["entity": self.memoTitleEntity!])
             
         }))
         

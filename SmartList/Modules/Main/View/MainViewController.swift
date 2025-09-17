@@ -16,8 +16,8 @@ class MainViewController: UIViewController {
         
         
 //        practiceFunc()
-        presenter.didLoad()
         configureLayout()
+        presenter.didLoad()
         print("--------------------------------")
     }
     

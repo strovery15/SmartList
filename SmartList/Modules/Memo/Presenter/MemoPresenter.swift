@@ -4,12 +4,14 @@ import Foundation
 
 protocol MemoPresentation: AnyObject {
     func didLoad(folderId: FolderEntity.ID, memoId: MemoEntity.ID?)
+    func saveMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID, text: String)
 }
 
 class MemoPresenter {
     
     struct Dependency {
         let getMemoEntity: GetMemoEntityUseCase
+        let saveMemoEntity: SaveMemoEntityUseCase
     }
     
     weak var view: MemoView?
@@ -31,8 +33,11 @@ extension MemoPresenter: MemoPresentation {
             case .success(let value):
                 self.view?.setText(memoId: value.memoId, text: value.text)
             }
-            
         }
+    }
+    
+    func saveMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID, text: String) {
+        dependency.saveMemoEntity.execute(folderId, memoId, text)
     }
     
 }

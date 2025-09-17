@@ -3,7 +3,7 @@
 import Foundation
 
 protocol FolderPresentation: AnyObject {
-    func didLoad(id: FolderEntity.ID)
+    func didAppear(id: FolderEntity.ID)
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
     func deleteFolder(folderId: FolderEntity.ID)
     func deleteMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
@@ -29,7 +29,8 @@ class FolderPresenter {
 }
 
 extension FolderPresenter: FolderPresentation {
-    func didLoad(id: FolderEntity.ID) {
+    
+    func didAppear(id: FolderEntity.ID) {
         dependency.getMemoTitles.execute(id) { [weak self] result in
             guard let self = self else { return }
             switch result {
