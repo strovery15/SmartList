@@ -2,7 +2,7 @@
 import UIKit
 
 protocol FolderWireframe {
-    func presentMemoView(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
+    func presentMemoView(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID?)
 }
 
 class FolderRouter: FolderWireframe {
@@ -13,7 +13,7 @@ class FolderRouter: FolderWireframe {
         self.folderViewController = view
     }
     
-    func presentMemoView(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID) {
+    func presentMemoView(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID?) {
         let appDependencies = AppDependencies()
         let viewController = appDependencies.assembleMemoModule(folderId, memoId)
         folderViewController?.navigationController?.pushViewController(viewController, animated: true)

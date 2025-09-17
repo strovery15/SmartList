@@ -36,8 +36,10 @@ class FolderViewController: UIViewController {
         }
     }
     
-    deinit {
-        print("deinit")
+    @IBOutlet weak var addMemoButton: UIButton! {
+        didSet {
+            configureAddMemoButton()
+        }
     }
     
     override func viewDidLoad() {
@@ -47,6 +49,11 @@ class FolderViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         presenter.didAppear(id: folderId)
+    }
+    
+    
+    @IBAction func addMemoButtonAction(_ sender: Any) {
+        presenter.addMemo(folderId: folderId)
     }
     
 }
@@ -211,6 +218,18 @@ extension FolderViewController {
             self.present(alertController, animated: true)
         }))
         editFolderButton.menu = UIMenu(title: "", options: .singleSelection, children: menus)
+    }
+    
+    //addMemoButton
+    func configureAddMemoButton() {
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0, weight: .regular, scale: .small)
+        let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
+        addMemoButton.setTitle("", for: .normal)
+        addMemoButton.setImage(systemImage, for: .normal)
+        addMemoButton.backgroundColor = .systemTeal
+        addMemoButton.tintColor = UIColor.white
+        addMemoButton.frame = CGRect(x: 290, y: 730, width: 70, height: 70)
+        addMemoButton.layer.cornerRadius = 35
     }
     
 }

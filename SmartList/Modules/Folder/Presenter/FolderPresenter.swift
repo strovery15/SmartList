@@ -4,6 +4,7 @@ import Foundation
 
 protocol FolderPresentation: AnyObject {
     func didAppear(id: FolderEntity.ID)
+    func addMemo(folderId: FolderEntity.ID)
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
     func deleteFolder(folderId: FolderEntity.ID)
     func deleteMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
@@ -38,6 +39,10 @@ extension FolderPresenter: FolderPresentation {
                 self.view?.setRepository(entities)
             }
         }
+    }
+    
+    func addMemo(folderId: FolderEntity.ID) {
+        dependency.router.presentMemoView(folderId: folderId, memoId: nil)
     }
     
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID) {

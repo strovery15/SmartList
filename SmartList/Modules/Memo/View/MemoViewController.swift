@@ -30,6 +30,11 @@ class MemoViewController: UIViewController {
         presenter.didLoad(folderId: folderId, memoId: memoId)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        print("willdisappear")
+        saveMemo()
+    }
+    
 }
 
 extension MemoViewController: MemoView {
@@ -57,6 +62,8 @@ private extension MemoViewController {
         saveButton = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
         let closeButton = UIBarButtonItem(title: "閉じる", style: .plain, target: self, action: #selector(closeButton(_:)))
         self.navigationItem.rightBarButtonItems = [editButton, saveButton, closeButton]
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyWillResignActive(_:)), name: .notifyWillResignActive, object: nil)
     }
     
     func createVisualEffect() {
@@ -112,8 +119,7 @@ private extension MemoViewController {
     }
 
     @objc func saveButtonAction(_ sender: UIBarButtonItem) {
-        let text = textView.text
-        presenter.saveMemo(folderId: folderId, memoId: memoId!, text: text!)
+        saveMemo()
         saveButton.isEnabled = false
         visualEffectView.isHidden = false
         UIView.animate(withDuration: 0.3, delay: 0.6) { [self] in
@@ -130,6 +136,15 @@ private extension MemoViewController {
     
     @objc func closeButton(_ sender: UIBarButtonItem) {
         textView.resignFirstResponder()
+    }
+    
+    @objc func notifyWillResignActive(_ notification: Notification) {
+        saveMemo()
+    }
+    
+    func saveMemo() {
+        let text = textView.text
+        presenter.saveMemo(folderId: folderId, memoId: memoId!, text: text!)
     }
 }
 
