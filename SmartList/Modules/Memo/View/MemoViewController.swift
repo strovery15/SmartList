@@ -4,6 +4,7 @@ import UIKit
 
 protocol MemoView: AnyObject {
     func setText(memoId: MemoEntity.ID, text: String)
+    func dismissView()
 }
 
 class MemoViewController: UIViewController {
@@ -37,6 +38,10 @@ extension MemoViewController: MemoView {
         self.memoId = memoId
         textView.text = text
     }
+    
+    func dismissView() {
+        self.navigationController?.popViewController(animated: true)
+    }
 }
 
 private extension MemoViewController {
@@ -46,9 +51,12 @@ private extension MemoViewController {
         view.backgroundColor = .blue
         
         createVisualEffect()
+        let editButtonImage = UIImage(systemName: "ellipsis")
+        let editButton = UIBarButtonItem(image: editButtonImage, style: .plain, target: self, action: nil)
+        editButton.menu = createMenu()
         saveButton = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
         let closeButton = UIBarButtonItem(title: "閉じる", style: .plain, target: self, action: #selector(closeButton(_:)))
-        self.navigationItem.rightBarButtonItems = [saveButton, closeButton]
+        self.navigationItem.rightBarButtonItems = [editButton, saveButton, closeButton]
     }
     
     func createVisualEffect() {
@@ -79,6 +87,28 @@ private extension MemoViewController {
         
         view.addSubview(visualEffectView)
         visualEffectView.isHidden = true
+    }
+    
+    func createMenu() -> UIMenu {
+        var menus = [UIMenuElement]()
+        menus.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
+            guard let self = self else { return }
+            let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
+            
+            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+                guard let self = self else { return }
+                presenter.deleteMemo(folderId: folderId, memoId: memoId!)
+            }
+            alertController.addAction(deleteAction)
+            
+            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+            alertController.addAction(cancelAction)
+            
+            present(alertController, animated: true)
+            
+        }))
+        
+        return UIMenu(title: "", options: .singleSelection, children: menus)
     }
 
     @objc func saveButtonAction(_ sender: UIBarButtonItem) {

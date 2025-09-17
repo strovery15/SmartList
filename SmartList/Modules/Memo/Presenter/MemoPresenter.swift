@@ -4,6 +4,7 @@ import Foundation
 
 protocol MemoPresentation: AnyObject {
     func didLoad(folderId: FolderEntity.ID, memoId: MemoEntity.ID?)
+    func deleteMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID)
     func saveMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID, text: String)
 }
 
@@ -11,6 +12,7 @@ class MemoPresenter {
     
     struct Dependency {
         let getMemoEntity: GetMemoEntityUseCase
+        let deleteMemoEntity: DeleteMemoEntityUseCase
         let saveMemoEntity: SaveMemoEntityUseCase
     }
     
@@ -33,6 +35,18 @@ extension MemoPresenter: MemoPresentation {
             case .success(let value):
                 self.view?.setText(memoId: value.memoId, text: value.text)
             }
+        }
+    }
+    
+    func deleteMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID) {
+        dependency.deleteMemoEntity.execute(folderId, memoId) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success():
+                self.view?.dismissView()
+            }
+            
         }
     }
     

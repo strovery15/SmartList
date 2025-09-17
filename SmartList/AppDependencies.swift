@@ -32,7 +32,7 @@ final class AppDependencies {
         let viewController = storyboard.instantiateInitialViewController() as? MemoViewController
         viewController!.folderId = folderId
         viewController!.memoId = memoTitleId
-        viewController!.presenter = MemoPresenter(view: viewController!, dependency: .init(getMemoEntity: GetMemoEntityInteractor(), saveMemoEntity: SaveMemoEntityInteractor()))
+        viewController!.presenter = MemoPresenter(view: viewController!, dependency: .init(getMemoEntity: GetMemoEntityInteractor(), deleteMemoEntity: DeleteMemoEntityInteractor(), saveMemoEntity: SaveMemoEntityInteractor()))
         return viewController!
     }
 }
