@@ -17,7 +17,7 @@ class MainPresenter {
         case off
     }
     struct Dependency {
-        let makeFolderChiefViewCon: MakeFolderChiefViewConUseCase
+        let makeFolderItems: MakeFolderItemsUseCase
         let getFolders: GetFoldersUseCase
         let addFolder: AddFolderUseCase
         let deleteFolder: DeleteFolderUseCase
@@ -38,11 +38,11 @@ extension MainPresenter: MainPresentation {
         var makeFolderChiefViewCon_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefViewCon_Trigger == Trigger.on {
-                    dependency.makeFolderChiefViewCon.execute(folderEntities) { [weak self] result in
+                    dependency.makeFolderItems.execute(folderEntities) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case .success(let vc):
-                            self.view?.showFolderChief(vc)
+                        case .success(let folderItems):
+                            self.view?.setFolders(folderItems)
                         }
                     }
                 }
@@ -70,11 +70,11 @@ extension MainPresenter: MainPresentation {
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefVC_Trigger == Trigger.on {
-                    dependency.makeFolderChiefViewCon.execute(folderEntities) { [weak self] result in
+                    dependency.makeFolderItems.execute(folderEntities) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case .success(let vc):
-                            self.view?.reShowFolderChief(vc)
+                        case .success(let folderItems):
+                            self.view?.reSetFoldes(folderItems)
                         }
                     }
                 }
@@ -114,11 +114,11 @@ extension MainPresenter: MainPresentation {
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefVC_Trigger == Trigger.on {
-                    dependency.makeFolderChiefViewCon.execute(folderEntities) { [weak self] result in
+                    dependency.makeFolderItems.execute(folderEntities) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
-                        case .success(let vc):
-                            self.view?.reShowFolderChief(vc)
+                        case .success(let folderItems):
+                            self.view?.reSetFoldes(folderItems)
                         }
                     }
                 }
