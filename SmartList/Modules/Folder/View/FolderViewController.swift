@@ -134,6 +134,7 @@ extension FolderViewController {
         let itemCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { cell, indexpath, entity in
             
             cell.entity = entity
+            print(entity.title)
         }
         self.dataSource = UICollectionViewDiffableDataSource(
             collectionView: self.collectionView,

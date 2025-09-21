@@ -2,6 +2,7 @@
 
 import Foundation
 import RealmSwift
+import UIKit
 
 protocol SaveMemoEntityUseCase {
     func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID, _ parameter3: String)
@@ -19,8 +20,11 @@ class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
         if let folderEntity = folderResults.filter(folderPredicate).first {
             for (index, memoTitleEntity) in folderEntity.memoTitles.enumerated() {
                 if memoTitleEntity.id == parameter2 {
+                    let font = UIFont.systemFont(ofSize: 15)
+                    let screenWidth = UIScreen.main.bounds.width
+                    let saveText = parameter3.quarryBy(with: font, by: screenWidth)
                     try! realm.write {
-                        memoTitleEntity.title = parameter3
+                        memoTitleEntity.title = saveText
                     }
                 }
             }
@@ -39,4 +43,27 @@ class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
     
 }
 
+extension String {
+    func width(with font: UIFont) -> CGFloat {
+        let attributes = [NSAttributedString.Key.font : font]
+        return (self as NSString).size(withAttributes: attributes).width
+    }
+    
+    func quarryBy(with font: UIFont, by width: CGFloat) -> String {
+        var string = ""
+        var array: [String] = []
+        let selfArray = Array(self).map{String($0)}
+        for element in selfArray {
+            if element == "\n" {
+                break
+            } else if string.width(with: font) < width {
+                array.append(element)
+                string = array.joined()
+            } else {
+                break
+            }
+        }
+        return string
+    }
+}
 
