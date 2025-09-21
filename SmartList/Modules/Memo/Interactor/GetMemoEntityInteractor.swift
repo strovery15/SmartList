@@ -28,7 +28,7 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
                 memoTitleEntity.id = memoEntity.id
                 try! realm.write {
                     realm.add(memoEntity)
-                    folderEntity.memoTitles.append(memoTitleEntity)
+                    folderEntity.memoTitles.insert(memoTitleEntity, at: 0)
                 }
                 completion(.success((memoEntity.id, memoEntity.text)))
             }
