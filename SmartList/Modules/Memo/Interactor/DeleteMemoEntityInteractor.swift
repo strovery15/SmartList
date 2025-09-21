@@ -3,12 +3,13 @@
 import Foundation
 import RealmSwift
 
-protocol DeleteMemoTitleUseCase {
-    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoTitleEntity.ID)
+protocol DeleteMemoEntityUseCase {
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID, completion: ((Result<Void, Never>) -> ()))
 }
 
-class DeleteMemoTitleInteractor: DeleteMemoTitleUseCase {
-    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoTitleEntity.ID) {
+class DeleteMemoEntityInteractor: DeleteMemoEntityUseCase {
+    
+    func execute(_ parameter1: FolderEntity.ID, _ parameter2: MemoEntity.ID, completion: ((Result<Void, Never>) -> ())) {
         let realm = try! Realm()
         let folderResults = realm.objects(FolderEntity.self)
         let memoResults = realm.objects(MemoEntity.self)
@@ -26,10 +27,10 @@ class DeleteMemoTitleInteractor: DeleteMemoTitleUseCase {
                     }
                 }
             }
+            completion(.success(()))
         } else {
             print("error")
         }
     }
+    
 }
-
-

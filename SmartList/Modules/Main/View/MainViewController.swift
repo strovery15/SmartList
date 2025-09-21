@@ -16,16 +16,9 @@ class MainViewController: UIViewController {
         
         
 //        practiceFunc()
-        presenter.didLoad()
         configureLayout()
+        presenter.didLoad()
         print("--------------------------------")
-    }
-    
-    func configureLayout() {
-        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem = barButton
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
     }
     
     func practiceFunc() {
@@ -33,31 +26,36 @@ class MainViewController: UIViewController {
         let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
         let prefecture = ["愛知県", "東京都", "福岡県", "兵庫県", "北海道", "山口県", "茨城県", "沖縄県", "石川県"]
         
-        let realm = try! Realm()
-        let folderEntity1 = createFolderEntiy(folderName: "Number", number)
-        let folderEntity2 = createFolderEntiy(folderName: "fruit", fruit)
-        let folderEntity3 = createFolderEntiy(folderName: "都道府県", prefecture)
         
-        try! realm.write {
-            realm.add(folderEntity1)
-            realm.add(folderEntity2)
-            realm.add(folderEntity3)
-        }
+        createFolderEntiy(folderName: "Number", number)
+        createFolderEntiy(folderName: "fruit", fruit)
+        createFolderEntiy(folderName: "都道府県", prefecture)
     }
     
-    func createFolderEntiy(folderName: String,_ items: [String]) -> FolderEntity {
+    func createFolderEntiy(folderName: String,_ items: [String]) {
+        let realm = try! Realm()
         let folderEntity = FolderEntity()
         folderEntity.name = folderName
         for item in items {
+            let memoEntity = MemoEntity()
             let memoTitleEntity = MemoTitleEntity()
-            memoTitleEntity.title = item
+            memoEntity.text = item
+            
+            memoTitleEntity.id = memoEntity.id
+            memoTitleEntity.title = memoEntity.text
             folderEntity.memoTitles.append(memoTitleEntity)
+            try! realm.write {
+                realm.add(memoEntity)
+            }
         }
-        return folderEntity
+        try! realm.write {
+            realm.add(folderEntity)
+        }
     }
 }
 
 extension MainViewController: MainView {
+    
     func showFolderChief(_ folderChiefVc: UIViewController) {
         addChild(folderChiefVc)
         view.addSubview(folderChiefVc.view)
@@ -79,9 +77,21 @@ extension MainViewController: MainView {
 
 private extension MainViewController {
     
+    func configureLayout() {
+        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = barButton
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
+    }
+    
     @objc func barButtonAction(_ sender: UIBarButtonItem) {
         let alert = addfolderAlert()
         present(alert, animated: true)
+    }
+
+    @objc func notifyDeleteFolder(_ notification: Notification) {
+        let id = notification.userInfo!["id"] as! FolderEntity.ID
+        presenter.deleteFolder(folderId: id)
     }
     
     func addfolderAlert() -> UIAlertController {
@@ -106,10 +116,5 @@ private extension MainViewController {
         alert.addAction(cancelAction)
         
         return alert
-    }
-    
-    @objc func notifyDeleteFolder(_ notification: Notification) {
-        let id = notification.userInfo!["id"] as! FolderEntity.ID
-        presenter.deleteFolder(folderId: id)
     }
 }

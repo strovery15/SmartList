@@ -3,9 +3,9 @@
 import Foundation
 import RealmSwift
 
-class MemoBodyEntity: Object {
+class MemoEntity: Object, Identifiable {
     @objc dynamic var id = UUID()
-    @objc dynamic var memobody = ""
+    @objc dynamic var text = ""
 }
 
 

@@ -14,8 +14,12 @@ class FolderViewController: UIViewController {
     
     var presenter: FolderPresentation!
     var folderId: FolderEntity.ID!
-    var repository: MemoTitlesRepository!
-    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
+    var memoTitleEntities: [MemoTitleEntity] = []
+    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity>!
+    
+    //reordering用の変数
+    fileprivate var sourceIndex = 0
+    fileprivate var destinationIndex = 0
     
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
@@ -31,33 +35,35 @@ class FolderViewController: UIViewController {
             setEditMenu()
         }
     }
-
-    init?(coder: NSCoder, folderId: FolderEntity.ID) {
-        super.init(coder: coder)
-        self.folderId = folderId
-    }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    @IBOutlet weak var addMemoButton: UIButton! {
+        didSet {
+            configureAddMemoButton()
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         firstConfiguration()
-        presenter.didLoad(view: self, folderId)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        presenter.didAppear(view: self)
+    override func viewWillAppear(_ animated: Bool) {
+        presenter.didAppear(id: folderId)
+    }
+    
+    
+    @IBAction func addMemoButtonAction(_ sender: Any) {
+        presenter.addMemo(folderId: folderId)
     }
     
 }
 
 // MARK: - Interface Method
 extension FolderViewController: FolderView {
+    
     func setRepository(_ entities: [MemoTitleEntity]) {
-        self.repository = MemoTitlesRepository(entities)
-        firstSetSnapshot()
+        self.memoTitleEntities = entities
+        setSnapshot()
     }
 }
 
@@ -71,13 +77,13 @@ private extension FolderViewController {
     }
     
     @objc func notifyDeleteMemo(_ notification: Notification) {
-        let id = notification.userInfo!["id"] as! MemoTitleEntity.ID
+        let entity = notification.userInfo!["entity"] as! MemoTitleEntity
         let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
         
-        let deleteAction = UIAlertAction(title: "削除", style: .destructive) {[weak self] _ in
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
-            deleteSnapshot(id)
-            presenter.deleteMemo(folderId: folderId, memoId: id)
+            deleteSnapshot(entity)
+            presenter.deleteMemo(folderId: folderId, memoId: entity.id)
         }
         alertController.addAction(deleteAction)
         
@@ -94,21 +100,25 @@ extension FolderViewController {
     // CollectionView
     func configureCollectionView() {
         collectionView.allowsSelection = false
-        let Gesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
-        collectionView.addGestureRecognizer(Gesture)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapRecognizer))
+        collectionView.addGestureRecognizer(tapGesture)
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
+        collectionView.addGestureRecognizer(longPressGesture)
+        
     }
     
     func configureCollectionViewLayout() {
         var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         configuration.separatorConfiguration.bottomSeparatorInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-        
-        configuration.leadingSwipeActionsConfigurationProvider = { indexPath -> UISwipeActionsConfiguration in
+        configuration.leadingSwipeActionsConfigurationProvider = { [weak self] indexPath -> UISwipeActionsConfiguration in
             let action = UIContextualAction(style: .destructive, title: "削除") {
                 [weak self] _, _, completionHandler in
                 guard let self = self else { return }
-                let id = self.dataSource.itemIdentifier(for: indexPath)!
-                deleteSnapshot(id)
-                presenter.deleteMemo(folderId: folderId, memoId: id)
+                let entity = self.dataSource.itemIdentifier(for: indexPath)!
+                deleteSnapshot(entity)
+                presenter.deleteMemo(folderId: folderId, memoId: entity.id)
                 completionHandler(true)
             }
             action.backgroundColor = UIColor.systemRed
@@ -121,55 +131,64 @@ extension FolderViewController {
     }
     
     func configureDataSource() {
-        let itemCellRegistration =
-        UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> {
-            cell, indexpath, entity in
+        let itemCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { cell, indexpath, entity in
             
-            cell.id = entity.id
-            cell.title = entity.title
+            cell.entity = entity
+            print(entity.title)
         }
         self.dataSource = UICollectionViewDiffableDataSource(
             collectionView: self.collectionView,
-            cellProvider: { [weak self] collectionView, indexpath, memoId in
-                let memoTitle = self?.repository.getMemoTitle(memoId)
-                return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexpath, item: memoTitle)
+            cellProvider: { collectionView, indexpath, entity in
+            return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexpath, item: entity)
             })
     }
     
-    func firstSetSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity.ID>()
+    func setSnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(repository.memoTitleIDs, toSection: .main)
-        
+        snapshot.appendItems(memoTitleEntities, toSection: .main)
         dataSource.reorderingHandlers.canReorderItem = { _ in true }
-        dataSource.reorderingHandlers.didReorder = { [weak self] transAction in
-            guard let self = self else { return }
-            let oldArray = transAction.initialSnapshot.itemIdentifiers
-            let newArray = transAction.finalSnapshot.itemIdentifiers
-            let difference = newArray.difference(from: oldArray)
-            presenter.reorderMemo(folderId: folderId, difference: difference)
-        }
-        dataSource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    func deleteSnapshot(_ id: MemoTitleEntity.ID) {
-        var snapshot = self.dataSource.snapshot()
-        snapshot.deleteItems([id])
+    func deleteSnapshot(_ entity: MemoTitleEntity) {
+        var snapshot = self.dataSource!.snapshot()
+        snapshot.deleteItems([entity])
         self.dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    @objc func tapRecognizer(gesture: UITapGestureRecognizer) {
+        if gesture.state == .ended {
+            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
+                let entity = self.dataSource!.itemIdentifier(for: indexPath)!
+                presenter.selectMemo(folderId: folderId, memoId: entity.id)
+            }
+        }
     }
     
     @objc func longPressRecognizer(gesture: UILongPressGestureRecognizer) {
         switch gesture.state {
         case .began:
-            guard let targetIndexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else {return}
-            collectionView.beginInteractiveMovementForItem(at: targetIndexPath)
+            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
+                sourceIndex = indexPath.row
+                collectionView.beginInteractiveMovementForItem(at: indexPath)
+            }
+            
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
         case .ended:
             collectionView.endInteractiveMovement()
+            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
+                destinationIndex = indexPath.row
+                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
+                sourceIndex = 0
+                destinationIndex = 0
+            }
+            
         default:
             collectionView.cancelInteractiveMovement()
         }
+        
     }
     
     // editFolderButton
@@ -187,8 +206,10 @@ extension FolderViewController {
         menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
             let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
-            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { _ in
-                NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["id": self.folderId!])
+            
+            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+                guard let self = self else { return }
+                self.presenter.deleteFolder(folderId: self.folderId)
             }
             alertController.addAction(deleteAction)
             
@@ -200,8 +221,18 @@ extension FolderViewController {
         editFolderButton.menu = UIMenu(title: "", options: .singleSelection, children: menus)
     }
     
-}
+    //addMemoButton
+    func configureAddMemoButton() {
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0, weight: .regular, scale: .small)
+        let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
+        addMemoButton.setTitle("", for: .normal)
+        addMemoButton.setImage(systemImage, for: .normal)
+        addMemoButton.backgroundColor = .systemTeal
+        addMemoButton.tintColor = UIColor.white
+        addMemoButton.frame = CGRect(x: 290, y: 730, width: 70, height: 70)
+        addMemoButton.layer.cornerRadius = 35
+    }
     
-extension Notification.Name {
-    static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
 }
+
+

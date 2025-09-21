@@ -23,11 +23,11 @@ class MakeFolderChiefViewConInteractor: MakeFolderChiefViewConUseCase {
     
     private func makeTabItems(_ folderEntities: [FolderEntity]) -> [(UIViewController, String)] {
         var tabItems: [(UIViewController, String)] = []
-        let appDependencies = AppDependencies.shared
+        let appDependencies = AppDependencies()
         
         let folderViewCons = appDependencies.assembleFolderModules(folderEntities) as! [FolderViewController]
         for folderEntity in folderEntities {
-            let folderViewCon = folderViewCons.first(where: {
+            let folderViewCon = folderViewCons.first(where: { 
                 $0.folderId == folderEntity.id
             })
             if let folderViewCon = folderViewCon {
