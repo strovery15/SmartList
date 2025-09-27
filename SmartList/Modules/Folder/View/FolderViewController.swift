@@ -3,15 +3,12 @@
 import UIKit
 
 protocol FolderView: AnyObject {
+    
     func setRepository(_ memoTitles: [MemoTitle])
-    func reSetRepository(_ memoTitles: [MemoTitle])
 }
 
 class FolderViewController: UIViewController {
     
-//    var memoTitle1: MemoTitle!
-//    var memoTitle2: MemoTitle!
-//    var memoTitle3: MemoTitle!
     
     enum Section {
         case main
@@ -19,7 +16,6 @@ class FolderViewController: UIViewController {
     
     var presenter: FolderPresentation!
     var folderId: FolderEntity.ID!
-//    var memoTitles: [MemoTitle] = []
     var repository: MemoTitlesRepository!
     var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
@@ -54,9 +50,6 @@ class FolderViewController: UIViewController {
         presenter.didLoad(id: folderId)
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        presenter.didAppear(id: folderId)
-//    }
     
     
     @IBAction func addMemoButtonAction(_ sender: Any) {
@@ -72,35 +65,6 @@ extension FolderViewController: FolderView {
         repository = MemoTitlesRepository(memoTitles)
         setSnapshot()
     }
-    
-    func reSetRepository(_ memoTitles: [MemoTitle]) {
-        repository = MemoTitlesRepository(memoTitles)
-//        print(repository.memoTitleIDs)
-        reSetSnapshot()
-    }
-    
-    
-//    func setRepository(_ entities: [MemoTitleEntity]) {
-////        for entity in entities {
-////            let memoTitle = MemoTitle(id: entity.id, title: entity.title)
-////            memoTitles.append(memoTitle)
-////        }
-//        repository = MemoTitlesRepository(entities)
-////        memoTitle1 = MemoTitle(id: UUID(), title: "1")
-////        memoTitle2 = MemoTitle(id: UUID(), title: "2")
-////        memoTitle3 = MemoTitle(id: UUID(), title: "3")
-//        setSnapshot()
-//    }
-//    
-//    func reSetRepository(_ entities: [MemoTitleEntity]) {
-////        for entity in entities {
-////            let memoTitle = MemoTitle(id: entity.id, title: entity.title)
-////            memoTitles.append(memoTitle)
-////        }
-////        repository = MemoTitlesRepository(entities)
-//        print(repository.memoTitleIDs)
-//        reSetSnapshot()
-//    }
     
 }
 
@@ -190,12 +154,6 @@ extension FolderViewController {
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    func reSetSnapshot() {
-        var snapshot = dataSource.snapshot()
-        snapshot.reloadItems([UUID(uuidString: "F70B9F6D-3342-48A2-A0F8-36FAA3D2F2A9")!])
-//        snapshot.reloadItems([UUID(uuidString: "10A6B90D-EA18-4983-90C2-5FF8582A3C27")!])
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
     
     func deleteSnapshot(_ memoId: MemoTitleEntity.ID) {
         var snapshot = self.dataSource!.snapshot()
@@ -274,7 +232,7 @@ extension FolderViewController {
         addMemoButton.setTitle("", for: .normal)
         addMemoButton.setImage(systemImage, for: .normal)
         addMemoButton.backgroundColor = .systemTeal
-        addMemoButton.tintColor = UIColor.white
+        addMemoButton.tintColor = .white
         addMemoButton.frame = CGRect(x: 290, y: 730, width: 70, height: 70)
         addMemoButton.layer.cornerRadius = 35
     }

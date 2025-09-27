@@ -4,7 +4,6 @@ import Foundation
 
 protocol FolderPresentation: AnyObject {
     func didLoad(id: FolderEntity.ID)
-    func didAppear(id: FolderEntity.ID)
     func addMemo(folderId: FolderEntity.ID)
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
     func deleteFolder(folderId: FolderEntity.ID)
@@ -38,16 +37,6 @@ extension FolderPresenter: FolderPresentation {
             switch result {
             case .success(let memoTitles):
                 self.view?.setRepository(memoTitles)
-            }
-        }
-    }
-    
-    func didAppear(id: FolderEntity.ID) {
-        dependency.getMemoTitles.execute(id) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let memoTitles):
-                self.view?.reSetRepository(memoTitles)
             }
         }
     }
