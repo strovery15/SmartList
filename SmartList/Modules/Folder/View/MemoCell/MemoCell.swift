@@ -5,16 +5,15 @@ import UIKit
 
 class MemoCell: UICollectionViewListCell {
     
-    var entity: MemoTitleEntity?
-    
-//    var id: MemoTitleEntity.ID?
-//    var title: String?
+    var id: MemoTitleEntity.ID?
+    var title: String?
     
     override func updateConfiguration(using state: UICellConfigurationState) {
+        
         var newConfiguration = MemoCellConfiguration().updated(for: state)
-        newConfiguration.entity = entity
-//        newConfiguration.id = id
-//        newConfiguration.title = title
+        newConfiguration.id = id
+        newConfiguration.title = title
+        
         if contentConfiguration == nil {
             contentConfiguration = newConfiguration
         } else {
@@ -27,10 +26,8 @@ class MemoCell: UICollectionViewListCell {
 
 struct MemoCellConfiguration: UIContentConfiguration {
     
-    var entity: MemoTitleEntity?
-    
-//    var id: MemoTitleEntity.ID?
-//    var title: String?
+    var id: MemoTitleEntity.ID?
+    var title: String?
     
     func makeContentView() -> UIView & UIContentView {
         return MemoCellView(configuration: self)

@@ -3,10 +3,15 @@
 import UIKit
 
 protocol FolderView: AnyObject {
-    func setRepository(_ entities: [MemoTitleEntity])
+    func setRepository(_ memoTitles: [MemoTitle])
+    func reSetRepository(_ memoTitles: [MemoTitle])
 }
 
 class FolderViewController: UIViewController {
+    
+//    var memoTitle1: MemoTitle!
+//    var memoTitle2: MemoTitle!
+//    var memoTitle3: MemoTitle!
     
     enum Section {
         case main
@@ -14,8 +19,9 @@ class FolderViewController: UIViewController {
     
     var presenter: FolderPresentation!
     var folderId: FolderEntity.ID!
-    var memoTitleEntities: [MemoTitleEntity] = []
-    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity>!
+//    var memoTitles: [MemoTitle] = []
+    var repository: MemoTitlesRepository!
+    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
     //reordering用の変数
     fileprivate var sourceIndex = 0
@@ -45,11 +51,12 @@ class FolderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         firstConfiguration()
+        presenter.didLoad(id: folderId)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        presenter.didAppear(id: folderId)
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        presenter.didAppear(id: folderId)
+//    }
     
     
     @IBAction func addMemoButtonAction(_ sender: Any) {
@@ -61,10 +68,40 @@ class FolderViewController: UIViewController {
 // MARK: - Interface Method
 extension FolderViewController: FolderView {
     
-    func setRepository(_ entities: [MemoTitleEntity]) {
-        self.memoTitleEntities = entities
+    func setRepository(_ memoTitles: [MemoTitle]) {
+        repository = MemoTitlesRepository(memoTitles)
         setSnapshot()
     }
+    
+    func reSetRepository(_ memoTitles: [MemoTitle]) {
+        repository = MemoTitlesRepository(memoTitles)
+//        print(repository.memoTitleIDs)
+        reSetSnapshot()
+    }
+    
+    
+//    func setRepository(_ entities: [MemoTitleEntity]) {
+////        for entity in entities {
+////            let memoTitle = MemoTitle(id: entity.id, title: entity.title)
+////            memoTitles.append(memoTitle)
+////        }
+//        repository = MemoTitlesRepository(entities)
+////        memoTitle1 = MemoTitle(id: UUID(), title: "1")
+////        memoTitle2 = MemoTitle(id: UUID(), title: "2")
+////        memoTitle3 = MemoTitle(id: UUID(), title: "3")
+//        setSnapshot()
+//    }
+//    
+//    func reSetRepository(_ entities: [MemoTitleEntity]) {
+////        for entity in entities {
+////            let memoTitle = MemoTitle(id: entity.id, title: entity.title)
+////            memoTitles.append(memoTitle)
+////        }
+////        repository = MemoTitlesRepository(entities)
+//        print(repository.memoTitleIDs)
+//        reSetSnapshot()
+//    }
+    
 }
 
 // MARK: - Private Method
@@ -77,13 +114,13 @@ private extension FolderViewController {
     }
     
     @objc func notifyDeleteMemo(_ notification: Notification) {
-        let entity = notification.userInfo!["entity"] as! MemoTitleEntity
+        let memoId = notification.userInfo!["id"] as! MemoTitleEntity.ID
         let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
         
         let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
-            deleteSnapshot(entity)
-            presenter.deleteMemo(folderId: folderId, memoId: entity.id)
+            deleteSnapshot(memoId)
+            presenter.deleteMemo(folderId: folderId, memoId: memoId)
         }
         alertController.addAction(deleteAction)
         
@@ -116,9 +153,9 @@ extension FolderViewController {
             let action = UIContextualAction(style: .destructive, title: "削除") {
                 [weak self] _, _, completionHandler in
                 guard let self = self else { return }
-                let entity = self.dataSource.itemIdentifier(for: indexPath)!
-                deleteSnapshot(entity)
-                presenter.deleteMemo(folderId: folderId, memoId: entity.id)
+                let memoId = self.dataSource.itemIdentifier(for: indexPath)!
+                deleteSnapshot(memoId)
+                presenter.deleteMemo(folderId: folderId, memoId: memoId)
                 completionHandler(true)
             }
             action.backgroundColor = UIColor.systemRed
@@ -131,37 +168,46 @@ extension FolderViewController {
     }
     
     func configureDataSource() {
-        let itemCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { cell, indexpath, entity in
+        let itemCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitle> { cell, indexpath, memoTitle in
             
-            cell.entity = entity
-            print(entity.title)
+            cell.id = memoTitle.id
+            cell.title = memoTitle.title
         }
         self.dataSource = UICollectionViewDiffableDataSource(
             collectionView: self.collectionView,
-            cellProvider: { collectionView, indexpath, entity in
-            return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexpath, item: entity)
+            cellProvider: { [weak self] collectionView, indexpath, memoId in
+                guard let self = self else { return nil }
+                let memoTitle = repository.getMemoTitle(memoId)
+            return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexpath, item: memoTitle)
             })
     }
     
     func setSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity.ID>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(memoTitleEntities, toSection: .main)
+        snapshot.appendItems(repository.memoTitleIDs, toSection: .main)
         dataSource.reorderingHandlers.canReorderItem = { _ in true }
         dataSource.apply(snapshot, animatingDifferences: false)
     }
     
-    func deleteSnapshot(_ entity: MemoTitleEntity) {
+    func reSetSnapshot() {
+        var snapshot = dataSource.snapshot()
+        snapshot.reloadItems([UUID(uuidString: "F70B9F6D-3342-48A2-A0F8-36FAA3D2F2A9")!])
+//        snapshot.reloadItems([UUID(uuidString: "10A6B90D-EA18-4983-90C2-5FF8582A3C27")!])
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func deleteSnapshot(_ memoId: MemoTitleEntity.ID) {
         var snapshot = self.dataSource!.snapshot()
-        snapshot.deleteItems([entity])
+        snapshot.deleteItems([memoId])
         self.dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     @objc func tapRecognizer(gesture: UITapGestureRecognizer) {
         if gesture.state == .ended {
             if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
-                let entity = self.dataSource!.itemIdentifier(for: indexPath)!
-                presenter.selectMemo(folderId: folderId, memoId: entity.id)
+                let memoId = self.dataSource!.itemIdentifier(for: indexPath)!
+                presenter.selectMemo(folderId: folderId, memoId: memoId)
             }
         }
     }
