@@ -26,6 +26,7 @@ class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
                     try! realm.write {
                         memoTitleEntity.title = saveText
                     }
+                    NotificationCenter.default.post(name: .notifyResetTitle, object: nil, userInfo: ["memoId": parameter2, "text": saveText])
                 }
             }
             
@@ -65,5 +66,9 @@ extension String {
         }
         return string
     }
+}
+
+extension Notification.Name {
+    static let notifyResetTitle = Notification.Name("notifyResetTitle")
 }
 

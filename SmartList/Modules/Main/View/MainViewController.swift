@@ -13,10 +13,14 @@ class MainViewController: UIViewController {
     
     var presenter: MainPresentation!
     
+    var addFolderButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        practiceFunc()
+        print(UIScreen.main.bounds.size.width)
+        
+        practiceFunc()
         configureLayout()
         presenter.didLoad()
         print("--------------------------------")
@@ -27,7 +31,7 @@ class MainViewController: UIViewController {
 extension MainViewController: MainView {
     
     func setFolders(_ folderItems: [(UIViewController, String)]) {
-        configureTabPageViewController(folderItems)
+        configureTabPageViewControllerAndButton(folderItems)
     }
     
     func reSetFoldes(_ folderItems: [(UIViewController, String)]) {
@@ -36,7 +40,7 @@ extension MainViewController: MainView {
             child.view.removeFromSuperview()
             child.removeFromParent()
         }
-        configureTabPageViewController(folderItems)
+        configureTabPageViewControllerAndButton(folderItems)
     }
     
 }
@@ -44,13 +48,20 @@ extension MainViewController: MainView {
 private extension MainViewController {
     
     func configureLayout() {
-        let barButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonAction(_:)))
-        self.navigationItem.rightBarButtonItem = barButton
+        
+        addFolderButton = UIButton()
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
+        let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
+        addFolderButton.setImage(systemImage, for: .normal)
+        addFolderButton.backgroundColor = .white
+        addFolderButton.tintColor = .systemTeal
+        
+        addFolderButton.addTarget(self, action: #selector(addFolderButtonAction(_:)), for: .touchUpInside)
         
         NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
     }
     
-    @objc func barButtonAction(_ sender: UIBarButtonItem) {
+    @objc func addFolderButtonAction(_ sender: UIButton) {
         let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
             guard let self = self else { return }
@@ -82,19 +93,26 @@ private extension MainViewController {
     
 }
 
-//消す用
 extension MainViewController {
     
-    func configureTabPageViewController(_ folderItems: [(UIViewController, String)]) {
+    func configureTabPageViewControllerAndButton(_ folderItems: [(UIViewController, String)]) {
         let foldersVc = TabPageViewController()
         foldersVc.tabItems = folderItems
-        foldersVc.option.tabHeight = 50
-        foldersVc.option.tabMargin = 20
-        foldersVc.option.fontSize = 14
+        foldersVc.option.tabHeight = 53 * UIScreen.main.bounds.size.width / 390
+        foldersVc.option.tabMargin = 20 * UIScreen.main.bounds.size.width / 390
+        foldersVc.option.fontSize = 14 * UIScreen.main.bounds.size.width / 390
         foldersVc.option.currentBarHeight = 3
-        foldersVc.option.currentColor = .white
-        foldersVc.option.defaultColor = .systemGray4
+        foldersVc.option.currentColor = .systemTeal
+        foldersVc.option.defaultColor = .systemGray
         foldersVc.option.tabBackgroundColor = .systemTeal
+        
+        addFolderButton.translatesAutoresizingMaskIntoConstraints = false
+        foldersVc.view.addSubview(addFolderButton)
+        
+        addFolderButton.topAnchor.constraint(equalTo: foldersVc.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        addFolderButton.rightAnchor.constraint(equalTo: foldersVc.view.rightAnchor).isActive = true
+        addFolderButton.widthAnchor.constraint(equalToConstant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
+        addFolderButton.heightAnchor.constraint(equalToConstant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
         
         addChild(foldersVc)
         view.addSubview(foldersVc.view)
@@ -102,6 +120,7 @@ extension MainViewController {
     }
 }
 
+//消す用
 extension MainViewController {
     func practiceFunc() {
         let number = ["1", "2", "3", "4", "5", "6", "7", "8"]

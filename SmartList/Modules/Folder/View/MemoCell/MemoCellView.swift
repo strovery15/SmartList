@@ -8,7 +8,6 @@ class MemoCellView: UIView, UIContentView  {
     @IBOutlet weak var memoTitleLabel: UILabel!
     @IBOutlet weak var menuButton: UIButton!
     
-    var memoTitleEntity: MemoTitleEntity!
     
     var memoConfiguration: MemoCellConfiguration!
     var configuration: UIContentConfiguration  {
@@ -24,9 +23,8 @@ class MemoCellView: UIView, UIContentView  {
     init(configuration: MemoCellConfiguration) {
         super.init(frame: .zero)
         self.configuration = configuration
-        memoTitleEntity = memoConfiguration.entity
         loadView()
-        configureLayout()
+        firstConfiguration()
     }
     
     required init?(coder: NSCoder) {
@@ -45,15 +43,38 @@ class MemoCellView: UIView, UIContentView  {
         ])
     }
     
-    func configureLayout() {
-        memoTitleLabel.text = memoTitleEntity.title
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 25.0, weight: .regular, scale: .small)
+    func firstConfiguration() {
+        memoTitleLabel.text = memoConfiguration.title
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 25.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
         let systemImage = UIImage(systemName: "ellipsis", withConfiguration: symbolConfiguration)
         menuButton.setTitle("", for: .normal)
         menuButton.setImage(systemImage, for: .normal)
         menuButton.menu = createMenu()
         menuButton.showsMenuAsPrimaryAction = true
         menuButton.tintColor = UIColor.systemGray4
+        
+        configureLayout()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(resetTitle(_:)), name: .notifyResetTitle, object: nil)
+    }
+    
+    func configureLayout() {
+        
+        //memoTitleLabel
+        memoTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        memoTitleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 12).isActive = true
+        memoTitleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 12).isActive = true
+        memoTitleLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12).isActive = true
+        memoTitleLabel.heightAnchor.constraint(equalToConstant: 30 * UIScreen.main.bounds.size.width / 390).isActive = true
+        
+        //menuButton
+        menuButton.translatesAutoresizingMaskIntoConstraints = false
+        menuButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 12).isActive = true
+        menuButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -12).isActive = true
+        menuButton.leftAnchor.constraint(equalTo: memoTitleLabel.rightAnchor, constant: 1).isActive = true
+        menuButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12).isActive = true
+        menuButton.widthAnchor.constraint(equalToConstant: 30 * UIScreen.main.bounds.size.width / 390).isActive = true
+        
     }
     
     func createMenu() -> UIMenu {
@@ -63,11 +84,19 @@ class MemoCellView: UIView, UIContentView  {
 //        }))
         menus.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            NotificationCenter.default.post(name: .notifyDeleteMemo, object: nil, userInfo: ["entity": self.memoTitleEntity!])
+            NotificationCenter.default.post(name: .notifyDeleteMemo, object: nil, userInfo: ["id": self.memoConfiguration.id!])
             
         }))
         
         return UIMenu(title: "", options: .singleSelection, children: menus)
+    }
+    
+    @objc func resetTitle(_ notification: Notification) {
+        let memoId = notification.userInfo!["memoId"] as! MemoTitleEntity.ID
+        let text = notification.userInfo!["text"] as! String
+        if memoId == memoConfiguration.id {
+            memoTitleLabel.text = text
+        }
     }
     
 }

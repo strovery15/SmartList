@@ -15,6 +15,7 @@
 		8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8944969B2E46547600482CF8 /* MainPresenter.swift */; };
 		894496A42E466AB300482CF8 /* MakeFolderItemsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894496A32E466AB300482CF8 /* MakeFolderItemsInteractor.swift */; };
 		8954C9AA2E7322CA00E8505A /* FolderRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8954C9A92E7322CA00E8505A /* FolderRouter.swift */; };
+		895CA3DC2E8739DD008D02B8 /* MemoTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CA3DB2E8739DD008D02B8 /* MemoTitle.swift */; };
 		895CF3232E682C8100DEB033 /* DeleteFolderInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CF3222E682C8100DEB033 /* DeleteFolderInteractor.swift */; };
 		895CF3272E6879BA00DEB033 /* MemoTitleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CF3262E6879BA00DEB033 /* MemoTitleRepository.swift */; };
 		89629E702E7A3C5A000AE66C /* DeleteMemoEntityInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89629E6F2E7A3C5A000AE66C /* DeleteMemoEntityInteractor.swift */; };
@@ -65,12 +66,15 @@
 		8944969B2E46547600482CF8 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		894496A32E466AB300482CF8 /* MakeFolderItemsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeFolderItemsInteractor.swift; sourceTree = "<group>"; };
 		8954C9A92E7322CA00E8505A /* FolderRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderRouter.swift; sourceTree = "<group>"; };
+		895CA3DB2E8739DD008D02B8 /* MemoTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitle.swift; sourceTree = "<group>"; };
 		895CF3222E682C8100DEB033 /* DeleteFolderInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFolderInteractor.swift; sourceTree = "<group>"; };
 		895CF3262E6879BA00DEB033 /* MemoTitleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleRepository.swift; sourceTree = "<group>"; };
 		89629E6F2E7A3C5A000AE66C /* DeleteMemoEntityInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMemoEntityInteractor.swift; sourceTree = "<group>"; };
 		8962A2842E572F2200D208E6 /* MemoCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemoCellView.xib; sourceTree = "<group>"; };
 		8962A2862E584C5600D208E6 /* DeleteMemoTitleInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMemoTitleInteractor.swift; sourceTree = "<group>"; };
 		8962A2882E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderMemoTitleInteractor.swift; sourceTree = "<group>"; };
+		896E454E2E8176DE00AD836C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		896E454F2E8176DF00AD836C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveMemoEntityInteractor.swift; sourceTree = "<group>"; };
 		8978BDCE2E54823600809825 /* MemoTitleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntity.swift; sourceTree = "<group>"; };
 		8978BDD12E5487C900809825 /* MemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoCell.swift; sourceTree = "<group>"; };
@@ -233,6 +237,7 @@
 				89976EB42E4755AB00791ED4 /* FolderEntity.swift */,
 				8978BDCE2E54823600809825 /* MemoTitleEntity.swift */,
 				89976EB82E476AA800791ED4 /* MemoEntity.swift */,
+				895CA3DB2E8739DD008D02B8 /* MemoTitle.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -355,11 +360,12 @@
 			};
 			buildConfigurationList = 897A8B1E2E3FCDAA00A4852C /* Build configuration list for PBXProject "SmartList" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = ja;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = 897A8B1A2E3FCDAA00A4852C;
 			packageReferences = (
@@ -448,6 +454,7 @@
 				895CF3272E6879BA00DEB033 /* MemoTitleRepository.swift in Sources */,
 				89052CD52E51A7CE00CB0597 /* AddFolderInteractor.swift in Sources */,
 				8954C9AA2E7322CA00E8505A /* FolderRouter.swift in Sources */,
+				895CA3DC2E8739DD008D02B8 /* MemoTitle.swift in Sources */,
 				897A8B2B2E3FCDAA00A4852C /* MainViewController.swift in Sources */,
 				8978BDD42E54892200809825 /* MemoCellView.swift in Sources */,
 				89E4D51C2E71DE5A00598D90 /* MemoViewController.swift in Sources */,
@@ -473,6 +480,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				897A8B2D2E3FCDAA00A4852C /* Base */,
+				896E454E2E8176DE00AD836C /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -481,6 +489,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				897A8B322E3FCDAB00A4852C /* Base */,
+				896E454F2E8176DF00AD836C /* ja */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -493,6 +502,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -556,6 +566,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -624,6 +635,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -631,6 +643,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuta.SmartList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -654,6 +669,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -661,6 +677,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yuta.SmartList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
