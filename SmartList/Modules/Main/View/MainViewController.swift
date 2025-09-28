@@ -20,7 +20,7 @@ class MainViewController: UIViewController {
         
         print(UIScreen.main.bounds.size.width)
         
-//        practiceFunc()
+        practiceFunc()
         configureLayout()
         presenter.didLoad()
         print("--------------------------------")
@@ -50,7 +50,7 @@ private extension MainViewController {
     func configureLayout() {
         
         addFolderButton = UIButton()
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0, weight: .regular, scale: .small)
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
         let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
         addFolderButton.setImage(systemImage, for: .normal)
         addFolderButton.backgroundColor = .white
@@ -99,7 +99,7 @@ extension MainViewController {
         let foldersVc = TabPageViewController()
         foldersVc.tabItems = folderItems
         foldersVc.option.tabHeight = 53 * UIScreen.main.bounds.size.width / 390
-        foldersVc.option.tabMargin = 20
+        foldersVc.option.tabMargin = 20 * UIScreen.main.bounds.size.width / 390
         foldersVc.option.fontSize = 14 * UIScreen.main.bounds.size.width / 390
         foldersVc.option.currentBarHeight = 3
         foldersVc.option.currentColor = .systemTeal

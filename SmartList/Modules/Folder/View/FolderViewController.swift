@@ -74,7 +74,30 @@ private extension FolderViewController {
     func firstConfiguration() {
         view.backgroundColor = .systemGray6
         
+        configureLayout()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteMemo(_:)), name: .notifyDeleteMemo, object: nil)
+    }
+    
+    func configureLayout() {
+        //collectionView
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 71 * UIScreen.main.bounds.size.width / 390).isActive = true
+        collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        //editButton
+        editFolderButton.translatesAutoresizingMaskIntoConstraints = false
+        editFolderButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 57 * UIScreen.main.bounds.size.width / 390).isActive = true
+        editFolderButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50 * UIScreen.main.bounds.size.width / 390).isActive = true
+        
+        //addMemoButton
+        addMemoButton.translatesAutoresizingMaskIntoConstraints = false
+        addMemoButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -40 * UIScreen.main.bounds.size.width / 390).isActive = true
+        addMemoButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -45 * UIScreen.main.bounds.size.width / 390).isActive = true
+        addMemoButton.widthAnchor.constraint(equalToConstant: 70 * UIScreen.main.bounds.size.width / 390).isActive = true
+        addMemoButton.heightAnchor.constraint(equalToConstant: 70 * UIScreen.main.bounds.size.width / 390).isActive = true
     }
     
     @objc func notifyDeleteMemo(_ notification: Notification) {
@@ -100,6 +123,7 @@ extension FolderViewController {
     
     // CollectionView
     func configureCollectionView() {
+        print("b")
         collectionView.allowsSelection = false
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapRecognizer))
@@ -197,7 +221,11 @@ extension FolderViewController {
     
     // editFolderButton
     func configureEditFolderButton() {
-        editFolderButton.backgroundColor = .blue
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
+        let systemImage = UIImage(systemName: "ellipsis", withConfiguration: symbolConfiguration)
+        editFolderButton.setTitle("", for: .normal)
+        editFolderButton.setImage(systemImage, for: .normal)
+        editFolderButton.tintColor = .systemGray2
         editFolderButton.showsMenuAsPrimaryAction = true
     }
     
@@ -227,14 +255,13 @@ extension FolderViewController {
     
     //addMemoButton
     func configureAddMemoButton() {
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0, weight: .regular, scale: .small)
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
         let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
         addMemoButton.setTitle("", for: .normal)
         addMemoButton.setImage(systemImage, for: .normal)
         addMemoButton.backgroundColor = .systemTeal
         addMemoButton.tintColor = .white
-        addMemoButton.frame = CGRect(x: 290, y: 730, width: 70, height: 70)
-        addMemoButton.layer.cornerRadius = 35
+        addMemoButton.layer.cornerRadius = 35  * UIScreen.main.bounds.size.width / 390
     }
     
 }

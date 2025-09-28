@@ -20,20 +20,15 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="142"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v6X-YX-NxU">
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v6X-YX-NxU">
                     <rect key="frame" x="351" y="12" width="30" height="118"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="30" id="h6p-eF-9Sx"/>
-                    </constraints>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" title="Button"/>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NV5-rI-vWg">
-                    <rect key="frame" x="12" y="12" width="338" height="118"/>
-                    <constraints>
-                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="aFr-mJ-ru3"/>
-                        <constraint firstAttribute="height" constant="30" id="hwr-tf-Ari"/>
-                    </constraints>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NV5-rI-vWg">
+                    <rect key="frame" x="12.000000000000004" y="12" width="41.333333333333343" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -41,15 +36,6 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <constraints>
-                <constraint firstItem="v6X-YX-NxU" firstAttribute="leading" secondItem="NV5-rI-vWg" secondAttribute="trailing" constant="1" id="2tP-Ud-pn9"/>
-                <constraint firstItem="v6X-YX-NxU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="7mL-Bc-Dtj"/>
-                <constraint firstAttribute="bottom" secondItem="NV5-rI-vWg" secondAttribute="bottom" constant="12" id="Jav-0O-FnL"/>
-                <constraint firstItem="NV5-rI-vWg" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="12" id="K4d-3t-qOr"/>
-                <constraint firstItem="NV5-rI-vWg" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="Pcw-eV-slo"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="v6X-YX-NxU" secondAttribute="trailing" constant="12" id="XHz-DM-FLt"/>
-                <constraint firstAttribute="bottom" secondItem="v6X-YX-NxU" secondAttribute="bottom" constant="12" id="vCq-ex-FB2"/>
-            </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="93.89312977099236" y="-230.28169014084509"/>
         </view>

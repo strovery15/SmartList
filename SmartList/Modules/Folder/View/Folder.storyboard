@@ -17,8 +17,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="BCP-ab-3LQ">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="BCP-ab-3LQ">
                                 <rect key="frame" x="0.0" y="134" width="393" height="718"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Bzo-tf-Fk2">
                                     <size key="itemSize" width="128" height="128"/>
@@ -37,8 +38,9 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g31-bm-sKq">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g31-bm-sKq">
                                 <rect key="frame" x="278" y="118.99999999999999" width="75" height="34.333333333333329"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Button"/>
                             </button>
@@ -54,14 +56,6 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="BCP-ab-3LQ" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="9sb-RD-Ukg"/>
-                            <constraint firstItem="BCP-ab-3LQ" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="75" id="NzK-qb-E0B"/>
-                            <constraint firstAttribute="bottom" secondItem="BCP-ab-3LQ" secondAttribute="bottom" id="WF5-7Q-rL6"/>
-                            <constraint firstItem="g31-bm-sKq" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="60" id="Zzy-oM-H5C"/>
-                            <constraint firstItem="BCP-ab-3LQ" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="qwY-BZ-906"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="g31-bm-sKq" secondAttribute="trailing" constant="40" id="weg-GY-S0z"/>
-                        </constraints>
                     </view>
                     <connections>
                         <outlet property="addMemoButton" destination="f2P-V7-0Be" id="mYz-Xb-wXQ"/>
