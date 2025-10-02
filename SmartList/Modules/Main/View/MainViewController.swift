@@ -85,8 +85,18 @@ private extension MainViewController {
     }
 
     @objc func notifyDeleteFolder(_ notification: Notification) {
-        let id = notification.userInfo!["id"] as! FolderEntityRealm.ID
-        presenter.deleteFolder(folderId: id)
+        let id = notification.userInfo!["folderId"] as! FolderEntityRealm.ID
+        let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter.deleteFolder(folderId: id)
+        }
+        alertController.addAction(deleteAction)
+
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
     }
     
 }

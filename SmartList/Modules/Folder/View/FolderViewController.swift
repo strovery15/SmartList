@@ -32,13 +32,6 @@ class FolderViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var editFolderButton: UIButton! {
-        didSet {
-            configureEditFolderButton()
-            setEditMenu()
-        }
-    }
-    
     @IBOutlet weak var addMemoButton: UIButton! {
         didSet {
             configureAddMemoButton()
@@ -103,15 +96,10 @@ private extension FolderViewController {
     func configureLayout() {
         //collectionView
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 71 * UIScreen.main.bounds.size.width / 390).isActive = true
+        collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
         collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
-        //editButton
-        editFolderButton.translatesAutoresizingMaskIntoConstraints = false
-        editFolderButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 57 * UIScreen.main.bounds.size.width / 390).isActive = true
-        editFolderButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50 * UIScreen.main.bounds.size.width / 390).isActive = true
         
         //addMemoButton
         addMemoButton.translatesAutoresizingMaskIntoConstraints = false
@@ -168,6 +156,7 @@ extension FolderViewController {
     func configureCollectionViewLayout() {
         var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         configuration.separatorConfiguration.bottomSeparatorInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+        configuration.headerMode = .supplementary
         configuration.leadingSwipeActionsConfigurationProvider = { [weak self] indexPath -> UISwipeActionsConfiguration in
             let action = UIContextualAction(style: .destructive, title: "削除") {
                 [weak self] _, _, completionHandler in
@@ -183,12 +172,19 @@ extension FolderViewController {
             swipeActionConfi.performsFirstActionWithFullSwipe = false
             return swipeActionConfi
         }
+        
         let layout = UICollectionViewCompositionalLayout.list(using: configuration)
         collectionView.collectionViewLayout = layout
     }
     
     func configureDataSource() {
-        let itemCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { [weak self] cell, indexpath, memoTitle in
+        let headerCellRegistration = UICollectionView.SupplementaryRegistration<HeaderCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] cell, _, _ in
+            guard let self = self else { return }
+            var configuration = cell.headerCellConfiguration()
+            configuration.folderId = folderId
+            cell.contentConfiguration = configuration
+        }
+        let memoCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { [weak self] cell, indexpath, memoTitle in
             guard let self = self else { return }
             cell.automaticallyUpdatesContentConfiguration = false
             var configuration = cell.memoCellConfiguration()
@@ -202,8 +198,12 @@ extension FolderViewController {
             cellProvider: { [weak self] collectionView, indexpath, memoId in
                 guard let self = self else { return nil }
                 let memoTitle = repository.getMemoTitle(memoId)
-            return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexpath, item: memoTitle)
+            return collectionView.dequeueConfiguredReusableCell(using: memoCellRegistration, for: indexpath, item: memoTitle)
             })
+        
+        dataSource.supplementaryViewProvider = { collectionView, elementKind, IndexPath in
+            return collectionView.dequeueConfiguredReusableSupplementary(using: headerCellRegistration, for: IndexPath)
+        }
     }
     
     func setSnapshot() {
@@ -274,40 +274,6 @@ extension FolderViewController {
             collectionView.cancelInteractiveMovement()
         }
         
-    }
-    
-    // editFolderButton
-    func configureEditFolderButton() {
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
-        let systemImage = UIImage(systemName: "ellipsis", withConfiguration: symbolConfiguration)
-        editFolderButton.setTitle("", for: .normal)
-        editFolderButton.setImage(systemImage, for: .normal)
-        editFolderButton.tintColor = .systemGray2
-        editFolderButton.showsMenuAsPrimaryAction = true
-    }
-    
-    func setEditMenu() {
-        var menus = [UIMenuElement]()
-        menus.append(UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: {_ in
-            print("移動")
-        }))
-        
-        menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
-            guard let self = self else { return }
-            let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
-            
-            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
-                guard let self = self else { return }
-                self.presenter.deleteFolder(folderId: self.folderId)
-            }
-            alertController.addAction(deleteAction)
-            
-            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-            alertController.addAction(cancelAction)
-            
-            self.present(alertController, animated: true)
-        }))
-        editFolderButton.menu = UIMenu(title: "", options: .singleSelection, children: menus)
     }
     
     //addMemoButton

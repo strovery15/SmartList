@@ -7,7 +7,6 @@ protocol FolderPresentation: AnyObject {
     func reloadMemo(id: FolderEntityRealm.ID)
     func addMemo(folderId: FolderEntityRealm.ID)
     func selectMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID)
-    func deleteFolder(folderId: FolderEntityRealm.ID)
     func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID)
     func reorderMemo(folderId: FolderEntityRealm.ID, from: Int, to: Int)
 }
@@ -60,10 +59,6 @@ extension FolderPresenter: FolderPresentation {
         dependency.router.presentMemoView(folderId: folderId, memoId: memoId)
     }
     
-    func deleteFolder(folderId: FolderEntityRealm.ID) {
-        NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["id": folderId])
-    }
-    
     func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID) {
         dependency.deleteMemoTitle.execute(folderId, memoId)
     }
@@ -76,6 +71,5 @@ extension FolderPresenter: FolderPresentation {
 
 extension Notification.Name {
     static let notifySelectMemo = Notification.Name("notifySelectMemo")
-    static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
 }
 
