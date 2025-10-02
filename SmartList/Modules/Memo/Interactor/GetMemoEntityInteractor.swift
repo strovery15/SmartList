@@ -4,27 +4,27 @@ import Foundation
 import RealmSwift
 
 protocol GetMemoEntityUseCase {
-    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntity.ID, text: String), Never>) -> ()))
+    func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: MemoEntityRealm.ID?, completion: ((Result<(memoId: MemoEntityRealm.ID, text: String), Never>) -> ()))
 }
 
 class GetMemoEntityInteractor: GetMemoEntityUseCase {
     
-    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntity.ID, text: String), Never>) -> ())) {
+    func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: MemoEntityRealm.ID?, completion: ((Result<(memoId: MemoEntityRealm.ID, text: String), Never>) -> ())) {
         
         let realm = try! Realm()
         
         if parameter2 != nil {
-            let memoResults = realm.objects(MemoEntity.self)
+            let memoResults = realm.objects(MemoEntityRealm.self)
             let memoPredicate = NSPredicate(format: "id == %@", parameter2! as CVarArg)
             if let memoEntity = memoResults.filter(memoPredicate).first {
                 completion(.success((parameter2!, memoEntity.text)))
             }
         } else {
-            let folderResults = realm.objects(FolderEntity.self)
+            let folderResults = realm.objects(FolderEntityRealm.self)
             let folderPredicate = NSPredicate(format: "id == %@", parameter1 as CVarArg)
             if let folderEntity = folderResults.filter(folderPredicate).first {
-                let memoEntity = MemoEntity()
-                let memoTitleEntity = MemoTitleEntity()
+                let memoEntity = MemoEntityRealm()
+                let memoTitleEntity = MemoTitleEntityRealm()
                 memoTitleEntity.id = memoEntity.id
                 try! realm.write {
                     realm.add(memoEntity)
@@ -37,4 +37,9 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
     }
     
 }
+
+extension Notification.Name {
+    static let notifyAddMemo = Notification.Name("notifyAddMemo")
+}
+
 

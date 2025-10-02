@@ -1,6 +1,7 @@
 
 
 import UIKit
+import RealmSwift
 
 final class AppDependencies {
     
@@ -12,7 +13,7 @@ final class AppDependencies {
         return viewController
     }
     
-    func assembleFolderModules(_ folderEntities: [FolderEntity]) -> [UIViewController] {
+    func assembleFolderModules(_ folderEntities: Results<FolderEntityRealm>) -> [UIViewController] {
         var viewCons: [UIViewController] = []
         let storyboard = UIStoryboard(name: "Folder", bundle: nil)
         
@@ -27,7 +28,7 @@ final class AppDependencies {
         return viewCons
     }
     
-    func assembleMemoModule(_ folderId: FolderEntity.ID,_ memoTitleId: MemoTitleEntity.ID?) -> UIViewController {
+    func assembleMemoModule(_ folderId: FolderEntityRealm.ID,_ memoTitleId: MemoTitleEntityRealm.ID?) -> UIViewController {
         let storyboard = UIStoryboard(name: "Memo", bundle: nil)
         let viewController = storyboard.instantiateInitialViewController() as? MemoViewController
         viewController!.folderId = folderId

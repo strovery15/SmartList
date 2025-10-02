@@ -5,15 +5,15 @@ import RealmSwift
 import UIKit
 
 protocol SaveMemoEntityUseCase {
-    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID, _ parameter3: String)
+    func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: MemoEntityRealm.ID, _ parameter3: String)
 }
 
 class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
     
-    func execute(_ parameter1: FolderEntity.ID, _ parameter2: MemoEntity.ID, _ parameter3: String) {
+    func execute(_ parameter1: FolderEntityRealm.ID, _ parameter2: MemoEntityRealm.ID, _ parameter3: String) {
         let realm = try! Realm()
-        let folderResults = realm.objects(FolderEntity.self)
-        let memoResults = realm.objects(MemoEntity.self)
+        let folderResults = realm.objects(FolderEntityRealm.self)
+        let memoResults = realm.objects(MemoEntityRealm.self)
         let folderPredicate = NSPredicate(format: "id == %@", parameter1 as CVarArg)
         let memoPredicate = NSPredicate(format: "id == %@", parameter2 as CVarArg)
         
@@ -26,7 +26,6 @@ class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
                     try! realm.write {
                         memoTitleEntity.title = saveText
                     }
-                    NotificationCenter.default.post(name: .notifyResetTitle, object: nil, userInfo: ["memoId": parameter2, "text": saveText])
                 }
             }
             
@@ -66,9 +65,5 @@ extension String {
         }
         return string
     }
-}
-
-extension Notification.Name {
-    static let notifyResetTitle = Notification.Name("notifyResetTitle")
 }
 

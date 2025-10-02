@@ -5,36 +5,24 @@ import UIKit
 
 class MemoCell: UICollectionViewListCell {
     
-    var id: MemoTitleEntity.ID?
-    var title: String?
-    
-    override func updateConfiguration(using state: UICellConfigurationState) {
-        
-        var newConfiguration = MemoCellConfiguration().updated(for: state)
-        newConfiguration.id = id
-        newConfiguration.title = title
-        
-        if contentConfiguration == nil {
-            contentConfiguration = newConfiguration
-        } else {
-            contentConfiguration = nil
-            contentConfiguration = newConfiguration
-        }
-        
+    func memoCellConfiguration() -> MemoCellConfiguration {
+        MemoCellConfiguration()
     }
+    
 }
 
 struct MemoCellConfiguration: UIContentConfiguration {
     
-    var id: MemoTitleEntity.ID?
+    var folderId: FolderEntityRealm.ID?
+    var memoId: MemoTitleEntityRealm.ID?
     var title: String?
-    
-    func makeContentView() -> UIView & UIContentView {
-        return MemoCellView(configuration: self)
-    }
     
     func updated(for state: UIConfigurationState) -> MemoCellConfiguration {
         return self
+    }
+    
+    func makeContentView() -> UIView & UIContentView {
+        return MemoCellView(configuration: self)
     }
     
 }

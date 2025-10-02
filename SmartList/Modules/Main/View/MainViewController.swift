@@ -18,9 +18,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(UIScreen.main.bounds.size.width)
-        
-        practiceFunc()
+//        practiceFunc()
         configureLayout()
         presenter.didLoad()
         print("--------------------------------")
@@ -87,7 +85,7 @@ private extension MainViewController {
     }
 
     @objc func notifyDeleteFolder(_ notification: Notification) {
-        let id = notification.userInfo!["id"] as! FolderEntity.ID
+        let id = notification.userInfo!["id"] as! FolderEntityRealm.ID
         presenter.deleteFolder(folderId: id)
     }
     
@@ -135,11 +133,11 @@ extension MainViewController {
     
     func createFolderEntiy(folderName: String,_ items: [String]) {
         let realm = try! Realm()
-        let folderEntity = FolderEntity()
+        let folderEntity = FolderEntityRealm()
         folderEntity.name = folderName
         for item in items {
-            let memoEntity = MemoEntity()
-            let memoTitleEntity = MemoTitleEntity()
+            let memoEntity = MemoEntityRealm()
+            let memoTitleEntity = MemoTitleEntityRealm()
             memoEntity.text = item
             
             memoTitleEntity.id = memoEntity.id

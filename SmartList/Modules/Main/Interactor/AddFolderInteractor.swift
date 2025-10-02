@@ -10,11 +10,11 @@ protocol AddFolderUseCase {
 class AddFolderInteractor: AddFolderUseCase {
     func execute(_ parameter: String, completion: ((Result<Void, Never>) -> ())) {
         let realm = try! Realm()
-        var folderEntity = FolderEntity()
+        var folderEntity = FolderEntityRealm()
         folderEntity.name = parameter
         try! realm.write {
             realm.add(folderEntity)
-            completion(.success(()))
         }
+        completion(.success(()))
     }
 }
