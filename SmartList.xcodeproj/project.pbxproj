@@ -14,6 +14,9 @@
 		890F065A2E74565C0063ED3A /* GetMemoEntityInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890F06592E74565C0063ED3A /* GetMemoEntityInteractor.swift */; };
 		89241C712E8E39FA00B13848 /* MemoTitleEntityRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89241C702E8E39FA00B13848 /* MemoTitleEntityRealm.swift */; };
 		89241C732E8E3ABD00B13848 /* MemoTitleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89241C722E8E3ABD00B13848 /* MemoTitleEntity.swift */; };
+		89241C762E8E838000B13848 /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89241C752E8E838000B13848 /* HeaderCell.swift */; };
+		89241C782E8E83D000B13848 /* HeaderCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89241C772E8E83D000B13848 /* HeaderCellView.swift */; };
+		89241C7A2E8E840300B13848 /* HeaderCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89241C792E8E840300B13848 /* HeaderCellView.xib */; };
 		8944969C2E46547600482CF8 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8944969B2E46547600482CF8 /* MainPresenter.swift */; };
 		894496A42E466AB300482CF8 /* MakeFolderItemsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894496A32E466AB300482CF8 /* MakeFolderItemsInteractor.swift */; };
 		8954C9AA2E7322CA00E8505A /* FolderRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8954C9A92E7322CA00E8505A /* FolderRouter.swift */; };
@@ -65,6 +68,9 @@
 		890F06592E74565C0063ED3A /* GetMemoEntityInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetMemoEntityInteractor.swift; sourceTree = "<group>"; };
 		89241C702E8E39FA00B13848 /* MemoTitleEntityRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntityRealm.swift; sourceTree = "<group>"; };
 		89241C722E8E3ABD00B13848 /* MemoTitleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntity.swift; sourceTree = "<group>"; };
+		89241C752E8E838000B13848 /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
+		89241C772E8E83D000B13848 /* HeaderCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCellView.swift; sourceTree = "<group>"; };
+		89241C792E8E840300B13848 /* HeaderCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeaderCellView.xib; sourceTree = "<group>"; };
 		8944969B2E46547600482CF8 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		894496A32E466AB300482CF8 /* MakeFolderItemsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeFolderItemsInteractor.swift; sourceTree = "<group>"; };
 		8954C9A92E7322CA00E8505A /* FolderRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderRouter.swift; sourceTree = "<group>"; };
@@ -138,6 +144,16 @@
 				896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */,
 			);
 			path = Interactor;
+			sourceTree = "<group>";
+		};
+		89241C742E8E831C00B13848 /* HeaderCell */ = {
+			isa = PBXGroup;
+			children = (
+				89241C752E8E838000B13848 /* HeaderCell.swift */,
+				89241C772E8E83D000B13848 /* HeaderCellView.swift */,
+				89241C792E8E840300B13848 /* HeaderCellView.xib */,
+			);
+			path = HeaderCell;
 			sourceTree = "<group>";
 		};
 		8944969D2E465BB700482CF8 /* Modules */ = {
@@ -260,6 +276,7 @@
 				89976EC22E48215500791ED4 /* Folder.storyboard */,
 				895CF3262E6879BA00DEB033 /* MemoTitleRepository.swift */,
 				8978BDD02E5487A700809825 /* MemoCell */,
+				89241C742E8E831C00B13848 /* HeaderCell */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -386,6 +403,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89E4D51F2E71DEB100598D90 /* Memo.storyboard in Resources */,
+				89241C7A2E8E840300B13848 /* HeaderCellView.xib in Resources */,
 				8962A2852E572F2200D208E6 /* MemoCellView.xib in Resources */,
 				89976EC32E48215500791ED4 /* Folder.storyboard in Resources */,
 				897A8B332E3FCDAB00A4852C /* LaunchScreen.storyboard in Resources */,
@@ -451,6 +469,7 @@
 				896F5EC02E7637BD00A749FD /* SaveMemoEntityInteractor.swift in Sources */,
 				89241C732E8E3ABD00B13848 /* MemoTitleEntity.swift in Sources */,
 				89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */,
+				89241C782E8E83D000B13848 /* HeaderCellView.swift in Sources */,
 				895CF3272E6879BA00DEB033 /* MemoTitleRepository.swift in Sources */,
 				89052CD52E51A7CE00CB0597 /* AddFolderInteractor.swift in Sources */,
 				8954C9AA2E7322CA00E8505A /* FolderRouter.swift in Sources */,
@@ -463,6 +482,7 @@
 				89E4D5222E71DF0900598D90 /* MemoPresenter.swift in Sources */,
 				89976EC02E48211600791ED4 /* FolderPresenter.swift in Sources */,
 				8962A2892E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift in Sources */,
+				89241C762E8E838000B13848 /* HeaderCell.swift in Sources */,
 				89976EC52E4829B400791ED4 /* FolderViewController.swift in Sources */,
 				897A8B292E3FCDAA00A4852C /* SceneDelegate.swift in Sources */,
 				8978BDD22E5487C900809825 /* MemoCell.swift in Sources */,
