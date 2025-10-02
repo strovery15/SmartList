@@ -3,9 +3,9 @@
 import Foundation
 
 protocol MemoPresentation: AnyObject {
-    func didLoad(folderId: FolderEntity.ID, memoId: MemoEntity.ID?)
-    func deleteMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID)
-    func saveMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID, text: String)
+    func didLoad(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID?)
+    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID)
+    func saveMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID, text: String)
 }
 
 class MemoPresenter {
@@ -27,7 +27,7 @@ class MemoPresenter {
 
 extension MemoPresenter: MemoPresentation {
     
-    func didLoad(folderId: FolderEntity.ID, memoId: MemoEntity.ID?) {
+    func didLoad(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID?) {
         dependency.getMemoEntity.execute(folderId, memoId) { [weak self] result in
             guard let self = self else { return }
             
@@ -38,7 +38,7 @@ extension MemoPresenter: MemoPresentation {
         }
     }
     
-    func deleteMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID) {
+    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID) {
         dependency.deleteMemoEntity.execute(folderId, memoId) { [weak self] result in
             guard let self = self else { return }
             
@@ -50,7 +50,7 @@ extension MemoPresenter: MemoPresentation {
         }
     }
     
-    func saveMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID, text: String) {
+    func saveMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID, text: String) {
         dependency.saveMemoEntity.execute(folderId, memoId, text)
     }
     

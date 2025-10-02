@@ -3,10 +3,11 @@
 import Foundation
 import RealmSwift
 
-class FolderEntity: Object, Identifiable {
+class FolderEntityRealm: Object, Identifiable {
+    
     @objc dynamic var id = UUID()
     @objc dynamic var name = ""
-    var memoTitles = List<MemoTitleEntity>()
+    var memoTitles = List<MemoTitleEntityRealm>()
 }
 
 

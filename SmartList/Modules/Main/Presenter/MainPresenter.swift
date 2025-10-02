@@ -2,11 +2,12 @@
 
 import Foundation
 import TabPageViewController
+import RealmSwift
 
 protocol MainPresentation: AnyObject {
     func didLoad()
     func addFolder(folderName: String)
-    func deleteFolder(folderId: FolderEntity.ID)
+    func deleteFolder(folderId: FolderEntityRealm.ID)
 //    func toSetting()
 }
 
@@ -34,11 +35,11 @@ class MainPresenter {
 
 extension MainPresenter: MainPresentation {
     func didLoad() {
-        var folderEntities: [FolderEntity] = []
+        var folderEntities: Results<FolderEntityRealm>?
         var makeFolderChiefViewCon_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefViewCon_Trigger == Trigger.on {
-                    dependency.makeFolderItems.execute(folderEntities) { [weak self] result in
+                    dependency.makeFolderItems.execute(folderEntities!) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
@@ -66,11 +67,11 @@ extension MainPresenter: MainPresentation {
     }
     
     func addFolder(folderName: String) {
-        var folderEntities: [FolderEntity] = []
+        var folderEntities: Results<FolderEntityRealm>?
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefVC_Trigger == Trigger.on {
-                    dependency.makeFolderItems.execute(folderEntities) { [weak self] result in
+                    dependency.makeFolderItems.execute(folderEntities!) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
@@ -109,12 +110,12 @@ extension MainPresenter: MainPresentation {
         addFolderEntity_Trigger = .on
     }
     
-    func deleteFolder(folderId: FolderEntity.ID) {
-        var folderEntities: [FolderEntity] = []
+    func deleteFolder(folderId: FolderEntityRealm.ID) {
+        var folderEntities: Results<FolderEntityRealm>?
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefVC_Trigger == Trigger.on {
-                    dependency.makeFolderItems.execute(folderEntities) { [weak self] result in
+                    dependency.makeFolderItems.execute(folderEntities!) { [weak self] result in
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):

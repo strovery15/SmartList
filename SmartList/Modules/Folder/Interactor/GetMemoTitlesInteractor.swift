@@ -4,22 +4,21 @@ import Foundation
 import RealmSwift
 
 protocol GetMemoTitlesUseCase {
-    func execute(_ parameter: FolderEntity.ID, completion: ((Result<[MemoTitle], Never>) -> ()))
+    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<[MemoTitleEntity], Never>) -> ()))
 }
 
 class GetMemoTitlesInteractor: GetMemoTitlesUseCase {
-    func execute(_ parameter: FolderEntity.ID, completion: ((Result<[MemoTitle], Never>) -> ())) {
+    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<[MemoTitleEntity], Never>) -> ())) {
         let realm = try! Realm()
-        let results = realm.objects(FolderEntity.self)
+        let results = realm.objects(FolderEntityRealm.self)
         let predicate = NSPredicate(format: "id == %@", parameter as CVarArg)
         if let folderEntity = results.filter(predicate).first {
-            let memoTitleEntities = Array(folderEntity.memoTitles)
-            var memoTitles: [MemoTitle] = []
-            for memoTitleEntity in memoTitleEntities {
-                let memoTitle = MemoTitle(id: memoTitleEntity.id, title: memoTitleEntity.title)
-                memoTitles.append(memoTitle)
+            var memoTitleEntities: [MemoTitleEntity] = []
+            for memoTitle in folderEntity.memoTitles {
+                let memoTitleEntity = MemoTitleEntity(id: memoTitle.id, title: memoTitle.title)
+                memoTitleEntities.append(memoTitleEntity)
             }
-            completion(.success(memoTitles))
+            completion(.success(memoTitleEntities))
         } else {
             print("error")
         }

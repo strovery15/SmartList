@@ -3,7 +3,7 @@
 import UIKit
 
 protocol MemoView: AnyObject {
-    func setText(memoId: MemoEntity.ID, text: String)
+    func setText(memoId: MemoEntityRealm.ID, text: String)
     func dismissView()
 }
 
@@ -19,8 +19,8 @@ class MemoViewController: UIViewController {
     var visualEffectView: UIVisualEffectView!
     
     var presenter: MemoPresentation!
-    var folderId: FolderEntity.ID!
-    var memoId: MemoEntity.ID?
+    var folderId: FolderEntityRealm.ID!
+    var memoId: MemoEntityRealm.ID?
 
     
     override func viewDidLoad() {
@@ -33,13 +33,14 @@ class MemoViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         print("willdisappear")
         saveMemo()
+        NotificationCenter.default.post(name: .notifyDismissMemoView, object: nil)
     }
     
 }
 
 extension MemoViewController: MemoView {
     
-    func setText(memoId: MemoEntity.ID, text: String) {
+    func setText(memoId: MemoEntityRealm.ID, text: String) {
         self.memoId = memoId
         textView.text = text
     }
@@ -169,4 +170,8 @@ extension MemoViewController: UITextViewDelegate {
         textView.text = ""
         textView.font = UIFont.systemFont(ofSize: 20)
     }
+}
+
+extension Notification.Name {
+    static let notifyDismissMemoView = Notification.Name("notifyDismissMemoView")
 }

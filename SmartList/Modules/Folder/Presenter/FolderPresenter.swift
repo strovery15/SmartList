@@ -3,12 +3,13 @@
 import Foundation
 
 protocol FolderPresentation: AnyObject {
-    func didLoad(id: FolderEntity.ID)
-    func addMemo(folderId: FolderEntity.ID)
-    func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
-    func deleteFolder(folderId: FolderEntity.ID)
-    func deleteMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID)
-    func reorderMemo(folderId: FolderEntity.ID, from: Int, to: Int)
+    func didLoad(id: FolderEntityRealm.ID)
+    func reloadMemo(id: FolderEntityRealm.ID)
+    func addMemo(folderId: FolderEntityRealm.ID)
+    func selectMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID)
+    func deleteFolder(folderId: FolderEntityRealm.ID)
+    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID)
+    func reorderMemo(folderId: FolderEntityRealm.ID, from: Int, to: Int)
 }
 
 class FolderPresenter {
@@ -31,7 +32,7 @@ class FolderPresenter {
 
 extension FolderPresenter: FolderPresentation {
     
-    func didLoad(id: FolderEntity.ID) {
+    func didLoad(id: FolderEntityRealm.ID) {
         dependency.getMemoTitles.execute(id) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -41,23 +42,33 @@ extension FolderPresenter: FolderPresentation {
         }
     }
     
-    func addMemo(folderId: FolderEntity.ID) {
+    func reloadMemo(id: FolderEntityRealm.ID) {
+        dependency.getMemoTitles.execute(id) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let memoTitles):
+                self.view?.reSetRepository(memoTitles)
+            }
+        }
+    }
+    
+    func addMemo(folderId: FolderEntityRealm.ID) {
         dependency.router.presentMemoView(folderId: folderId, memoId: nil)
     }
     
-    func selectMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID) {
+    func selectMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID) {
         dependency.router.presentMemoView(folderId: folderId, memoId: memoId)
     }
     
-    func deleteFolder(folderId: FolderEntity.ID) {
+    func deleteFolder(folderId: FolderEntityRealm.ID) {
         NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["id": folderId])
     }
     
-    func deleteMemo(folderId: FolderEntity.ID, memoId: MemoTitleEntity.ID) {
+    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID) {
         dependency.deleteMemoTitle.execute(folderId, memoId)
     }
     
-    func reorderMemo(folderId: FolderEntity.ID, from: Int, to: Int) {
+    func reorderMemo(folderId: FolderEntityRealm.ID, from: Int, to: Int) {
         dependency.reorderMemoTitle.execute(folderId, from, to)
     }
 
