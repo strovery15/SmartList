@@ -22,6 +22,7 @@ class MemoViewController: UIViewController {
     var folderId: FolderEntityRealm.ID!
     var memoId: MemoEntityRealm.ID?
 
+    private var keyboardHeight: CGFloat!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,15 +57,13 @@ private extension MemoViewController {
         
         view.backgroundColor = .blue
         
-        createVisualEffect()
-        let editButtonImage = UIImage(systemName: "ellipsis")
-        let editButton = UIBarButtonItem(image: editButtonImage, style: .plain, target: self, action: nil)
-        editButton.menu = createMenu()
-        saveButton = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
-        let closeButton = UIBarButtonItem(title: "閉じる", style: .plain, target: self, action: #selector(closeButton(_:)))
-        self.navigationItem.rightBarButtonItems = [editButton, saveButton, closeButton]
-        
         configureLayout()
+        
+        configureBarButtons()
+        
+        createVisualEffect()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyKeyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(notifyWillResignActive(_:)), name: .notifyWillResignActive, object: nil)
     }
@@ -80,34 +79,45 @@ private extension MemoViewController {
         
     }
     
-    func createVisualEffect() {
-        let blur = UIBlurEffect(style: .systemMaterialLight)
-        visualEffectView = UIVisualEffectView(effect: blur)
-        visualEffectView.frame = CGRect(x: 0, y: 0, width: 230 * UIScreen.main.bounds.size.width / 390, height: 230 * UIScreen.main.bounds.size.width / 390)
-        let viewWidth = UIScreen.main.bounds.width
-        let viewHeight = UIScreen.main.bounds.height
-        visualEffectView.center = CGPoint(x: viewWidth/2, y: viewHeight/2)
-        visualEffectView.layer.cornerRadius = 10 * UIScreen.main.bounds.size.width / 390
-        visualEffectView.clipsToBounds = true
+    @objc func notifyKeyboardWillShow(_ notification: Notification) {
+        let keyboardFrame = notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        keyboardHeight = keyboardFrame!.height + 100
+        adjustTextView()
+    }
+    
+    func adjustTextView() {
+        let cursorPosition = textView.selectedTextRange?.start
+        let cursorY = textView.caretRect(for: cursorPosition!).origin.y
+        let currentCursorY = cursorY - textView.contentOffset.y
         
-        let subView = UIView(frame: view.frame)
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 230 * UIScreen.main.bounds.size.width / 390, height: 50 * UIScreen.main.bounds.size.width / 390))
-        label.textAlignment = .center
-        
-        label.center = CGPoint(x: 115 * UIScreen.main.bounds.size.width / 390, y: 200 * UIScreen.main.bounds.size.width / 390)
-        label.text = "メモを保存しました"
-        label.textColor = .darkGray
-        
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 150 * UIScreen.main.bounds.size.width / 390, height: 150 * UIScreen.main.bounds.size.width / 390))
-        imageView.center = CGPoint(x: 115 * UIScreen.main.bounds.size.width / 390, y: 100 * UIScreen.main.bounds.size.width / 390)
-        imageView.image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 80 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .large))
-        imageView.tintColor = .lightGray
-        subView.addSubview(label)
-        subView.addSubview(imageView)
-        visualEffectView.contentView.addSubview(subView)
-        
-        view.addSubview(visualEffectView)
-        visualEffectView.isHidden = true
+        if currentCursorY > (textView.frame.height - keyboardHeight) {
+            let increment = currentCursorY - (textView.frame.height - keyboardHeight)
+            if textView.contentSize.height < textView.frame.height {
+                textView.contentSize.height = textView.frame.height + increment
+            } else {
+                textView.contentSize.height += increment
+            }
+            let offset = CGPoint(x: 0.0, y: textView.contentOffset.y + increment)
+            textView.setContentOffset(offset, animated: false)
+        }
+    }
+    
+    @objc func notifyWillResignActive(_ notification: Notification) {
+        saveMemo()
+    }
+    
+    func saveMemo() {
+        let text = textView.text
+        presenter.saveMemo(folderId: folderId, memoId: memoId!, text: text!)
+    }
+    
+    func configureBarButtons() {
+        let editButtonImage = UIImage(systemName: "ellipsis")
+        let editButton = UIBarButtonItem(image: editButtonImage, style: .plain, target: self, action: nil)
+        editButton.menu = createMenu()
+        saveButton = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(saveButtonAction(_:)))
+        let closeButton = UIBarButtonItem(title: "閉じる", style: .plain, target: self, action: #selector(closeButton(_:)))
+        self.navigationItem.rightBarButtonItems = [editButton, saveButton, closeButton]
     }
     
     func createMenu() -> UIMenu {
@@ -153,14 +163,36 @@ private extension MemoViewController {
         textView.resignFirstResponder()
     }
     
-    @objc func notifyWillResignActive(_ notification: Notification) {
-        saveMemo()
+    func createVisualEffect() {
+        let blur = UIBlurEffect(style: .systemMaterialLight)
+        visualEffectView = UIVisualEffectView(effect: blur)
+        visualEffectView.frame = CGRect(x: 0, y: 0, width: 230 * UIScreen.main.bounds.size.width / 390, height: 230 * UIScreen.main.bounds.size.width / 390)
+        let viewWidth = UIScreen.main.bounds.width
+        let viewHeight = UIScreen.main.bounds.height
+        visualEffectView.center = CGPoint(x: viewWidth/2, y: viewHeight/2)
+        visualEffectView.layer.cornerRadius = 10 * UIScreen.main.bounds.size.width / 390
+        visualEffectView.clipsToBounds = true
+        
+        let subView = UIView(frame: view.frame)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 230 * UIScreen.main.bounds.size.width / 390, height: 50 * UIScreen.main.bounds.size.width / 390))
+        label.textAlignment = .center
+        
+        label.center = CGPoint(x: 115 * UIScreen.main.bounds.size.width / 390, y: 200 * UIScreen.main.bounds.size.width / 390)
+        label.text = "メモを保存しました"
+        label.textColor = .darkGray
+        
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 150 * UIScreen.main.bounds.size.width / 390, height: 150 * UIScreen.main.bounds.size.width / 390))
+        imageView.center = CGPoint(x: 115 * UIScreen.main.bounds.size.width / 390, y: 100 * UIScreen.main.bounds.size.width / 390)
+        imageView.image = UIImage(systemName: "checkmark.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 80 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .large))
+        imageView.tintColor = .lightGray
+        subView.addSubview(label)
+        subView.addSubview(imageView)
+        visualEffectView.contentView.addSubview(subView)
+        
+        view.addSubview(visualEffectView)
+        visualEffectView.isHidden = true
     }
-    
-    func saveMemo() {
-        let text = textView.text
-        presenter.saveMemo(folderId: folderId, memoId: memoId!, text: text!)
-    }
+
 }
 
 extension MemoViewController: UITextViewDelegate {
@@ -169,6 +201,11 @@ extension MemoViewController: UITextViewDelegate {
     func configureTextView() {
         textView.text = ""
         textView.font = UIFont.systemFont(ofSize: 20)
+        textView.delegate = self
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        adjustTextView()
     }
 }
 
