@@ -5,8 +5,8 @@ import RealmSwift
 import TabPageViewController
 
 protocol MainView: AnyObject {
-    func setFolders(_ folderItems: [(UIViewController, String)])
-    func reSetFoldes(_ folderItems: [(UIViewController, String)])
+    func setFolders(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
+    func reSetFoldes(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
 }
 
 class MainViewController: UIViewController {
@@ -14,6 +14,8 @@ class MainViewController: UIViewController {
     var presenter: MainPresentation!
     
     var addFolderButton: UIButton!
+    
+    private var firstIndex: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,18 +29,17 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: MainView {
-    
-    func setFolders(_ folderItems: [(UIViewController, String)]) {
-        configureTabPageViewControllerAndButton(folderItems)
+    func setFolders(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
+        configureTabPageViewControllerAndButton(folderItems, firstIndex)
     }
     
-    func reSetFoldes(_ folderItems: [(UIViewController, String)]) {
+    func reSetFoldes(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
         for child in children {
             child.willMove(toParent: nil)
             child.view.removeFromSuperview()
             child.removeFromParent()
         }
-        configureTabPageViewControllerAndButton(folderItems)
+        configureTabPageViewControllerAndButton(folderItems, firstIndex)
     }
     
 }
@@ -57,6 +58,8 @@ private extension MainViewController {
         addFolderButton.addTarget(self, action: #selector(addFolderButtonAction(_:)), for: .touchUpInside)
         
         NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
+        
+//        NotificationCenter.default.addObserver(self, selector: #selector(<#T##@objc method#>), name: , object: nil)
     }
     
     @objc func addFolderButtonAction(_ sender: UIButton) {
@@ -99,13 +102,39 @@ private extension MainViewController {
         present(alertController, animated: true)
     }
     
+    @objc func notifyRenameFolder(_ notification: Notification) {
+        let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
+            guard let self = self else { return }
+            if let textfields = alertController.textFields {
+                for textfield in textfields {
+                    if textfield.text!.isEmpty {
+                        presenter.addFolder(folderName: "新しいフォルダ")
+                    } else {
+                        presenter.addFolder(folderName: textfield.text!)
+                    }
+                }
+            }
+        }
+        alertController.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addTextField() { textfield in
+            textfield.text = "新しいフォルダ"
+        }
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true)
+    }
+    
 }
 
 extension MainViewController {
     
-    func configureTabPageViewControllerAndButton(_ folderItems: [(UIViewController, String)]) {
+    func configureTabPageViewControllerAndButton(_ folderItems: [(UIViewController, String)],_ firstIndex: Int) {
         let foldersVc = TabPageViewController()
         foldersVc.tabItems = folderItems
+        foldersVc.firstIndex = firstIndex
         foldersVc.option.tabHeight = 53 * UIScreen.main.bounds.size.width / 390
         foldersVc.option.tabMargin = 20 * UIScreen.main.bounds.size.width / 390
         foldersVc.option.fontSize = 14 * UIScreen.main.bounds.size.width / 390
