@@ -4,11 +4,11 @@ import Foundation
 import RealmSwift
 
 protocol DeleteFolderUseCase {
-    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<Void, Never>) -> ()))
+    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<(entities: Results<FolderEntityRealm>, index: Int), Never>) -> ()))
 }
 
 class DeleteFolderInteractor: DeleteFolderUseCase {
-    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<Void, Never>) -> ())) {
+    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<(entities: Results<FolderEntityRealm>, index: Int), Never>) -> ())) {
         let realm = try! Realm()
         let folderResults = realm.objects(FolderEntityRealm.self)
         let memoResults = realm.objects(MemoEntityRealm.self)
@@ -25,7 +25,7 @@ class DeleteFolderInteractor: DeleteFolderUseCase {
             try! realm.write {
                 realm.delete(folderEntity)
             }
-            completion(.success(()))
+            completion(.success((folderResults, folderResults.count - 1)))
         }
     }
 }

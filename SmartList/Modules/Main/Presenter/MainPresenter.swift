@@ -36,6 +36,7 @@ class MainPresenter {
 extension MainPresenter: MainPresentation {
     func didLoad() {
         var folderEntities: Results<FolderEntityRealm>?
+        var firstIndex: Int?
         var makeFolderChiefViewCon_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefViewCon_Trigger == Trigger.on {
@@ -43,7 +44,7 @@ extension MainPresenter: MainPresentation {
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
-                            self.view?.setFolders(folderItems)
+                            self.view?.setFolders(folderItems, firstIndex!)
                         }
                     }
                 }
@@ -54,8 +55,9 @@ extension MainPresenter: MainPresentation {
                 if getFolderEntities_Trigger == Trigger.on {
                     dependency.getFolders.execute() { result in
                         switch result {
-                        case .success(let entities):
-                            folderEntities = entities
+                        case .success(let value):
+                            folderEntities = value.entities
+                            firstIndex = value.index
                             makeFolderChiefViewCon_Trigger = Trigger.on
                         }
                     }
@@ -68,6 +70,7 @@ extension MainPresenter: MainPresentation {
     
     func addFolder(folderName: String) {
         var folderEntities: Results<FolderEntityRealm>?
+        var firstIndex: Int?
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefVC_Trigger == Trigger.on {
@@ -75,32 +78,22 @@ extension MainPresenter: MainPresentation {
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
-                            self.view?.reSetFoldes(folderItems)
+                            self.view?.reSetFoldes(folderItems, firstIndex!)
                         }
                     }
                 }
             }
         }
-        var getFolderEntities_Trigger = Trigger.off {
-            didSet {
-                if getFolderEntities_Trigger == Trigger.on {
-                    dependency.getFolders.execute() { result in
-                        switch result {
-                        case .success(let entities):
-                            folderEntities = entities
-                            makeFolderChiefVC_Trigger = Trigger.on
-                        }
-                    }
-                }
-            }
-        }
+        
         var addFolderEntity_Trigger = Trigger.off {
             didSet {
                 if addFolderEntity_Trigger == Trigger.on {
                     dependency.addFolder.execute(folderName) { result in
                         switch result {
-                        case .success(()):
-                            getFolderEntities_Trigger = Trigger.on
+                        case .success(let value):
+                            folderEntities = value.entities
+                            firstIndex = value.index
+                            makeFolderChiefVC_Trigger = Trigger.on
                         }
                     }
                 }
@@ -112,6 +105,7 @@ extension MainPresenter: MainPresentation {
     
     func deleteFolder(folderId: FolderEntityRealm.ID) {
         var folderEntities: Results<FolderEntityRealm>?
+        var firstIndex: Int?
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
                 if makeFolderChiefVC_Trigger == Trigger.on {
@@ -119,32 +113,22 @@ extension MainPresenter: MainPresentation {
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
-                            self.view?.reSetFoldes(folderItems)
+                            self.view?.reSetFoldes(folderItems, firstIndex!)
                         }
                     }
                 }
             }
         }
-        var getFolderEntities_Trigger = Trigger.off {
-            didSet {
-                if getFolderEntities_Trigger == Trigger.on {
-                    dependency.getFolders.execute() { result in
-                        switch result {
-                        case .success(let entities):
-                            folderEntities = entities
-                            makeFolderChiefVC_Trigger = Trigger.on
-                        }
-                    }
-                }
-            }
-        }
+        
         var deleteFolderEntity_Trigger = Trigger.off {
             didSet {
                 if deleteFolderEntity_Trigger == Trigger.on {
                     dependency.deleteFolder.execute(folderId) { result in
                         switch result {
-                        case .success(()):
-                            getFolderEntities_Trigger = Trigger.on
+                        case .success(let value):
+                            folderEntities = value.entities
+                            firstIndex = value.index
+                            makeFolderChiefVC_Trigger = Trigger.on
                         }
                     }
                 }
