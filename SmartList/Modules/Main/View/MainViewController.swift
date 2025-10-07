@@ -59,7 +59,7 @@ private extension MainViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(<#T##@objc method#>), name: , object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyRenameFolder(_:)), name: .notifyRenameFolder, object: nil)
     }
     
     @objc func addFolderButtonAction(_ sender: UIButton) {
@@ -103,15 +103,18 @@ private extension MainViewController {
     }
     
     @objc func notifyRenameFolder(_ notification: Notification) {
+        let id = notification.userInfo!["folderId"] as! FolderEntityRealm.ID
+        let text = notification.userInfo!["folderName"] as! String
+        
         let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
+        let okAction = UIAlertAction(title: "OK", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             if let textfields = alertController.textFields {
                 for textfield in textfields {
                     if textfield.text!.isEmpty {
-                        presenter.addFolder(folderName: "新しいフォルダ")
+                        presenter.renameFolder(folderId: id, folderName: text)
                     } else {
-                        presenter.addFolder(folderName: textfield.text!)
+                        presenter.renameFolder(folderId: id, folderName: textfield.text!)
                     }
                 }
             }
@@ -120,7 +123,7 @@ private extension MainViewController {
         
         let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
         alertController.addTextField() { textfield in
-            textfield.text = "新しいフォルダ"
+            textfield.text = text
         }
         alertController.addAction(cancelAction)
         
@@ -132,62 +135,70 @@ private extension MainViewController {
 extension MainViewController {
     
     func configureTabPageViewControllerAndButton(_ folderItems: [(UIViewController, String)],_ firstIndex: Int) {
-        let foldersVc = TabPageViewController()
-        foldersVc.tabItems = folderItems
-        foldersVc.firstIndex = firstIndex
-        foldersVc.option.tabHeight = 53 * UIScreen.main.bounds.size.width / 390
-        foldersVc.option.tabMargin = 20 * UIScreen.main.bounds.size.width / 390
-        foldersVc.option.fontSize = 14 * UIScreen.main.bounds.size.width / 390
-        foldersVc.option.currentBarHeight = 3
-        foldersVc.option.currentColor = .systemTeal
-        foldersVc.option.defaultColor = .systemGray
-        foldersVc.option.tabBackgroundColor = .systemTeal
+        let tabPageVc = TabPageViewController()
+        tabPageVc.tabItems = folderItems
+        tabPageVc.firstIndex = firstIndex
+        tabPageVc.option.tabHeight = 53 * UIScreen.main.bounds.size.width / 390
+        tabPageVc.option.tabMargin = 20 * UIScreen.main.bounds.size.width / 390
+        tabPageVc.option.fontSize = 14 * UIScreen.main.bounds.size.width / 390
+        tabPageVc.option.currentBarHeight = 3
+        tabPageVc.option.currentColor = .systemTeal
+        tabPageVc.option.defaultColor = .systemGray
+        tabPageVc.option.tabBackgroundColor = .systemTeal
         
         addFolderButton.translatesAutoresizingMaskIntoConstraints = false
-        foldersVc.view.addSubview(addFolderButton)
+        tabPageVc.view.addSubview(addFolderButton)
         
-        addFolderButton.topAnchor.constraint(equalTo: foldersVc.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        addFolderButton.rightAnchor.constraint(equalTo: foldersVc.view.rightAnchor).isActive = true
+        addFolderButton.topAnchor.constraint(equalTo: tabPageVc.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        addFolderButton.rightAnchor.constraint(equalTo: tabPageVc.view.rightAnchor).isActive = true
         addFolderButton.widthAnchor.constraint(equalToConstant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
         addFolderButton.heightAnchor.constraint(equalToConstant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
         
-        addChild(foldersVc)
-        view.addSubview(foldersVc.view)
-        foldersVc.didMove(toParent: self)
+        addChild(tabPageVc)
+        view.addSubview(tabPageVc.view)
+        tabPageVc.didMove(toParent: self)
     }
 }
 
 //消す用
 extension MainViewController {
     func practiceFunc() {
+        let realm = try! Realm()
+        let folderManagerEntity = FolderManagerEntityRealm()
+        try! realm.write {
+            realm.add(folderManagerEntity)
+        }
         let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
         let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
         let prefecture = ["愛知県", "東京都", "福岡県", "兵庫県", "北海道", "山口県", "茨城県", "沖縄県", "石川県"]
         
         
-        createFolderEntiy(folderName: "Number", number)
-        createFolderEntiy(folderName: "fruit", fruit)
-        createFolderEntiy(folderName: "都道府県", prefecture)
+        addFolderEntiy(folderName: "Number", number)
+        addFolderEntiy(folderName: "fruit", fruit)
+        addFolderEntiy(folderName: "都道府県", prefecture)
     }
     
-    func createFolderEntiy(folderName: String,_ items: [String]) {
+    func addFolderEntiy(folderName: String,_ items: [String]) {
         let realm = try! Realm()
-        let folderEntity = FolderEntityRealm()
-        folderEntity.name = folderName
-        for item in items {
-            let memoEntity = MemoEntityRealm()
-            let memoTitleEntity = MemoTitleEntityRealm()
-            memoEntity.text = item
-            
-            memoTitleEntity.id = memoEntity.id
-            memoTitleEntity.title = memoEntity.text
-            folderEntity.memoTitles.append(memoTitleEntity)
-            try! realm.write {
-                realm.add(memoEntity)
+        let results = realm.objects(FolderManagerEntityRealm.self)
+        if let folderManager = results.first {
+            let folderEntity = FolderEntityRealm()
+            folderEntity.name = folderName
+            for item in items {
+                let memoEntity = MemoEntityRealm()
+                let memoTitleEntity = MemoTitleEntityRealm()
+                memoEntity.text = item
+                
+                memoTitleEntity.id = memoEntity.id
+                memoTitleEntity.title = memoEntity.text
+                folderEntity.memoTitles.append(memoTitleEntity)
+                try! realm.write {
+                    realm.add(memoEntity)
+                }
             }
-        }
-        try! realm.write {
-            realm.add(folderEntity)
+            try! realm.write {
+                folderManager.folderEntities.append(folderEntity)
+            }
         }
     }
 }

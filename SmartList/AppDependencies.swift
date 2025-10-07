@@ -9,11 +9,11 @@ final class AppDependencies {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainViewController else {
             fatalError()
         }
-        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderItems: MakeFolderItemsInteractor(), getFolders: GetFoldersInteractor(), addFolder: AddFolderInteractor(), deleteFolder: DeleteFolderInteractor()))
+        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderItems: MakeFolderItemsInteractor(), getFolders: GetFoldersInteractor(), addFolder: AddFolderInteractor(), deleteFolder: DeleteFolderInteractor(), renameFolder: RenameFolderInteractor()))
         return viewController
     }
     
-    func assembleFolderModules(_ folderEntities: Results<FolderEntityRealm>) -> [UIViewController] {
+    func assembleFolderModules(_ folderEntities: List<FolderEntityRealm>) -> [UIViewController] {
         var viewCons: [UIViewController] = []
         let storyboard = UIStoryboard(name: "Folder", bundle: nil)
         

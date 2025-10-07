@@ -1,6 +1,7 @@
 
 
 import UIKit
+import RealmSwift
 
 class HeaderCellView: UIView, UIContentView {
     
@@ -82,12 +83,25 @@ class HeaderCellView: UIView, UIContentView {
     
     func createMenu() -> UIMenu {
         var menus = [UIMenuElement]()
-        menus.append(UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: {_ in
-            print("フォルダの名前変更")
+        menus.append(UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: { [weak self] _ in
+            guard let self = self else { return }
+            
+            var folderName: String?
+            let realm = try! Realm()
+            let results = realm.objects(FolderManagerEntityRealm.self)
+            if let folderManager = results.first {
+                for (_ , folderEntity) in folderManager.folderEntities.enumerated() {
+                    if folderEntity.id == headerConfiguration.folderId! {
+                        folderName = folderEntity.name
+                    }
+                }
+                NotificationCenter.default.post(name: .notifyRenameFolder, object: nil, userInfo: ["folderId": headerConfiguration.folderId!, "folderName": folderName!])
+            }
         }))
         
         menus.append(UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
+            
             NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["folderId": headerConfiguration.folderId!])
         }))
         return UIMenu(title: "", options: .singleSelection, children: menus)
@@ -97,4 +111,5 @@ class HeaderCellView: UIView, UIContentView {
 
 extension Notification.Name {
     static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
+    static let notifyRenameFolder = Notification.Name("notifyRenameFolder")
 }

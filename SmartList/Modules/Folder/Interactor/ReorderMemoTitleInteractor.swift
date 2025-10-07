@@ -10,14 +10,15 @@ protocol ReorderMemoTitleUseCase {
 class ReorderMemoTitleInteractor: ReorderMemoTitleUseCase {
     func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: Int,_ parameter3: Int) {
         let realm = try! Realm()
-        let results = realm.objects(FolderEntityRealm.self)
-        let predicate = NSPredicate(format: "id == %@", parameter1 as CVarArg)
-        if let folderEntity = results.filter(predicate).first {
-            try! realm.write {
-                folderEntity.memoTitles.move(from: parameter2, to: parameter3)
+        let results = realm.objects(FolderManagerEntityRealm.self)
+        if let folderManager = results.first {
+            for (index, folderEntity) in folderManager.folderEntities.enumerated() {
+                if folderEntity.id == parameter1 {
+                    try! realm.write {
+                        folderEntity.memoTitles.move(from: parameter2, to: parameter3)
+                    }
+                }
             }
-        } else {
-            print("error")
         }
     }
 }
