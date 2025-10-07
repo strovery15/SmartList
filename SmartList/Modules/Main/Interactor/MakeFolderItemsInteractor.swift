@@ -4,12 +4,12 @@ import UIKit
 import RealmSwift
 
 protocol MakeFolderItemsUseCase {
-    func execute(_ parameter: Results<FolderEntityRealm>, completion: ((Result<[(UIViewController, String)], Never>) -> ()))
+    func execute(_ parameter: List<FolderEntityRealm>, completion: ((Result<[(UIViewController, String)], Never>) -> ()))
 }
 
 class MakeFolderItemsInteractor: MakeFolderItemsUseCase {
     
-    func execute(_ parameter: Results<FolderEntityRealm>, completion: ((Result<[(UIViewController, String)], Never>) -> ())) {
+    func execute(_ parameter: List<FolderEntityRealm>, completion: ((Result<[(UIViewController, String)], Never>) -> ())) {
         var tabItems: [(UIViewController, String)] = []
         let appDependencies = AppDependencies()
         

@@ -12,32 +12,29 @@ class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
     
     func execute(_ parameter1: FolderEntityRealm.ID, _ parameter2: MemoEntityRealm.ID, _ parameter3: String) {
         let realm = try! Realm()
-        let folderResults = realm.objects(FolderEntityRealm.self)
+        let folderManagerResults = realm.objects(FolderManagerEntityRealm.self)
         let memoResults = realm.objects(MemoEntityRealm.self)
-        let folderPredicate = NSPredicate(format: "id == %@", parameter1 as CVarArg)
         let memoPredicate = NSPredicate(format: "id == %@", parameter2 as CVarArg)
-        
-        if let folderEntity = folderResults.filter(folderPredicate).first {
-            for (index, memoTitleEntity) in folderEntity.memoTitles.enumerated() {
-                if memoTitleEntity.id == parameter2 {
-                    let font = UIFont.systemFont(ofSize: 15)
-                    let screenWidth = UIScreen.main.bounds.width
-                    let saveText = parameter3.quarryBy(with: font, by: screenWidth)
-                    try! realm.write {
-                        memoTitleEntity.title = saveText
+        if let folderManager = folderManagerResults.first {
+            for (index, folderEntity) in folderManager.folderEntities.enumerated() {
+                if folderEntity.id == parameter1 {
+                    for (index, memoTitleEntity) in folderEntity.memoTitles.enumerated() {
+                        if memoTitleEntity.id == parameter2 {
+                            let font = UIFont.systemFont(ofSize: 15)
+                            let screenWidth = UIScreen.main.bounds.width
+                            let saveText = parameter3.quarryBy(with: font, by: screenWidth)
+                            try! realm.write {
+                                memoTitleEntity.title = saveText
+                            }
+                        }
                     }
                 }
             }
-            
-        } else {
-            print("error")
         }
         if let memoEntity = memoResults.filter(memoPredicate).first {
             try! realm.write {
                 memoEntity.text = parameter3
             }
-        } else {
-            print("error")
         }
     }
     

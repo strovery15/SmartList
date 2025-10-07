@@ -20,26 +20,23 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
                 completion(.success((parameter2!, memoEntity.text)))
             }
         } else {
-            let folderResults = realm.objects(FolderEntityRealm.self)
-            let folderPredicate = NSPredicate(format: "id == %@", parameter1 as CVarArg)
-            if let folderEntity = folderResults.filter(folderPredicate).first {
-                let memoEntity = MemoEntityRealm()
-                let memoTitleEntity = MemoTitleEntityRealm()
-                memoTitleEntity.id = memoEntity.id
-                try! realm.write {
-                    realm.add(memoEntity)
-                    folderEntity.memoTitles.insert(memoTitleEntity, at: 0)
+            let folderManagerResults = realm.objects(FolderManagerEntityRealm.self)
+            if let folderManager = folderManagerResults.first {
+                for (index, folderEntity) in folderManager.folderEntities.enumerated() {
+                    if folderEntity.id == parameter1 {
+                        let memoEntity = MemoEntityRealm()
+                        let memoTitleEntity = MemoTitleEntityRealm()
+                        memoTitleEntity.id = memoEntity.id
+                        try! realm.write {
+                            realm.add(memoEntity)
+                            folderEntity.memoTitles.insert(memoTitleEntity, at: 0)
+                        }
+                        completion(.success((memoEntity.id, memoEntity.text)))
+                    }
                 }
-                completion(.success((memoEntity.id, memoEntity.text)))
             }
-            
         }
     }
-    
-}
-
-extension Notification.Name {
-    static let notifyAddMemo = Notification.Name("notifyAddMemo")
 }
 
 

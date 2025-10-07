@@ -160,34 +160,42 @@ extension MainViewController {
 //消す用
 extension MainViewController {
     func practiceFunc() {
+        let realm = try! Realm()
+        let folderManagerEntity = FolderManagerEntityRealm()
+        try! realm.write {
+            realm.add(folderManagerEntity)
+        }
         let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
         let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
         let prefecture = ["愛知県", "東京都", "福岡県", "兵庫県", "北海道", "山口県", "茨城県", "沖縄県", "石川県"]
         
         
-        createFolderEntiy(folderName: "Number", number)
-        createFolderEntiy(folderName: "fruit", fruit)
-        createFolderEntiy(folderName: "都道府県", prefecture)
+        addFolderEntiy(folderName: "Number", number)
+        addFolderEntiy(folderName: "fruit", fruit)
+        addFolderEntiy(folderName: "都道府県", prefecture)
     }
     
-    func createFolderEntiy(folderName: String,_ items: [String]) {
+    func addFolderEntiy(folderName: String,_ items: [String]) {
         let realm = try! Realm()
-        let folderEntity = FolderEntityRealm()
-        folderEntity.name = folderName
-        for item in items {
-            let memoEntity = MemoEntityRealm()
-            let memoTitleEntity = MemoTitleEntityRealm()
-            memoEntity.text = item
-            
-            memoTitleEntity.id = memoEntity.id
-            memoTitleEntity.title = memoEntity.text
-            folderEntity.memoTitles.append(memoTitleEntity)
-            try! realm.write {
-                realm.add(memoEntity)
+        let results = realm.objects(FolderManagerEntityRealm.self)
+        if let folderManager = results.first {
+            let folderEntity = FolderEntityRealm()
+            folderEntity.name = folderName
+            for item in items {
+                let memoEntity = MemoEntityRealm()
+                let memoTitleEntity = MemoTitleEntityRealm()
+                memoEntity.text = item
+                
+                memoTitleEntity.id = memoEntity.id
+                memoTitleEntity.title = memoEntity.text
+                folderEntity.memoTitles.append(memoTitleEntity)
+                try! realm.write {
+                    realm.add(memoEntity)
+                }
             }
-        }
-        try! realm.write {
-            realm.add(folderEntity)
+            try! realm.write {
+                folderManager.folderEntities.append(folderEntity)
+            }
         }
     }
 }

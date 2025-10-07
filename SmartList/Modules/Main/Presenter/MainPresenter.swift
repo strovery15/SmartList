@@ -35,7 +35,7 @@ class MainPresenter {
 
 extension MainPresenter: MainPresentation {
     func didLoad() {
-        var folderEntities: Results<FolderEntityRealm>?
+        var folderEntities: List<FolderEntityRealm>?
         var firstIndex: Int?
         var makeFolderChiefViewCon_Trigger = Trigger.off {
             didSet {
@@ -69,7 +69,7 @@ extension MainPresenter: MainPresentation {
     }
     
     func addFolder(folderName: String) {
-        var folderEntities: Results<FolderEntityRealm>?
+        var folderEntities: List<FolderEntityRealm>?
         var firstIndex: Int?
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
@@ -104,7 +104,7 @@ extension MainPresenter: MainPresentation {
     }
     
     func deleteFolder(folderId: FolderEntityRealm.ID) {
-        var folderEntities: Results<FolderEntityRealm>?
+        var folderEntities: List<FolderEntityRealm>?
         var firstIndex: Int?
         var makeFolderChiefVC_Trigger = Trigger.off {
             didSet {
