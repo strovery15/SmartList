@@ -13,7 +13,7 @@ class GetMemoTitlesInteractor: GetMemoTitlesUseCase {
         var memoTitleEntities: [MemoTitleEntity] = []
         let results = realm.objects(FolderManagerEntityRealm.self)
         if let folderManager = results.first {
-            for (index, folderEntity) in folderManager.folderEntities.enumerated() {
+            for (_ , folderEntity) in folderManager.folderEntities.enumerated() {
                 if folderEntity.id == parameter {
                     for memoTitle in folderEntity.memoTitles {
                         let memoTitleEntity = MemoTitleEntity(id: memoTitle.id, title: memoTitle.title)

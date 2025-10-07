@@ -9,7 +9,7 @@ final class AppDependencies {
         guard let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainViewController else {
             fatalError()
         }
-        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderItems: MakeFolderItemsInteractor(), getFolders: GetFoldersInteractor(), addFolder: AddFolderInteractor(), deleteFolder: DeleteFolderInteractor()))
+        viewController.presenter = MainPresenter(view: viewController, dependency: .init(makeFolderItems: MakeFolderItemsInteractor(), getFolders: GetFoldersInteractor(), addFolder: AddFolderInteractor(), deleteFolder: DeleteFolderInteractor(), renameFolder: RenameFolderInteractor()))
         return viewController
     }
     

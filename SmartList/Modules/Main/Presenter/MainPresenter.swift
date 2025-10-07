@@ -8,6 +8,7 @@ protocol MainPresentation: AnyObject {
     func didLoad()
     func addFolder(folderName: String)
     func deleteFolder(folderId: FolderEntityRealm.ID)
+    func renameFolder(folderId: FolderEntityRealm.ID, folderName: String)
 //    func toSetting()
 }
 
@@ -22,6 +23,7 @@ class MainPresenter {
         let getFolders: GetFoldersUseCase
         let addFolder: AddFolderUseCase
         let deleteFolder: DeleteFolderUseCase
+        let renameFolder: RenameFolderUseCase
     }
     
     weak var view: MainView?
@@ -136,6 +138,41 @@ extension MainPresenter: MainPresentation {
         }
         
         deleteFolderEntity_Trigger = .on
+    }
+    
+    func renameFolder(folderId: FolderEntityRealm.ID, folderName: String) {
+        var folderEntities: List<FolderEntityRealm>?
+        var firstIndex: Int?
+        var makeFolderChiefVC_Trigger = Trigger.off {
+            didSet {
+                if makeFolderChiefVC_Trigger == Trigger.on {
+                    dependency.makeFolderItems.execute(folderEntities!) { [weak self] result in
+                        guard let self = self else { return }
+                        switch result {
+                        case .success(let folderItems):
+                            self.view?.reSetFoldes(folderItems, firstIndex!)
+                        }
+                    }
+                }
+            }
+        }
+        
+        var renameFolderEntity_Trigger = Trigger.off {
+            didSet {
+                if renameFolderEntity_Trigger == Trigger.on {
+                    dependency.renameFolder.execute(folderId, folderName) { result in
+                        switch result {
+                        case .success(let value):
+                            folderEntities = value.entities
+                            firstIndex = value.index
+                            makeFolderChiefVC_Trigger = Trigger.on
+                        }
+                    }
+                }
+            }
+        }
+        
+        renameFolderEntity_Trigger = .on
     }
     
 }

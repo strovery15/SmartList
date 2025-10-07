@@ -9,6 +9,7 @@ protocol RenameFolderUseCase {
 
 class RenameFolderInteractor: RenameFolderUseCase {
     func execute(_ parameter1: FolderEntityRealm.ID, _ parameter2: String, completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ())) {
+        
         let realm = try! Realm()
         let results = realm.objects(FolderManagerEntityRealm.self)
         if let folderManager = results.first {
@@ -20,7 +21,6 @@ class RenameFolderInteractor: RenameFolderUseCase {
                     completion(.success((folderManager.folderEntities, index)))
                 }
             }
-            
         }
     }
     
