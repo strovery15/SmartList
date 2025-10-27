@@ -212,7 +212,6 @@
 		8978BDD02E5487A700809825 /* MemoCell */ = {
 			isa = PBXGroup;
 			children = (
-				89976EC22E48215500791ED4 /* Folder.storyboard */,
 				8978BDD12E5487C900809825 /* MemoCell.swift */,
 				8978BDD32E54892200809825 /* MemoCellView.swift */,
 				8962A2842E572F2200D208E6 /* MemoCellView.xib */,
@@ -280,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				89976EC42E4829B400791ED4 /* FolderViewController.swift */,
+				89976EC22E48215500791ED4 /* Folder.storyboard */,
 				895CF3262E6879BA00DEB033 /* MemoTitleRepository.swift */,
 				8978BDD02E5487A700809825 /* MemoCell */,
 				89241C742E8E831C00B13848 /* HeaderCell */,
