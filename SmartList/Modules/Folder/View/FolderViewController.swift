@@ -26,17 +26,14 @@ class FolderViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
-            configureCollectionView()
             configureCollectionViewLayout()
             configureDataSource()
         }
     }
     
-    @IBOutlet weak var addMemoButton: UIButton! {
-        didSet {
-            configureAddMemoButton()
-        }
-    }
+    @IBOutlet weak var addMemoButton: UIButton!
+    @IBOutlet weak var collectionViewTapGesture: UITapGestureRecognizer!
+    @IBOutlet weak var collectionViewLongTapGesture: UILongPressGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,9 +41,42 @@ class FolderViewController: UIViewController {
         presenter.didLoad(id: folderId)
     }
     
-    
     @IBAction func addMemoButtonAction(_ sender: Any) {
         presenter.addMemo(folderId: folderId)
+    }
+    
+    @IBAction func collectionViewTapAction(_ sender: Any) {
+        if collectionViewTapGesture.state == .ended {
+            if let indexPath = collectionView.indexPathForItem(at: collectionViewTapGesture.location(in: collectionView)) {
+                let memoId = self.dataSource!.itemIdentifier(for: indexPath)!
+                presenter.selectMemo(folderId: folderId, memoId: memoId)
+            }
+        }
+    }
+    
+    @IBAction func collectionViewLongTapAction(_ sender: Any) {
+        switch collectionViewLongTapGesture.state {
+        case .began:
+            if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
+                sourceIndex = indexPath.row
+                collectionView.beginInteractiveMovementForItem(at: indexPath)
+            }
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(collectionViewLongTapGesture.location(in: collectionView))
+        case .ended:
+            collectionView.endInteractiveMovement()
+            if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
+                destinationIndex = indexPath.row
+                let memoTitle = repository.memoTitles[sourceIndex]
+                repository.memoTitles.remove(at: sourceIndex)
+                repository.memoTitles.insert(memoTitle, at: destinationIndex)
+                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
+                sourceIndex = 0
+                destinationIndex = 0
+            }
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
     }
     
 }
@@ -83,7 +113,8 @@ extension FolderViewController: FolderView {
 private extension FolderViewController {
     
     func firstConfiguration() {
-        view.backgroundColor = .systemGray6
+        
+        addMemoButton.backgroundColor = .systemTeal
         
         configureLayout()
         
@@ -140,18 +171,6 @@ private extension FolderViewController {
 
 // MARK: - UIComponent Method
 extension FolderViewController {
-    
-    // CollectionView
-    func configureCollectionView() {
-        collectionView.allowsSelection = false
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapRecognizer))
-        collectionView.addGestureRecognizer(tapGesture)
-        
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressRecognizer))
-        collectionView.addGestureRecognizer(longPressGesture)
-        
-    }
     
     func configureCollectionViewLayout() {
         var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
@@ -237,54 +256,6 @@ extension FolderViewController {
         var snapshot = dataSource.snapshot()
         snapshot.deleteItems([memoId])
         self.dataSource.apply(snapshot, animatingDifferences: true)
-    }
-    
-    @objc func tapRecognizer(gesture: UITapGestureRecognizer) {
-        if gesture.state == .ended {
-            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
-                let memoId = self.dataSource!.itemIdentifier(for: indexPath)!
-                presenter.selectMemo(folderId: folderId, memoId: memoId)
-            }
-        }
-    }
-    
-    @objc func longPressRecognizer(gesture: UILongPressGestureRecognizer) {
-        switch gesture.state {
-        case .began:
-            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
-                sourceIndex = indexPath.row
-                collectionView.beginInteractiveMovementForItem(at: indexPath)
-            }
-            
-        case .changed:
-            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
-        case .ended:
-            collectionView.endInteractiveMovement()
-            if let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) {
-                destinationIndex = indexPath.row
-                let memoTitle = repository.memoTitles[sourceIndex]
-                repository.memoTitles.remove(at: sourceIndex)
-                repository.memoTitles.insert(memoTitle, at: destinationIndex)
-                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
-                sourceIndex = 0
-                destinationIndex = 0
-            }
-            
-        default:
-            collectionView.cancelInteractiveMovement()
-        }
-        
-    }
-    
-    //addMemoButton
-    func configureAddMemoButton() {
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
-        let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
-        addMemoButton.setTitle("", for: .normal)
-        addMemoButton.setImage(systemImage, for: .normal)
-        addMemoButton.backgroundColor = .systemTeal
-        addMemoButton.tintColor = .white
-        addMemoButton.layer.cornerRadius = 35  * UIScreen.main.bounds.size.width / 390
     }
     
 }

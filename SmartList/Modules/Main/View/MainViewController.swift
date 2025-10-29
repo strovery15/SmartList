@@ -5,6 +5,7 @@ import RealmSwift
 import TabPageViewController
 
 protocol MainView: AnyObject {
+    
     func setFolders(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
     func reSetFoldes(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
 }
@@ -13,7 +14,7 @@ class MainViewController: UIViewController {
     
     var presenter: MainPresentation!
     
-    var addFolderButton: UIButton!
+    @IBOutlet weak var addFolderButton: UIButton!
     
     private var firstIndex: Int?
     
@@ -26,43 +27,7 @@ class MainViewController: UIViewController {
         print("--------------------------------")
     }
     
-}
-
-extension MainViewController: MainView {
-    func setFolders(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
-        configureTabPageViewControllerAndButton(folderItems, firstIndex)
-    }
-    
-    func reSetFoldes(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
-        for child in children {
-            child.willMove(toParent: nil)
-            child.view.removeFromSuperview()
-            child.removeFromParent()
-        }
-        configureTabPageViewControllerAndButton(folderItems, firstIndex)
-    }
-    
-}
-
-private extension MainViewController {
-    
-    func configureLayout() {
-        
-        addFolderButton = UIButton()
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 30.0 * UIScreen.main.bounds.size.width / 390, weight: .regular, scale: .small)
-        let systemImage = UIImage(systemName: "plus", withConfiguration: symbolConfiguration)
-        addFolderButton.setImage(systemImage, for: .normal)
-        addFolderButton.backgroundColor = .white
-        addFolderButton.tintColor = .systemTeal
-        
-        addFolderButton.addTarget(self, action: #selector(addFolderButtonAction(_:)), for: .touchUpInside)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyRenameFolder(_:)), name: .notifyRenameFolder, object: nil)
-    }
-    
-    @objc func addFolderButtonAction(_ sender: UIButton) {
+    @IBAction func addFolderButtonAction(_ sender: Any) {
         let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
             guard let self = self else { return }
@@ -85,6 +50,37 @@ private extension MainViewController {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true)
+    }
+    
+    
+}
+
+extension MainViewController: MainView {
+    
+    func setFolders(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
+        configureTabPageViewControllerAndButton(folderItems, firstIndex)
+    }
+    
+    func reSetFoldes(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
+        for child in children {
+            child.willMove(toParent: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParent()
+        }
+        configureTabPageViewControllerAndButton(folderItems, firstIndex)
+    }
+    
+}
+
+private extension MainViewController {
+    
+    func configureLayout() {
+        
+        addFolderButton.tintColor = .systemTeal
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteFolder(_:)), name: .notifyDeleteFolder, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(notifyRenameFolder(_:)), name: .notifyRenameFolder, object: nil)
     }
 
     @objc func notifyDeleteFolder(_ notification: Notification) {
@@ -147,15 +143,14 @@ extension MainViewController {
         tabPageVc.option.tabBackgroundColor = .systemTeal
         
         addFolderButton.translatesAutoresizingMaskIntoConstraints = false
-        tabPageVc.view.addSubview(addFolderButton)
-        
-        addFolderButton.topAnchor.constraint(equalTo: tabPageVc.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        addFolderButton.rightAnchor.constraint(equalTo: tabPageVc.view.rightAnchor).isActive = true
+        addFolderButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        addFolderButton.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         addFolderButton.widthAnchor.constraint(equalToConstant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
         addFolderButton.heightAnchor.constraint(equalToConstant: 53 * UIScreen.main.bounds.size.width / 390).isActive = true
         
         addChild(tabPageVc)
         view.addSubview(tabPageVc.view)
+        view.bringSubviewToFront(addFolderButton)
         tabPageVc.didMove(toParent: self)
     }
 }
