@@ -11,6 +11,8 @@
 		89052CCF2E50B74100CB0597 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 89052CCE2E50B74100CB0597 /* RealmSwift */; };
 		89052CD02E50B74100CB0597 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 89052CCE2E50B74100CB0597 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		89052CD52E51A7CE00CB0597 /* AddFolderInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89052CD42E51A7CE00CB0597 /* AddFolderInteractor.swift */; };
+		890D64D72EB13CA3009FD55D /* SaveEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890D64D62EB13CA3009FD55D /* SaveEffectView.swift */; };
+		890D64DB2EB14B70009FD55D /* SaveEffectView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 890D64DA2EB14B70009FD55D /* SaveEffectView.xib */; };
 		890F065A2E74565C0063ED3A /* GetMemoEntityInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890F06592E74565C0063ED3A /* GetMemoEntityInteractor.swift */; };
 		89241C712E8E39FA00B13848 /* MemoTitleEntityRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89241C702E8E39FA00B13848 /* MemoTitleEntityRealm.swift */; };
 		89241C732E8E3ABD00B13848 /* MemoTitleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89241C722E8E3ABD00B13848 /* MemoTitleEntity.swift */; };
@@ -67,6 +69,8 @@
 		2A64BA55BF695C3374951267 /* Pods-SmartList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartList.release.xcconfig"; path = "Target Support Files/Pods-SmartList/Pods-SmartList.release.xcconfig"; sourceTree = "<group>"; };
 		89052C9F2E50511600CB0597 /* GetFoldersInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFoldersInteractor.swift; sourceTree = "<group>"; };
 		89052CD42E51A7CE00CB0597 /* AddFolderInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFolderInteractor.swift; sourceTree = "<group>"; };
+		890D64D62EB13CA3009FD55D /* SaveEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveEffectView.swift; sourceTree = "<group>"; };
+		890D64DA2EB14B70009FD55D /* SaveEffectView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SaveEffectView.xib; sourceTree = "<group>"; };
 		890F06592E74565C0063ED3A /* GetMemoEntityInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetMemoEntityInteractor.swift; sourceTree = "<group>"; };
 		89241C702E8E39FA00B13848 /* MemoTitleEntityRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntityRealm.swift; sourceTree = "<group>"; };
 		89241C722E8E3ABD00B13848 /* MemoTitleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntity.swift; sourceTree = "<group>"; };
@@ -138,6 +142,15 @@
 				BF9342DBA29492852976B2E8 /* Pods_SmartList.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		890D64D52EB13C43009FD55D /* SaveEffectView */ = {
+			isa = PBXGroup;
+			children = (
+				890D64D62EB13CA3009FD55D /* SaveEffectView.swift */,
+				890D64DA2EB14B70009FD55D /* SaveEffectView.xib */,
+			);
+			path = SaveEffectView;
 			sourceTree = "<group>";
 		};
 		890F06582E7455EF0063ED3A /* Interactor */ = {
@@ -320,6 +333,7 @@
 			children = (
 				89E4D51B2E71DE5A00598D90 /* MemoViewController.swift */,
 				89E4D51E2E71DEB100598D90 /* Memo.storyboard */,
+				890D64D52EB13C43009FD55D /* SaveEffectView */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -410,6 +424,7 @@
 			files = (
 				89E4D51F2E71DEB100598D90 /* Memo.storyboard in Resources */,
 				89241C7A2E8E840300B13848 /* HeaderCellView.xib in Resources */,
+				890D64DB2EB14B70009FD55D /* SaveEffectView.xib in Resources */,
 				8962A2852E572F2200D208E6 /* MemoCellView.xib in Resources */,
 				89976EC32E48215500791ED4 /* Folder.storyboard in Resources */,
 				897A8B332E3FCDAB00A4852C /* LaunchScreen.storyboard in Resources */,
@@ -474,6 +489,7 @@
 				89976EB92E476AA800791ED4 /* MemoEntityRealm.swift in Sources */,
 				896F5EC02E7637BD00A749FD /* SaveMemoEntityInteractor.swift in Sources */,
 				89241C732E8E3ABD00B13848 /* MemoTitleEntity.swift in Sources */,
+				890D64D72EB13CA3009FD55D /* SaveEffectView.swift in Sources */,
 				89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */,
 				89241C782E8E83D000B13848 /* HeaderCellView.swift in Sources */,
 				895CF3272E6879BA00DEB033 /* MemoTitleRepository.swift in Sources */,
