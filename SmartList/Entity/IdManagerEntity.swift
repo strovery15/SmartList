@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct IdListEntity {
+struct IdManagerEntity {
     
     var folderIds: [FolderIdEntity]
     var memoIds: [MemoIdEntity]

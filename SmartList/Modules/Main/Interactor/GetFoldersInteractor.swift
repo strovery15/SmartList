@@ -3,17 +3,34 @@
 import RealmSwift
 
 protocol GetFoldersUseCase {
-    func execute(completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ()))
+    
+    func execute(completion: ((Result<(entities: [FolderEntity], index: Int), Never>) -> ()))
 }
 
 class GetFoldersInteractor: GetFoldersUseCase {
-    func execute(completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ())) {
+    
+    func execute(completion: ((Result<(entities: [FolderEntity], index: Int), Never>) -> ())) {
         let realm = try! Realm()
-        let results = realm.objects(FolderManagerEntityRealm.self)
-        if let folderManager = results.first {
-            completion(.success((folderManager.folderEntities, 0)))
+        let realmFolders = realm.objects(RealmFolderEntity.self)
+        let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
+        
+        var realmFoldersOrder: [RealmFolderEntity] = []
+        for realmFolderId in realmIdManager.folderIds {
+            let realmFolder = realmFolders.first(where: { $0.id == realmFolderId.id })!
+            realmFoldersOrder.append(realmFolder)
         }
         
+        var folders = loadFolders(realmFoldersOrder)
+        completion(.success((folders, 0)))
+    }
+    
+    private func loadFolders(_ realmFolders: [RealmFolderEntity]) -> [FolderEntity] {
+        var folders: [FolderEntity] = []
+        for realmFolder in realmFolders {
+            let folder = FolderEntity(id: realmFolder.id, name: realmFolder.name)
+            folders.append(folder)
+        }
+        return folders
     }
     
 }

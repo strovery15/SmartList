@@ -13,7 +13,7 @@ final class AppDependencies {
         return viewController
     }
     
-    func assembleFolderModules(_ folderEntities: List<FolderEntityRealm>) -> [UIViewController] {
+    func assembleFolderModules(_ folderEntities: [FolderEntity]) -> [UIViewController] {
         var viewCons: [UIViewController] = []
         let storyboard = UIStoryboard(name: "Folder", bundle: nil)
         

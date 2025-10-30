@@ -4,33 +4,69 @@ import Foundation
 import RealmSwift
 
 protocol DeleteFolderUseCase {
-    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ()))
+    
+    func execute(_ parameter: FolderEntity.ID, completion: ((Result<(entities: [FolderEntity], index: Int), Never>) -> ()))
 }
 
 class DeleteFolderInteractor: DeleteFolderUseCase {
-    func execute(_ parameter: FolderEntityRealm.ID, completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ())) {
+    
+    func execute(_ parameter: FolderEntity.ID, completion: ((Result<(entities: [FolderEntity], index: Int), Never>) -> ())) {
         let realm = try! Realm()
-        let folderManagerResults = realm.objects(FolderManagerEntityRealm.self)
-        let memoResults = realm.objects(MemoEntityRealm.self)
-        if let folderManager = folderManagerResults.first {
-            for (index, folderEntity) in folderManager.folderEntities.enumerated() {
-                if folderEntity.id == parameter {
-                    for memoTitleEntity in folderEntity.memoTitles {
-                        let memoPredicate = NSPredicate(format: "id == %@", memoTitleEntity.id as CVarArg)
-                        if let memoEntity = memoResults.filter(memoPredicate).first {
-                            try! realm.write {
-                                realm.delete(memoEntity)
-                            }
-                        }
-                    }
-                    try! realm.write {
-                        folderManager.folderEntities.remove(at: index)
-                    }
-                    completion(.success((folderManager.folderEntities, folderManager.folderEntities.count - 1)))
+        let realmFolders = realm.objects(RealmFolderEntity.self)
+        let realmMemos = realm.objects(RealmMemoEntity.self)
+        let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
+        var firstIndex = 0
+        
+        for (index, realmFolderId) in realmIdManager.folderIds.enumerated() {
+            if realmFolderId.id == parameter {
+                if realmIdManager.folderIds.last!.id == realmFolderId.id {
+                    firstIndex = index - 1
+                } else {
+                    firstIndex = index
+                }
+                
+                try! realm.write {
+                    realmIdManager.folderIds.remove(at: index)
+                }
+                
+                let realmFolderDelete = realmFolders.first(where: { $0.id == realmFolderId.id })!
+                try! realm.write {
+                    realm.delete(realmFolderDelete)
                 }
             }
         }
+        
+        for (index, realmMemoId) in realmIdManager.memoIds.enumerated() {
+            if realmMemoId.folderId == parameter {
+                try! realm.write {
+                    realmIdManager.memoIds.remove(at: index)
+                }
+                
+                let realmMemoDelete = realmMemos.first(where: { $0.id == realmMemoId.memoId })!
+                try! realm.write {
+                    realm.delete(realmMemoDelete)
+                }
+            }
+        }
+        
+        var realmFoldersOrder: [RealmFolderEntity] = []
+        for realmFolderId in realmIdManager.folderIds {
+            let realmFolder = realmFolders.first(where: { $0.id == realmFolderId.id })!
+            realmFoldersOrder.append(realmFolder)
+        }
+        
+        var folders = loadFolders(realmFoldersOrder)
+        completion(.success((folders, firstIndex)))
             
+    }
+    
+    private func loadFolders(_ realmFolders: [RealmFolderEntity]) -> [FolderEntity] {
+        var folders: [FolderEntity] = []
+        for realmFolder in realmFolders {
+            let folder = FolderEntity(id: realmFolder.id, name: realmFolder.name)
+            folders.append(folder)
+        }
+        return folders
     }
 }
 

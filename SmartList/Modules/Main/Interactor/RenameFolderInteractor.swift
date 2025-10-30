@@ -4,24 +4,47 @@ import Foundation
 import RealmSwift
 
 protocol RenameFolderUseCase {
-    func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: String, completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ()))
+    
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: String, completion: ((Result<(entities: [FolderEntity], index: Int), Never>) -> ()))
 }
 
 class RenameFolderInteractor: RenameFolderUseCase {
-    func execute(_ parameter1: FolderEntityRealm.ID, _ parameter2: String, completion: ((Result<(entities: List<FolderEntityRealm>, index: Int), Never>) -> ())) {
+    
+    func execute(_ parameter1: FolderEntity.ID, _ parameter2: String, completion: ((Result<(entities: [FolderEntity], index: Int), Never>) -> ())) {
         
         let realm = try! Realm()
-        let results = realm.objects(FolderManagerEntityRealm.self)
-        if let folderManager = results.first {
-            for (index, folderEntity) in folderManager.folderEntities.enumerated() {
-                if folderEntity.id == parameter1 {
-                    try! realm.write {
-                        folderManager.folderEntities[index].name = parameter2
-                    }
-                    completion(.success((folderManager.folderEntities, index)))
+        let realmFolders = realm.objects(RealmFolderEntity.self)
+        let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
+        var firstIndex = 0
+        
+        for (index, realmFolderId) in realmIdManager.folderIds.enumerated() {
+            if realmFolderId.id == parameter1 {
+                firstIndex = index
+                
+                let realmFolderRename = realmFolders.first(where: { $0.id == realmFolderId.id })
+                try! realm.write {
+                    realmFolderRename?.name = parameter2
                 }
             }
         }
+        
+        var realmFoldersOrder: [RealmFolderEntity] = []
+        for realmFolderId in realmIdManager.folderIds {
+            let realmFolder = realmFolders.first(where: { $0.id == realmFolderId.id })!
+            realmFoldersOrder.append(realmFolder)
+        }
+        
+        var folders = loadFolders(realmFoldersOrder)
+        completion(.success((folders, firstIndex)))
+    }
+    
+    private func loadFolders(_ realmFolders: [RealmFolderEntity]) -> [FolderEntity] {
+        var folders: [FolderEntity] = []
+        for realmFolder in realmFolders {
+            let folder = FolderEntity(id: realmFolder.id, name: realmFolder.name)
+            folders.append(folder)
+        }
+        return folders
     }
     
 }

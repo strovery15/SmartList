@@ -3,7 +3,7 @@
 import Foundation
 import RealmSwift
 
-class RealmIdListEntity: Object {
+class RealmIdManagerEntity: Object {
     
     var folderIds = List<RealmFolderIdEntity>()
     var memoIds = List<RealmMemoIdEntity>()
