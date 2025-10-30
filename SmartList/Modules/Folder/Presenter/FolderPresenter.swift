@@ -31,7 +31,7 @@ class FolderPresenter {
 
 extension FolderPresenter: FolderPresentation {
     
-    func didLoad(id: FolderEntityRealm.ID) {
+    func didLoad(id: FolderEntity.ID) {
         dependency.getMemoTitles.execute(id) { [weak self] result in
             guard let self = self else { return }
             switch result {

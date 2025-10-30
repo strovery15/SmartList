@@ -4,7 +4,8 @@ import Foundation
 import RealmSwift
 
 protocol GetMemoEntityUseCase {
-    func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: MemoEntityRealm.ID?, completion: ((Result<(memoId: MemoEntityRealm.ID, text: String), Never>) -> ()))
+    
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntityRealm.ID, text: String), Never>) -> ()))
 }
 
 class GetMemoEntityInteractor: GetMemoEntityUseCase {

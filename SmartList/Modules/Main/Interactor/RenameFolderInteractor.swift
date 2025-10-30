@@ -34,11 +34,11 @@ class RenameFolderInteractor: RenameFolderUseCase {
             realmFoldersOrder.append(realmFolder)
         }
         
-        var folders = loadFolders(realmFoldersOrder)
+        var folders = objectFolders(realmFoldersOrder)
         completion(.success((folders, firstIndex)))
     }
     
-    private func loadFolders(_ realmFolders: [RealmFolderEntity]) -> [FolderEntity] {
+    private func objectFolders(_ realmFolders: [RealmFolderEntity]) -> [FolderEntity] {
         var folders: [FolderEntity] = []
         for realmFolder in realmFolders {
             let folder = FolderEntity(id: realmFolder.id, name: realmFolder.name)
