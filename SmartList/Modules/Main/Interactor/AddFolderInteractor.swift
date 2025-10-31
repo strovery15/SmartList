@@ -15,14 +15,14 @@ class AddFolderInteractor: AddFolderUseCase {
         let realmFolders = realm.objects(RealmFolderEntity.self)
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
         
-        let newRealmFolder = RealmFolderEntity()
-        newRealmFolder.name = parameter
-        let newRealmFolderId = RealmFolderIdEntity()
-        newRealmFolderId.id = newRealmFolder.id
+        let realmFolderAdd = RealmFolderEntity()
+        realmFolderAdd.name = parameter
+        let realmFolderIdAdd = RealmFolderIdEntity()
+        realmFolderIdAdd.id = realmFolderAdd.id
         
         try! realm.write {
-            realm.add(newRealmFolder)
-            realmIdManager.folderIds.append(newRealmFolderId)
+            realm.add(realmFolderAdd)
+            realmIdManager.folderIds.append(realmFolderIdAdd)
         }
         
         var realmFoldersOrder: [RealmFolderEntity] = []

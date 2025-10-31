@@ -5,36 +5,28 @@ import RealmSwift
 
 protocol GetMemoEntityUseCase {
     
-    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntityRealm.ID, text: String), Never>) -> ()))
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntity.ID, text: String), Never>) -> ()))
 }
 
 class GetMemoEntityInteractor: GetMemoEntityUseCase {
     
-    func execute(_ parameter1: FolderEntityRealm.ID,_ parameter2: MemoEntityRealm.ID?, completion: ((Result<(memoId: MemoEntityRealm.ID, text: String), Never>) -> ())) {
-        
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntity.ID, text: String), Never>) -> ())) {
         let realm = try! Realm()
+        let realmMemo = realm.objects(RealmMemoEntity.self)
+        let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
         
         if parameter2 != nil {
-            let memoResults = realm.objects(MemoEntityRealm.self)
-            let memoPredicate = NSPredicate(format: "id == %@", parameter2! as CVarArg)
-            if let memoEntity = memoResults.filter(memoPredicate).first {
-                completion(.success((parameter2!, memoEntity.text)))
-            }
+            let realmMemoGet = realmMemo.first(where: { $0.id == parameter2 })!
+            completion(.success((realmMemoGet.id, realmMemoGet.memo)))
         } else {
-            let folderManagerResults = realm.objects(FolderManagerEntityRealm.self)
-            if let folderManager = folderManagerResults.first {
-                for (index, folderEntity) in folderManager.folderEntities.enumerated() {
-                    if folderEntity.id == parameter1 {
-                        let memoEntity = MemoEntityRealm()
-                        let memoTitleEntity = MemoTitleEntityRealm()
-                        memoTitleEntity.id = memoEntity.id
-                        try! realm.write {
-                            realm.add(memoEntity)
-                            folderEntity.memoTitles.insert(memoTitleEntity, at: 0)
-                        }
-                        completion(.success((memoEntity.id, memoEntity.text)))
-                    }
-                }
+            let realmMemoAdd = RealmMemoEntity()
+            let realmMemoIdAdd = RealmMemoIdEntity()
+            realmMemoIdAdd.folderId = parameter1
+            realmMemoIdAdd.memoId = realmMemoAdd.id
+            
+            try! realm.write {
+                realm.add(realmMemoAdd)
+                realmIdManager.memoIds.insert(realmMemoIdAdd, at: 0)
             }
         }
     }
