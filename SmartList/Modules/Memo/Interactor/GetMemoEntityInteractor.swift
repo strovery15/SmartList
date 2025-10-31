@@ -12,7 +12,7 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
     
     func execute(_ parameter1: FolderEntity.ID,_ parameter2: MemoEntity.ID?, completion: ((Result<(memoId: MemoEntity.ID, text: String), Never>) -> ())) {
         let realm = try! Realm()
-        let realmMemo = realm.objects(RealmMemoEntity.self)
+        let realmMemos = realm.objects(RealmMemoEntity.self)
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
         
         if parameter2 != nil {
