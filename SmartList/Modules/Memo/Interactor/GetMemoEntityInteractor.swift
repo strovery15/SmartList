@@ -16,8 +16,8 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
         
         if parameter2 != nil {
-            let realmMemoGet = realmMemo.first(where: { $0.id == parameter2 })!
-            completion(.success((realmMemoGet.id, realmMemoGet.memo)))
+            let realmMemo = realmMemos.first(where: { $0.id == parameter2 })!
+            completion(.success((realmMemo.id, realmMemo.memo)))
         } else {
             let realmMemoAdd = RealmMemoEntity()
             let realmMemoIdAdd = RealmMemoIdEntity()
