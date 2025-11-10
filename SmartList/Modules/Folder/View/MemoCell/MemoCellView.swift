@@ -8,14 +8,15 @@ class MemoCellView: UIView, UIContentView  {
     @IBOutlet weak var memoTitleLabel: UILabel!
     @IBOutlet weak var menuButton: UIButton!
     
-    var memoId: MemoEntity.ID
+    var memoId: MemoEntity.ID?
     
     var deleteBlock: ((MemoEntity.ID) -> Void)?
     
     var memoConfiguration: MemoCellConfiguration! {
         didSet {
-            memoTitleLabel.text = memoConfiguration.title
-            memoId = memoConfiguration.memoId
+            memoId = memoConfiguration.memoId!
+            memoTitleLabel.text = memoConfiguration.title!
+            deleteBlock = memoConfiguration.deleteBlock
         }
     }
     
@@ -57,7 +58,7 @@ class MemoCellView: UIView, UIContentView  {
         
         var deleteAction = UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            deleteBlock?(memoId)
+            deleteBlock?(memoId!)
         })
         menuChildren.append(deleteAction)
         
@@ -81,9 +82,4 @@ class MemoCellView: UIView, UIContentView  {
         menuButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12).isActive = true
         menuButton.widthAnchor.constraint(equalToConstant: 30 * UIScreen.main.bounds.size.width / 390).isActive = true
     }
-}
-
-extension Notification.Name {
-//    static let notifyTransfer = Notification.Name("notifyTransfer")
-    static let notifyDeleteMemo = Notification.Name("notifyDeleteMemo")
 }

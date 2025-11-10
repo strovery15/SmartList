@@ -8,14 +8,13 @@ class MemoCell: UICollectionViewListCell {
     func memoCellConfiguration() -> MemoCellConfiguration {
         MemoCellConfiguration()
     }
-    
 }
 
 struct MemoCellConfiguration: UIContentConfiguration {
     
-    var folderId: FolderEntityRealm.ID?
-    var memoId: MemoTitleEntityRealm.ID?
+    var memoId: MemoTitleEntity.ID?
     var title: String?
+    var deleteBlock: ((MemoEntity.ID) -> Void)?
     
     func updated(for state: UIConfigurationState) -> MemoCellConfiguration {
         return self

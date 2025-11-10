@@ -2,8 +2,8 @@
 
 import Foundation
 
-struct MemoTitleEntity: Hashable {
+struct MemoTitleEntity: Identifiable {
     
-    var id: MemoTitleEntityRealm.ID
+    var id: MemoEntity.ID
     var title: String
 }

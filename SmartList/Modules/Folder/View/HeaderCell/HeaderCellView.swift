@@ -9,13 +9,15 @@ class HeaderCellView: UIView, UIContentView {
     @IBOutlet var view: UIView!
     @IBOutlet weak var editFolderButton: UIButton!
     
-    var folderId: FolderEntity.ID
+    var folderId: FolderEntity.ID?
     var renameBlock: ((FolderEntity.ID) -> Void)?
     var deleteBlock: ((FolderEntity.ID) -> Void)?
     
     var headerConfiguration: HeaderCellConfiguration! {
         didSet {
-            folderId = headerConfiguration.folderId
+            folderId = headerConfiguration.folderId!
+            deleteBlock = headerConfiguration.deleteBlock
+            renameBlock = headerConfiguration.renameBlock
         }
     }
     
@@ -69,22 +71,17 @@ class HeaderCellView: UIView, UIContentView {
         
         var renameAction = UIAction(title: "フォルダの名前変更", image: UIImage(systemName: "arrow.right"), handler: { [weak self] _ in
             guard let self = self else { return }
-            renameBlock?(folderId)
+            renameBlock?(folderId!)
         })
         menuChildern.append(renameAction)
         
         var deleteAction = UIAction(title: "フォルダを削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            deleteBlock?(folderId)
+            deleteBlock?(folderId!)
         })
         menuChildern.append(deleteAction)
         
         return UIMenu(title: "", options: .singleSelection, children: menuChildern)
     }
     
-}
-
-extension Notification.Name {
-    static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
-    static let notifyRenameFolder = Notification.Name("notifyRenameFolder")
 }

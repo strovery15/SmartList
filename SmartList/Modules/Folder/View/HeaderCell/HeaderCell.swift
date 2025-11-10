@@ -13,7 +13,9 @@ class HeaderCell: UICollectionViewListCell {
 
 struct HeaderCellConfiguration: UIContentConfiguration {
     
-    var folderId: FolderEntityRealm.ID?
+    var folderId: FolderEntity.ID?
+    var deleteBlock: ((MemoEntity.ID) -> Void)?
+    var renameBlock: ((MemoEntity.ID) -> Void)?
     
     func updated(for state: UIConfigurationState) -> HeaderCellConfiguration {
         return self

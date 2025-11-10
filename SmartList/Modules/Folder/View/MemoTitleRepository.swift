@@ -6,9 +6,13 @@ import RealmSwift
 struct MemoTitlesRepository {
     
     var memoTitles: [MemoTitleEntity]
-    var memoTitleIDs: [MemoTitleEntityRealm.ID] { memoTitles.map(\.id) }
+    var memoTitleIDs: [MemoTitleEntity.ID] { memoTitles.map(\.id) }
     
-    func getMemoTitle(_ id: MemoTitleEntityRealm.ID) -> MemoTitleEntity? {
+    func getMemoTitle(_ id: MemoTitleEntity.ID) -> MemoTitleEntity? {
         memoTitles.first(where: {$0.id == id})
+    }
+    
+    init(_ memoTitles: [MemoTitleEntity]) {
+        self.memoTitles = memoTitles
     }
 }
