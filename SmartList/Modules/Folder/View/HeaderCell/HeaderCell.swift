@@ -14,7 +14,6 @@ class HeaderCell: UICollectionViewListCell {
 struct HeaderCellConfiguration: UIContentConfiguration {
     
     var folderId: FolderEntityRealm.ID?
-    var title: String?
     
     func updated(for state: UIConfigurationState) -> HeaderCellConfiguration {
         return self
