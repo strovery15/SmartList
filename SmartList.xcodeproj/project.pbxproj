@@ -26,6 +26,7 @@
 		8962A2852E572F2200D208E6 /* MemoCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8962A2842E572F2200D208E6 /* MemoCellView.xib */; };
 		8962A2872E584C5600D208E6 /* DeleteMemoTitleInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8962A2862E584C5600D208E6 /* DeleteMemoTitleInteractor.swift */; };
 		8962A2892E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8962A2882E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift */; };
+		896BFB4F2EC23C2400795E06 /* MemoTitleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896BFB4E2EC23C2400795E06 /* MemoTitleEntity.swift */; };
 		896F5EC02E7637BD00A749FD /* SaveMemoEntityInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */; };
 		8972364B2E93FF45003E0FAF /* RenameFolderInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8972364A2E93FF45003E0FAF /* RenameFolderInteractor.swift */; };
 		8978BDD22E5487C900809825 /* MemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978BDD12E5487C900809825 /* MemoCell.swift */; };
@@ -86,6 +87,7 @@
 		8962A2842E572F2200D208E6 /* MemoCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemoCellView.xib; sourceTree = "<group>"; };
 		8962A2862E584C5600D208E6 /* DeleteMemoTitleInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMemoTitleInteractor.swift; sourceTree = "<group>"; };
 		8962A2882E5862DC00D208E6 /* ReorderMemoTitleInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderMemoTitleInteractor.swift; sourceTree = "<group>"; };
+		896BFB4E2EC23C2400795E06 /* MemoTitleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTitleEntity.swift; sourceTree = "<group>"; };
 		896E454E2E8176DE00AD836C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		896E454F2E8176DF00AD836C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		896F5EBF2E7637BD00A749FD /* SaveMemoEntityInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveMemoEntityInteractor.swift; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 			children = (
 				898D85962EB21F96000A4DBF /* FolderEntity.swift */,
 				898D85982EB21FEB000A4DBF /* MemoEntity.swift */,
+				896BFB4E2EC23C2400795E06 /* MemoTitleEntity.swift */,
 				898D858B2EB21C75000A4DBF /* RealmObject */,
 			);
 			path = Entity;
@@ -506,6 +509,7 @@
 				89976EA52E47166F00791ED4 /* AppDependencies.swift in Sources */,
 				89241C782E8E83D000B13848 /* HeaderCellView.swift in Sources */,
 				898D858F2EB21D0D000A4DBF /* RealmMemoEntity.swift in Sources */,
+				896BFB4F2EC23C2400795E06 /* MemoTitleEntity.swift in Sources */,
 				895CF3272E6879BA00DEB033 /* MemoTitleRepository.swift in Sources */,
 				898D858D2EB21C95000A4DBF /* RealmFolderEntity.swift in Sources */,
 				89052CD52E51A7CE00CB0597 /* AddFolderInteractor.swift in Sources */,

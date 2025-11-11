@@ -6,7 +6,6 @@ import RealmSwift
 protocol FolderView: AnyObject {
     
     func setRepository(_ memoTitles: [MemoTitleEntity])
-    func reSetRepository(_ memoTitles: [MemoTitleEntity])
 }
 
 class FolderViewController: UIViewController {
@@ -16,13 +15,13 @@ class FolderViewController: UIViewController {
     }
     
     var presenter: FolderPresentation!
-    var folderId: FolderEntityRealm.ID!
+    var folderId: FolderEntity.ID!
     var repository: MemoTitlesRepository!
-    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntityRealm.ID>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
     //reordering用の変数
-    fileprivate var sourceIndex = 0
-    fileprivate var destinationIndex = 0
+    fileprivate var sourceId: MemoEntity.ID?
+    fileprivate var destinationId: MemoEntity.ID?
     
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
@@ -38,6 +37,9 @@ class FolderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         firstConfiguration()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         presenter.didLoad(id: folderId)
     }
     
@@ -58,7 +60,7 @@ class FolderViewController: UIViewController {
         switch collectionViewLongTapGesture.state {
         case .began:
             if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
-                sourceIndex = indexPath.row
+                sourceId = self.dataSource!.itemIdentifier(for: indexPath)!
                 collectionView.beginInteractiveMovementForItem(at: indexPath)
             }
         case .changed:
@@ -66,16 +68,15 @@ class FolderViewController: UIViewController {
         case .ended:
             collectionView.endInteractiveMovement()
             if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
-                destinationIndex = indexPath.row
-                let memoTitle = repository.memoTitles[sourceIndex]
-                repository.memoTitles.remove(at: sourceIndex)
-                repository.memoTitles.insert(memoTitle, at: destinationIndex)
-                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
-                sourceIndex = 0
-                destinationIndex = 0
+                destinationId = self.dataSource!.itemIdentifier(for: indexPath)!
+                presenter.reorderMemo(from: sourceId!, to: destinationId!)
+                sourceId = nil
+                destinationId = nil
             }
         default:
             collectionView.cancelInteractiveMovement()
+            sourceId = nil
+            destinationId = nil
         }
     }
     
@@ -85,28 +86,9 @@ class FolderViewController: UIViewController {
 extension FolderViewController: FolderView {
     
     func setRepository(_ memoTitles: [MemoTitleEntity]) {
-        repository = MemoTitlesRepository(memoTitles: memoTitles)
+        repository = MemoTitlesRepository(memoTitles)
         setSnapshot()
     }
-    
-    func reSetRepository(_ memoTitles: [MemoTitleEntity]) {
-        let oldMemoTitleIDs = repository.memoTitleIDs
-        let newMemoTitleIDs = memoTitles.map { $0.id }
-        let diffarences = newMemoTitleIDs.difference(from: oldMemoTitleIDs)
-        for diffarence in diffarences {
-            switch diffarence {
-                
-            case .remove(_, element: let memoId,_):
-                deleteSnapshot(memoId)
-            case .insert(_, element: let memoId,_):
-                addSnapshot(memoId)
-            
-            }
-        }
-        repository = MemoTitlesRepository(memoTitles: memoTitles)
-        reSetSnapshot()
-    }
-    
 }
 
 // MARK: - Private Method
@@ -117,11 +99,6 @@ private extension FolderViewController {
         addMemoButton.backgroundColor = .systemTeal
         
         configureLayout()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDismissMemoView(_:)), name: .notifyDismissMemoView, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyDeleteMemo(_:)), name: .notifyDeleteMemo, object: nil)
-        
     }
     
     func configureLayout() {
@@ -140,33 +117,6 @@ private extension FolderViewController {
         addMemoButton.heightAnchor.constraint(equalToConstant: 70 * UIScreen.main.bounds.size.width / 390).isActive = true
     }
     
-    @objc func notifyDismissMemoView(_ notification: Notification) {
-        presenter.reloadMemo(id: folderId)
-        
-    }
-    
-    @objc func notifyDeleteMemo(_ notification: Notification) {
-        
-        let folderId = notification.userInfo!["folderId"] as! FolderEntityRealm.ID
-        let memoId = notification.userInfo!["memoId"] as! MemoTitleEntityRealm.ID
-        if folderId == self.folderId {
-            let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
-            
-            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
-                guard let self = self else { return }
-                repository.memoTitles.removeAll(where: {$0.id == memoId})
-                deleteSnapshot(memoId)
-                presenter.deleteMemo(folderId: folderId, memoId: memoId)
-            }
-            alertController.addAction(deleteAction)
-            
-            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-            alertController.addAction(cancelAction)
-            
-            present(alertController, animated: true)
-        }
-    }
-    
 }
 
 // MARK: - UIComponent Method
@@ -181,7 +131,6 @@ extension FolderViewController {
                 [weak self] _, _, completionHandler in
                 guard let self = self else { return }
                 let memoId = self.dataSource.itemIdentifier(for: indexPath)!
-                repository.memoTitles.removeAll(where: {$0.id == memoId})
                 deleteSnapshot(memoId)
                 presenter.deleteMemo(folderId: folderId, memoId: memoId)
                 completionHandler(true)
@@ -197,22 +146,31 @@ extension FolderViewController {
     }
     
     func configureDataSource() {
+        let memoCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { cell, indexpath, memoTitle in
+            cell.automaticallyUpdatesContentConfiguration = false
+            var configuration = cell.memoCellConfiguration()
+            configuration.memoId = memoTitle.id
+            configuration.title = memoTitle.title
+            configuration.deleteBlock = { [weak self] memoId in
+                self?.deleteSnapshot(memoId)
+            }
+            cell.contentConfiguration = configuration
+        }
+        
         let headerCellRegistration = UICollectionView.SupplementaryRegistration<HeaderCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] cell, _, _ in
             guard let self = self else { return }
             var configuration = cell.headerCellConfiguration()
             configuration.folderId = folderId
+            configuration.deleteBlock = { folderId in
+                print("delete-folder")
+            }
+            configuration.renameBlock = { folderId in
+                print("rename-folder")
+            }
             cell.contentConfiguration = configuration
         }
-        let memoCellRegistration = UICollectionView.CellRegistration<MemoCell, MemoTitleEntity> { [weak self] cell, indexpath, memoTitle in
-            guard let self = self else { return }
-            cell.automaticallyUpdatesContentConfiguration = false
-            var configuration = cell.memoCellConfiguration()
-            configuration.folderId = self.folderId
-            configuration.memoId = memoTitle.id
-            configuration.title = memoTitle.title
-            cell.contentConfiguration = configuration
-        }
-        self.dataSource = UICollectionViewDiffableDataSource(
+        
+        dataSource = UICollectionViewDiffableDataSource(
             collectionView: self.collectionView,
             cellProvider: { [weak self] collectionView, indexpath, memoId in
                 guard let self = self else { return nil }
@@ -223,36 +181,20 @@ extension FolderViewController {
         dataSource.supplementaryViewProvider = { collectionView, elementKind, IndexPath in
             return collectionView.dequeueConfiguredReusableSupplementary(using: headerCellRegistration, for: IndexPath)
         }
+        dataSource.reorderingHandlers.canReorderItem = { _ in true }
     }
     
     func setSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntityRealm.ID>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(repository.memoTitleIDs, toSection: .main)
-        dataSource.reorderingHandlers.canReorderItem = { _ in true }
-        dataSource.apply(snapshot, animatingDifferences: true)
-        
-    }
-    
-    func reSetSnapshot() {
         var snapshot = dataSource.snapshot()
-        snapshot.reconfigureItems(repository.memoTitleIDs)
-        dataSource.applySnapshotUsingReloadData(snapshot)
+        snapshot.deleteAllItems()
+        dataSource.apply(snapshot, animatingDifferences: true)
+        var newSnapshot = NSDiffableDataSourceSnapshot<Section, MemoTitleEntity.ID>()
+        newSnapshot.appendSections([.main])
+        newSnapshot.appendItems(repository.memoTitleIDs, toSection: .main)
+        dataSource.apply(newSnapshot, animatingDifferences: true)
     }
     
-    func addSnapshot(_ memoId: MemoTitleEntityRealm.ID) {
-        if repository.memoTitleIDs.isEmpty {
-            var snapshot = self.dataSource!.snapshot()
-            snapshot.appendItems([memoId])
-            dataSource.apply(snapshot, animatingDifferences: false)
-        } else {
-            var snapshot = self.dataSource!.snapshot()
-            snapshot.insertItems([memoId], beforeItem: repository.memoTitleIDs[0])
-            dataSource.apply(snapshot, animatingDifferences: false)
-        }
-    }
-    
-    func deleteSnapshot(_ memoId: MemoTitleEntityRealm.ID) {
+    func deleteSnapshot(_ memoId: MemoTitleEntity.ID) {
         var snapshot = dataSource.snapshot()
         snapshot.deleteItems([memoId])
         self.dataSource.apply(snapshot, animatingDifferences: true)
