@@ -40,7 +40,7 @@ class FolderViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        presenter.didLoad(id: folderId)
+        presenter.willAppear(id: folderId)
     }
     
     @IBAction func addMemoButtonAction(_ sender: Any) {
@@ -132,7 +132,7 @@ extension FolderViewController {
                 guard let self = self else { return }
                 let memoId = self.dataSource.itemIdentifier(for: indexPath)!
                 deleteSnapshot(memoId)
-                presenter.deleteMemo(folderId: folderId, memoId: memoId)
+                presenter.deleteMemo(memoId: memoId)
                 completionHandler(true)
             }
             action.backgroundColor = UIColor.systemRed

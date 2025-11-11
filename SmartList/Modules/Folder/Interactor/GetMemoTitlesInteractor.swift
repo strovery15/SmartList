@@ -6,12 +6,12 @@ import UIKit
 
 protocol GetMemoTitlesUseCase {
     
-    func execute(_ parameter: FolderEntity.ID, completion: ((Result<[(String, MemoEntity.ID)], Never>) -> ()))
+    func execute(_ parameter: FolderEntity.ID, completion: ((Result<[MemoTitleEntity], Never>) -> ()))
 }
 
 class GetMemoTitlesInteractor: GetMemoTitlesUseCase {
     
-    func execute(_ parameter: FolderEntity.ID, completion: ((Result<[(String, MemoEntity.ID)], Never>) -> ())) {
+    func execute(_ parameter: FolderEntity.ID, completion: ((Result<[MemoTitleEntity], Never>) -> ())) {
         let realm = try! Realm()
         let realmMemos = realm.objects(RealmMemoEntity.self)
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
@@ -39,14 +39,14 @@ class GetMemoTitlesInteractor: GetMemoTitlesUseCase {
         return memos
     }
     
-    private func ommitMemos(_ memos: [MemoEntity]) -> [(String, MemoEntity.ID)] {
-        var memoTitlesAndIds: [(String, MemoEntity.ID)] = []
+    private func ommitMemos(_ memos: [MemoEntity]) -> [MemoTitleEntity] {
+        var memoTitles: [MemoTitleEntity] = []
         let font = UIFont.systemFont(ofSize: 15)
         for memo in memos {
-            let memoTitle = memo.memo.quarry(with: font)
-            memoTitlesAndIds.append((memoTitle, memo.id))
+            var memoTitle = MemoTitleEntity(id: memo.id, title: memo.memo.quarry(with: font))
+            memoTitles.append(memoTitle)
         }
-        return memoTitlesAndIds
+        return memoTitles
     }
 }
 
@@ -55,7 +55,7 @@ extension String {
     func quarry(with font: UIFont) -> String {
         var quarriedString = ""
         var singleStringArray: [String] = []
-        let selfArray = Array(self).map{String($0)}
+        let selfArray = Array(self).map{ String($0) }
         for element in selfArray {
             if element == "\n" {
                 break
@@ -69,9 +69,9 @@ extension String {
         return quarriedString
     }
     
-    private func width(with font: UIFont) -> Float {
+    private func width(with font: UIFont) -> CGFloat {
         let attributes = [NSAttributedString.Key.font : font]
         let singleStringWidth = (self as NSString).size(withAttributes: attributes).width
-        return Float(singleStringWidth)
+        return singleStringWidth
     }
 }

@@ -3,12 +3,12 @@
 import Foundation
 
 protocol FolderPresentation: AnyObject {
-    func didLoad(id: FolderEntityRealm.ID)
-    func reloadMemo(id: FolderEntityRealm.ID)
-    func addMemo(folderId: FolderEntityRealm.ID)
-    func selectMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID)
-    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID)
-    func reorderMemo(folderId: FolderEntityRealm.ID, from: Int, to: Int)
+    
+    func willAppear(id: FolderEntity.ID)
+    func addMemo(folderId: FolderEntity.ID)
+    func selectMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID)
+    func deleteMemo(memoId: MemoEntity.ID)
+    func reorderMemo(from: MemoEntity.ID, to: MemoEntity.ID)
 }
 
 class FolderPresenter {
@@ -31,7 +31,7 @@ class FolderPresenter {
 
 extension FolderPresenter: FolderPresentation {
     
-    func didLoad(id: FolderEntity.ID) {
+    func willAppear(id: FolderEntity.ID) {
         dependency.getMemoTitles.execute(id) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -41,35 +41,21 @@ extension FolderPresenter: FolderPresentation {
         }
     }
     
-    func reloadMemo(id: FolderEntityRealm.ID) {
-        dependency.getMemoTitles.execute(id) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let memoTitles):
-                self.view?.reSetRepository(memoTitles)
-            }
-        }
-    }
-    
-    func addMemo(folderId: FolderEntityRealm.ID) {
+    func addMemo(folderId: FolderEntity.ID) {
         dependency.router.presentMemoView(folderId: folderId, memoId: nil)
     }
     
-    func selectMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID) {
+    func selectMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID) {
         dependency.router.presentMemoView(folderId: folderId, memoId: memoId)
     }
     
-    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoTitleEntityRealm.ID) {
-        dependency.deleteMemoTitle.execute(folderId, memoId)
+    func deleteMemo(memoId: MemoEntity.ID) {
+        dependency.deleteMemoTitle.execute(memoId)
     }
     
-    func reorderMemo(folderId: FolderEntityRealm.ID, from: Int, to: Int) {
-        dependency.reorderMemoTitle.execute(folderId, from, to)
+    func reorderMemo(from: MemoEntity.ID, to: MemoEntity.ID) {
+        dependency.reorderMemoTitle.execute(from, to)
     }
 
-}
-
-extension Notification.Name {
-    static let notifySelectMemo = Notification.Name("notifySelectMemo")
 }
 
