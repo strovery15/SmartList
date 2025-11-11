@@ -17,7 +17,8 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
         
         if parameter2 != nil {
             let realmMemo = realmMemos.first(where: { $0.id == parameter2 })!
-            completion(.success((realmMemo.id, realmMemo.memo)))
+            var memo = objectMemo(realmMemo)
+            completion(.success((memo.id, memo.memo)))
         } else {
             let realmMemoAdd = RealmMemoEntity()
             let realmMemoIdAdd = RealmMemoIdEntity()
@@ -28,7 +29,14 @@ class GetMemoEntityInteractor: GetMemoEntityUseCase {
                 realm.add(realmMemoAdd)
                 realmIdManager.memoIds.insert(realmMemoIdAdd, at: 0)
             }
+            var memoAdd = objectMemo(realmMemoAdd)
+            completion(.success((memoAdd.id, memoAdd.memo)))
         }
+    }
+    
+    private func objectMemo(_ realmMemo: RealmMemoEntity) -> MemoEntity {
+        var memo = MemoEntity(id: realmMemo.id, memo: realmMemo.memo)
+        return memo
     }
 }
 
