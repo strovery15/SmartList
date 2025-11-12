@@ -4,24 +4,24 @@ import UIKit
 
 protocol MemoView: AnyObject {
     
-    func setText(memoId: MemoEntityRealm.ID, text: String)
+    func setText(memoId: MemoEntity.ID, text: String)
+    func memoSaved()
     func dismissView()
 }
 
 class MemoViewController: UIViewController {
     
     var presenter: MemoPresentation!
-    var folderId: FolderEntityRealm.ID!
-    var memoId: MemoEntityRealm.ID?
+    var folderId: FolderEntity.ID!
+    var memoId: MemoEntity.ID?
+    
+    private var keyboardHeight: CGFloat!
     
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var closeButton: UIBarButtonItem!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var saveEffectView: SaveEffectView!
-    
-    
-    private var keyboardHeight: CGFloat!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,6 @@ class MemoViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         print("willdisappear")
         saveMemo()
-        NotificationCenter.default.post(name: .notifyDismissMemoView, object: nil)
     }
     
     @IBAction func closeButtonAction(_ sender: Any) {
@@ -42,6 +41,23 @@ class MemoViewController: UIViewController {
     
     @IBAction func saveButtonAction(_ sender: Any) {
         saveMemo()
+    }
+    
+    @IBAction func editButtonAction(_ sender: Any) {
+        editButton.menu = createMenu()
+    }
+    
+    
+}
+
+extension MemoViewController: MemoView {
+    
+    func setText(memoId: MemoEntity.ID, text: String) {
+        self.memoId = memoId
+        textView.text = text
+    }
+    
+    func memoSaved() {
         saveButton.isEnabled = false
         saveEffectView.isHidden = false
         UIView.animate(withDuration: 0.3, delay: 0.6) { [weak self] in
@@ -55,20 +71,6 @@ class MemoViewController: UIViewController {
             saveEffectView.transform = .identity
             saveEffectView.alpha = 1.0
         }
-    }
-    
-    @IBAction func editButtonAction(_ sender: Any) {
-        editButton.menu = createMenu()
-    }
-    
-    
-}
-
-extension MemoViewController: MemoView {
-    
-    func setText(memoId: MemoEntityRealm.ID, text: String) {
-        self.memoId = memoId
-        textView.text = text
     }
     
     func dismissView() {
@@ -118,18 +120,20 @@ private extension MemoViewController {
     
     func saveMemo() {
         let text = textView.text
-        presenter.saveMemo(folderId: folderId, memoId: memoId!, text: text!)
+        presenter.saveMemo(memoId: memoId!, text: text!)
     }
     
     func createMenu() -> UIMenu {
-        var menus = [UIMenuElement]()
-        menus.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
+        var menuChildren = [UIMenuElement]()
+        
+        menuChildren.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
+            
             let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
             
             let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
                 guard let self = self else { return }
-                presenter.deleteMemo(folderId: folderId, memoId: memoId!)
+                presenter.deleteMemo(memoId: memoId!)
             }
             alertController.addAction(deleteAction)
             
@@ -137,10 +141,9 @@ private extension MemoViewController {
             alertController.addAction(cancelAction)
             
             present(alertController, animated: true)
-            
         }))
         
-        return UIMenu(title: "", options: .singleSelection, children: menus)
+        return UIMenu(title: "", options: .singleSelection, children: menuChildren)
     }
 
 }
@@ -171,8 +174,4 @@ extension MemoViewController {
             textView.setContentOffset(offset, animated: false)
         }
     }
-}
-
-extension Notification.Name {
-    static let notifyDismissMemoView = Notification.Name("notifyDismissMemoView")
 }

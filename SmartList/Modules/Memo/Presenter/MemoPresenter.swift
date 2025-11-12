@@ -3,9 +3,10 @@
 import Foundation
 
 protocol MemoPresentation: AnyObject {
-    func didLoad(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID?)
-    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID)
-    func saveMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID, text: String)
+    
+    func didLoad(folderId: FolderEntity.ID, memoId: MemoEntity.ID?)
+    func deleteMemo(memoId: MemoEntity.ID)
+    func saveMemo(memoId: MemoEntity.ID, text: String)
 }
 
 class MemoPresenter {
@@ -27,7 +28,7 @@ class MemoPresenter {
 
 extension MemoPresenter: MemoPresentation {
     
-    func didLoad(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID?) {
+    func didLoad(folderId: FolderEntity.ID, memoId: MemoEntity.ID?) {
         dependency.getMemoEntity.execute(folderId, memoId) { [weak self] result in
             guard let self = self else { return }
             
@@ -38,8 +39,19 @@ extension MemoPresenter: MemoPresentation {
         }
     }
     
-    func deleteMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID) {
-        dependency.deleteMemoEntity.execute(folderId, memoId) { [weak self] result in
+    func saveMemo(memoId: MemoEntity.ID, text: String) {
+        dependency.saveMemoEntity.execute(memoId, text) { [weak self] result in
+            guard let  self = self else { return }
+            
+            switch result {
+            case .success():
+                self.view?.memoSaved()
+            }
+        }
+    }
+    
+    func deleteMemo(memoId: MemoEntity.ID) {
+        dependency.deleteMemoEntity.execute(memoId) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -50,8 +62,6 @@ extension MemoPresenter: MemoPresentation {
         }
     }
     
-    func saveMemo(folderId: FolderEntityRealm.ID, memoId: MemoEntityRealm.ID, text: String) {
-        dependency.saveMemoEntity.execute(folderId, memoId, text)
-    }
+    
     
 }
