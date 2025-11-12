@@ -28,7 +28,7 @@ final class AppDependencies {
         return viewCons
     }
     
-    func assembleMemoModule(_ folderId: FolderEntityRealm.ID,_ memoTitleId: MemoTitleEntityRealm.ID?) -> UIViewController {
+    func assembleMemoModule(_ folderId: FolderEntity.ID,_ memoTitleId: MemoTitleEntity.ID?) -> UIViewController {
         let storyboard = UIStoryboard(name: "Memo", bundle: nil)
         let viewController = storyboard.instantiateInitialViewController() as? MemoViewController
         viewController!.folderId = folderId
