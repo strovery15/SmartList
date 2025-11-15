@@ -32,13 +32,11 @@ class DeleteFolderInteractor: DeleteFolderUseCase {
             }
         }
         
-        let realmMemoDelete = realmMemos.first(where: { $0.id == parameter })!
-        try! realm.write {
-            realm.delete(realmMemoDelete)
-        }
         for (index, realmMemoId) in realmIdManager.memoIds.enumerated() {
             if realmMemoId.folderId == parameter {
+                let realmMemoDelete = realmMemos.first(where: { $0.id == realmMemoId.memoId })!
                 try! realm.write {
+                    realm.delete(realmMemoDelete)
                     realmIdManager.memoIds.remove(at: index)
                 }
             }
