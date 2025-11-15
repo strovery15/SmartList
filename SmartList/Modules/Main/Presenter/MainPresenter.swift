@@ -5,11 +5,11 @@ import TabPageViewController
 import RealmSwift
 
 protocol MainPresentation: AnyObject {
+    
     func didLoad()
     func addFolder(folderName: String)
-    func deleteFolder(folderId: FolderEntityRealm.ID)
-    func renameFolder(folderId: FolderEntityRealm.ID, folderName: String)
-//    func toSetting()
+    func deleteFolder(folderId: FolderEntity.ID)
+    func renameFolder(folderId: FolderEntity.ID, folderName: String)
 }
 
 class MainPresenter {
@@ -19,6 +19,7 @@ class MainPresenter {
         case off
     }
     struct Dependency {
+        
         let makeFolderItems: MakeFolderItemsUseCase
         let getFolders: GetFoldersUseCase
         let addFolder: AddFolderUseCase
@@ -83,7 +84,7 @@ extension MainPresenter: MainPresentation {
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
-                            self.view?.reSetFoldes(folderItems, firstIndex!)
+                            self.view?.setFolders(folderItems, firstIndex!)
                         }
                     }
                 }
@@ -119,7 +120,7 @@ extension MainPresenter: MainPresentation {
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
-                            self.view?.reSetFoldes(folderItems, firstIndex!)
+                            self.view?.setFolders(folderItems, firstIndex!)
                         }
                     }
                 }
@@ -154,7 +155,7 @@ extension MainPresenter: MainPresentation {
                         guard let self = self else { return }
                         switch result {
                         case .success(let folderItems):
-                            self.view?.reSetFoldes(folderItems, firstIndex!)
+                            self.view?.setFolders(folderItems, firstIndex!)
                         }
                     }
                 }

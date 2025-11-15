@@ -202,4 +202,10 @@ extension FolderViewController {
     
 }
 
+extension Notification.Name {
+    
+    static let notifyDeleteFolder = Notification.Name("notifyDeleteFolder")
+    static let notifyRenameFolder = Notification.Name("notifyRenameFolder")
+}
+
 

@@ -15,13 +15,11 @@ class DeleteMemoEntityInteractor: DeleteMemoEntityUseCase {
         let realmMemos = realm.objects(RealmMemoEntity.self)
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
         
-        let realmMemoDelete = realmMemos.first(where: { $0.id == parameter })!
-        try! realm.write {
-            realm.delete(realmMemoDelete)
-        }
         for (index, realmMemoId) in realmIdManager.memoIds.enumerated() {
             if realmMemoId.memoId == parameter {
+                let realmMemoDelete = realmMemos.first(where: { $0.id == realmMemoId.memoId })!
                 try! realm.write {
+                    realm.delete(realmMemoDelete)
                     realmIdManager.memoIds.remove(at: index)
                 }
             }

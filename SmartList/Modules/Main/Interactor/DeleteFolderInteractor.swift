@@ -17,10 +17,6 @@ class DeleteFolderInteractor: DeleteFolderUseCase {
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
         var firstIndex = 0
         
-        let realmFolderDelete = realmFolders.first(where: { $0.id == parameter })!
-        try! realm.write {
-            realm.delete(realmFolderDelete)
-        }
         for (index, realmFolderId) in realmIdManager.folderIds.enumerated() {
             if realmFolderId.id == parameter {
                 if realmIdManager.folderIds.last!.id == realmFolderId.id {
@@ -28,20 +24,19 @@ class DeleteFolderInteractor: DeleteFolderUseCase {
                 } else {
                     firstIndex = index
                 }
-                
+                let realmFolderDelete = realmFolders.first(where: { $0.id == realmFolderId.id })!
                 try! realm.write {
+                    realm.delete(realmFolderDelete)
                     realmIdManager.folderIds.remove(at: index)
                 }
             }
         }
         
-        let realmMemoDelete = realmMemos.first(where: { $0.id == parameter })!
-        try! realm.write {
-            realm.delete(realmMemoDelete)
-        }
         for (index, realmMemoId) in realmIdManager.memoIds.enumerated() {
             if realmMemoId.folderId == parameter {
+                let realmMemoDelete = realmMemos.first(where: { $0.id == realmMemoId.memoId })!
                 try! realm.write {
+                    realm.delete(realmMemoDelete)
                     realmIdManager.memoIds.remove(at: index)
                 }
             }

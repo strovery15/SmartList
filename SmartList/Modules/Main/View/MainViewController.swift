@@ -7,7 +7,6 @@ import TabPageViewController
 protocol MainView: AnyObject {
     
     func setFolders(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
-    func reSetFoldes(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
 }
 
 class MainViewController: UIViewController {
@@ -58,10 +57,6 @@ class MainViewController: UIViewController {
 extension MainViewController: MainView {
     
     func setFolders(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
-        configureTabPageViewControllerAndButton(folderItems, firstIndex)
-    }
-    
-    func reSetFoldes(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
         for child in children {
             child.willMove(toParent: nil)
             child.view.removeFromSuperview()
@@ -84,7 +79,7 @@ private extension MainViewController {
     }
 
     @objc func notifyDeleteFolder(_ notification: Notification) {
-        let id = notification.userInfo!["folderId"] as! FolderEntityRealm.ID
+        let id = notification.userInfo!["folderId"] as! FolderEntity.ID
         let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
         let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
@@ -99,7 +94,7 @@ private extension MainViewController {
     }
     
     @objc func notifyRenameFolder(_ notification: Notification) {
-        let id = notification.userInfo!["folderId"] as! FolderEntityRealm.ID
+        let id = notification.userInfo!["folderId"] as! FolderEntity.ID
         let text = notification.userInfo!["folderName"] as! String
         
         let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
@@ -159,9 +154,9 @@ extension MainViewController {
 extension MainViewController {
     func practiceFunc() {
         let realm = try! Realm()
-        let folderManagerEntity = FolderManagerEntityRealm()
+        let realmIdManager = RealmIdManagerEntity()
         try! realm.write {
-            realm.add(folderManagerEntity)
+            realm.add(realmIdManager)
         }
         let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
         let fruit = ["#Apple🍎", "#Banana🍌", "#Lemon🍋", "#Melon🍈", "#Grape🍇","#Strawbery🍓", "#PineApple🍍", "#Orange🍊", "#Cherry🍒", "#Peach🍑", "#Blueberry🫐", "#Watermelon🍉"]
@@ -175,24 +170,24 @@ extension MainViewController {
     
     func addFolderEntiy(folderName: String,_ items: [String]) {
         let realm = try! Realm()
-        let results = realm.objects(FolderManagerEntityRealm.self)
-        if let folderManager = results.first {
-            let folderEntity = FolderEntityRealm()
-            folderEntity.name = folderName
-            for item in items {
-                let memoEntity = MemoEntityRealm()
-                let memoTitleEntity = MemoTitleEntityRealm()
-                memoEntity.text = item
-                
-                memoTitleEntity.id = memoEntity.id
-                memoTitleEntity.title = memoEntity.text
-                folderEntity.memoTitles.append(memoTitleEntity)
-                try! realm.write {
-                    realm.add(memoEntity)
-                }
-            }
+        let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
+        let realmFolder = RealmFolderEntity()
+        realmFolder.name = folderName
+        let realmFolderId = RealmFolderIdEntity()
+        realmFolderId.id = realmFolder.id
+        try! realm.write {
+            realm.add(realmFolder)
+            realmIdManager.folderIds.append(realmFolderId)
+        }
+        for item in items {
+            let realmMemo = RealmMemoEntity()
+            realmMemo.memo = item
+            let realmMemoId = RealmMemoIdEntity()
+            realmMemoId.folderId = realmFolder.id
+            realmMemoId.memoId = realmMemo.id
             try! realm.write {
-                folderManager.folderEntities.append(folderEntity)
+                realm.add(realmMemo)
+                realmIdManager.memoIds.append(realmMemoId)
             }
         }
     }
