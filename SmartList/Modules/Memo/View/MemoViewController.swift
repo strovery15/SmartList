@@ -43,11 +43,6 @@ class MemoViewController: UIViewController {
         saveMemo()
     }
     
-    @IBAction func editButtonAction(_ sender: Any) {
-        editButton.menu = createMenu()
-    }
-    
-    
 }
 
 extension MemoViewController: MemoView {
@@ -83,6 +78,7 @@ private extension MemoViewController {
     func firstConfiguration() {
         
         textView.delegate = self
+        editButton.menu = createMenu()
         
         saveEffectView.frame = CGRect(x: 0, y: 0, width: 230 * UIScreen.main.bounds.size.width / 390, height: 230 * UIScreen.main.bounds.size.width / 390)
         let viewWidth = UIScreen.main.bounds.width

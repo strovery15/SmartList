@@ -36,11 +36,7 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="9BU-wy-4hX">
                         <rightBarButtonItems>
-                            <barButtonItem image="ellipsis" catalog="system" id="Tg8-Ki-aOI">
-                                <connections>
-                                    <action selector="editButtonAction:" destination="Y6W-OH-hqX" id="SBO-Xo-EBo"/>
-                                </connections>
-                            </barButtonItem>
+                            <barButtonItem image="ellipsis" catalog="system" id="Tg8-Ki-aOI"/>
                             <barButtonItem title="保存" id="Axa-JF-9pt">
                                 <connections>
                                     <action selector="saveButtonAction:" destination="Y6W-OH-hqX" id="WqL-PQ-PqV"/>
