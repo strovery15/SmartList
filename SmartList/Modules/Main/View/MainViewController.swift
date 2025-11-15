@@ -7,7 +7,6 @@ import TabPageViewController
 protocol MainView: AnyObject {
     
     func setFolders(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
-    func reSetFoldes(_ folderItems: [(UIViewController, String)],_ firstIndex: Int)
 }
 
 class MainViewController: UIViewController {
@@ -58,10 +57,6 @@ class MainViewController: UIViewController {
 extension MainViewController: MainView {
     
     func setFolders(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
-        configureTabPageViewControllerAndButton(folderItems, firstIndex)
-    }
-    
-    func reSetFoldes(_ folderItems: [(UIViewController, String)], _ firstIndex: Int) {
         for child in children {
             child.willMove(toParent: nil)
             child.view.removeFromSuperview()

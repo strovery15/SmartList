@@ -16,7 +16,7 @@ class MakeFolderItemsInteractor: MakeFolderItemsUseCase {
         
         let folderViewCons = appDependencies.assembleFolderModules(parameter) as! [FolderViewController]
         for folderEntity in parameter {
-            let folderViewCon = folderViewCons.first(where: { $0.folderId == folderEntity.id })
+            let folderViewCon = folderViewCons.first(where: { $0.folderId == folderEntity.id })!
             tabItems.append((folderViewCon, folderEntity.name))
         }
         completion(.success(tabItems))
