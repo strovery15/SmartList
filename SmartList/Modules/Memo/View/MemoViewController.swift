@@ -5,7 +5,6 @@ import UIKit
 protocol MemoView: AnyObject {
     
     func setText(memoId: MemoEntity.ID, text: String)
-    func memoSaved()
     func dismissView()
 }
 
@@ -30,17 +29,13 @@ class MemoViewController: UIViewController {
         presenter.didLoad(folderId: folderId, memoId: memoId)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        print("willdisappear")
-        saveMemo()
-    }
-    
     @IBAction func closeButtonAction(_ sender: Any) {
         textView.resignFirstResponder()
     }
     
     @IBAction func saveButtonAction(_ sender: Any) {
         saveMemo()
+        saveMemoAnimation()
     }
     
 }
@@ -50,22 +45,6 @@ extension MemoViewController: MemoView {
     func setText(memoId: MemoEntity.ID, text: String) {
         self.memoId = memoId
         textView.text = text
-    }
-    
-    func memoSaved() {
-        saveButton.isEnabled = false
-        saveEffectView.isHidden = false
-        UIView.animate(withDuration: 0.3, delay: 0.6) { [weak self] in
-            guard let self = self else { return }
-            saveEffectView.alpha = 0
-            saveEffectView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
-        } completion: { [weak self] _ in
-            guard let self = self else { return }
-            saveButton.isEnabled = true
-            saveEffectView.isHidden = true
-            saveEffectView.transform = .identity
-            saveEffectView.alpha = 1.0
-        }
     }
     
     func dismissView() {
@@ -89,8 +68,6 @@ private extension MemoViewController {
         configureLayout()
         
         NotificationCenter.default.addObserver(self, selector: #selector(notifyKeyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyWillResignActive(_:)), name: .notifyWillResignActive, object: nil)
     }
     
     func configureLayout() {
@@ -110,13 +87,25 @@ private extension MemoViewController {
         adjustTextView()
     }
     
-    @objc func notifyWillResignActive(_ notification: Notification) {
-        saveMemo()
-    }
-    
     func saveMemo() {
         let text = textView.text
         presenter.saveMemo(memoId: memoId!, text: text!)
+    }
+    
+    func saveMemoAnimation() {
+        saveButton.isEnabled = false
+        saveEffectView.isHidden = false
+        UIView.animate(withDuration: 0.3, delay: 0.6) { [weak self] in
+            guard let self = self else { return }
+            saveEffectView.alpha = 0
+            saveEffectView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
+            saveButton.isEnabled = true
+            saveEffectView.isHidden = true
+            saveEffectView.transform = .identity
+            saveEffectView.alpha = 1.0
+        }
     }
     
     func createMenu() -> UIMenu {
@@ -148,6 +137,7 @@ extension MemoViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         adjustTextView()
+        saveMemo()
     }
 }
 
