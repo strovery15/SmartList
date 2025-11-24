@@ -45,6 +45,7 @@ extension MemoViewController: MemoView {
     func setText(memoId: MemoEntity.ID, text: String) {
         self.memoId = memoId
         textView.text = text
+        textView.becomeFirstResponder()
     }
     
     func dismissView() {
