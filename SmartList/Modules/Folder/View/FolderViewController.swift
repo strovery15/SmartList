@@ -152,7 +152,9 @@ extension FolderViewController {
             configuration.memoId = memoTitle.id
             configuration.title = memoTitle.title
             configuration.deleteBlock = { [weak self] memoId in
-                self?.deleteSnapshot(memoId)
+                guard let self = self else { return }
+                let deleteMemoAlert = self.deleteMemoAlert(memoId)
+                self.present(deleteMemoAlert, animated: true)
             }
             cell.contentConfiguration = configuration
         }
@@ -200,6 +202,25 @@ extension FolderViewController {
         self.dataSource.apply(snapshot, animatingDifferences: true)
     }
     
+}
+
+extension FolderViewController {
+    //alert
+    func deleteMemoAlert(_ memoId: MemoTitleEntity.ID) -> UIAlertController {
+        let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            deleteSnapshot(memoId)
+            presenter.deleteMemo(memoId: memoId)
+        }
+        alertController.addAction(deleteAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+        return alertController
+    }
 }
 
 extension Notification.Name {

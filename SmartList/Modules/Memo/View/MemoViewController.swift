@@ -114,18 +114,8 @@ private extension MemoViewController {
         menuChildren.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
             
-            let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
-            
-            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
-                guard let self = self else { return }
-                presenter.deleteMemo(memoId: memoId!)
-            }
-            alertController.addAction(deleteAction)
-            
-            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-            alertController.addAction(cancelAction)
-            
-            present(alertController, animated: true)
+            let deleteMemoAlert = deleteMemoAlert()
+            present(deleteMemoAlert, animated: true)
         }))
         
         return UIMenu(title: "", options: .singleSelection, children: menuChildren)
@@ -159,5 +149,23 @@ extension MemoViewController {
             let offset = CGPoint(x: 0.0, y: textView.contentOffset.y + increment)
             textView.setContentOffset(offset, animated: false)
         }
+    }
+}
+
+extension MemoViewController {
+    //alert
+    func deleteMemoAlert() -> UIAlertController {
+        let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            presenter.deleteMemo(memoId: memoId!)
+        }
+        alertController.addAction(deleteAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+        return alertController
     }
 }
