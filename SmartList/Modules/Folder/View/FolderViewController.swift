@@ -164,10 +164,10 @@ extension FolderViewController {
             var configuration = cell.headerCellConfiguration()
             configuration.folderId = folderId
             configuration.deleteBlock = { folderId in
-                print("delete-folder")
+                NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["folderId": folderId])
             }
             configuration.renameBlock = { folderId in
-                print("rename-folder")
+                NotificationCenter.default.post(name: .notifyRenameFolder, object: nil, userInfo: ["folderId": folderId])
             }
             cell.contentConfiguration = configuration
         }
