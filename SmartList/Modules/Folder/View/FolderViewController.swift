@@ -20,8 +20,8 @@ class FolderViewController: UIViewController {
     var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
     //reordering用の変数
-    fileprivate var sourceId: MemoEntity.ID?
-    fileprivate var destinationId: MemoEntity.ID?
+    fileprivate var sourceIndex = 0
+    fileprivate var destinationIndex = 0
     
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
@@ -60,23 +60,23 @@ class FolderViewController: UIViewController {
         switch collectionViewLongTapGesture.state {
         case .began:
             if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
-                sourceId = self.dataSource!.itemIdentifier(for: indexPath)!
                 collectionView.beginInteractiveMovementForItem(at: indexPath)
+                sourceIndex = indexPath.row
             }
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(collectionViewLongTapGesture.location(in: collectionView))
         case .ended:
             collectionView.endInteractiveMovement()
             if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
-                destinationId = self.dataSource!.itemIdentifier(for: indexPath)!
-                presenter.reorderMemo(from: sourceId!, to: destinationId!)
-                sourceId = nil
-                destinationId = nil
+                destinationIndex = indexPath.row
+                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
+                sourceIndex = 0
+                destinationIndex = 0
             }
         default:
             collectionView.cancelInteractiveMovement()
-            sourceId = nil
-            destinationId = nil
+            sourceIndex = 0
+            destinationIndex = 0
         }
     }
     
