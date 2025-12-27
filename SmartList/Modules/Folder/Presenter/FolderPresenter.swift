@@ -8,7 +8,7 @@ protocol FolderPresentation: AnyObject {
     func addMemo(folderId: FolderEntity.ID)
     func selectMemo(folderId: FolderEntity.ID, memoId: MemoEntity.ID)
     func deleteMemo(memoId: MemoEntity.ID)
-    func reorderMemo(from: MemoEntity.ID, to: MemoEntity.ID)
+    func reorderMemo(folderId: FolderEntity.ID, from: Int, to: Int)
 }
 
 class FolderPresenter {
@@ -53,8 +53,8 @@ extension FolderPresenter: FolderPresentation {
         dependency.deleteMemoTitle.execute(memoId)
     }
     
-    func reorderMemo(from: MemoEntity.ID, to: MemoEntity.ID) {
-        dependency.reorderMemoTitle.execute(from, to)
+    func reorderMemo(folderId: FolderEntity.ID, from: Int, to: Int) {
+        dependency.reorderMemoTitle.execute(folderId, from, to)
     }
 
 }

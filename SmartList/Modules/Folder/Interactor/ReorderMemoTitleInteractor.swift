@@ -5,31 +5,29 @@ import RealmSwift
 
 protocol ReorderMemoTitleUseCase {
     
-    func execute(_ parameter1: MemoEntity.ID,_ parameter2: MemoEntity.ID)
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: Int,_ parameter3: Int)
 }
 
 class ReorderMemoTitleInteractor: ReorderMemoTitleUseCase {
     
-    func execute(_ parameter1: MemoEntity.ID,_ parameter2: MemoEntity.ID) {
+    func execute(_ parameter1: FolderEntity.ID,_ parameter2: Int,_ parameter3: Int) {
         let realm = try! Realm()
         let realmIdManager = realm.objects(RealmIdManagerEntity.self).first!
-        var deleteIndex = 0
-        var insertIndex = 0
-        var insertItem: RealmMemoIdEntity?
+        var temporaryArray: [RealmMemoIdEntity] = []
         
-        for (index, realmMemoId) in realmIdManager.memoIds.enumerated() {
-            if realmMemoId.memoId == parameter1 {
-                deleteIndex = index
-                insertItem = realmMemoId
-            }
-            if realmMemoId.memoId == parameter2 {
-                insertIndex = index
+        for (_, realmMemoId) in realmIdManager.memoIds.enumerated() {
+            if realmMemoId.folderId == parameter1 {
+                temporaryArray.append(realmMemoId)
             }
         }
+        let sourceId = temporaryArray[parameter2]
+        let destinationId = temporaryArray[parameter3]
+        
+        let sourceIndex = realmIdManager.memoIds.index(of: sourceId)!
+        let destinationIndex = realmIdManager.memoIds.index(of: destinationId)!
         
         try! realm.write {
-            realmIdManager.memoIds.remove(at: deleteIndex)
-            realmIdManager.memoIds.insert(insertItem!, at: insertIndex)
+            realmIdManager.memoIds.move(from: sourceIndex, to: destinationIndex)
         }
     }
 }

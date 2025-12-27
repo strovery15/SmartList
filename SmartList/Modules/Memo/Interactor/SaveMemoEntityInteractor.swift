@@ -5,12 +5,12 @@ import RealmSwift
 
 protocol SaveMemoEntityUseCase {
     
-    func execute(_ parameter1: MemoEntity.ID, _ parameter2: String, completion: ((Result<Void, Never>) -> ()))
+    func execute(_ parameter1: MemoEntity.ID, _ parameter2: String)
 }
 
 class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
     
-    func execute(_ parameter1: MemoEntity.ID, _ parameter2: String, completion: ((Result<Void, Never>) -> ())) {
+    func execute(_ parameter1: MemoEntity.ID, _ parameter2: String) {
         let realm = try! Realm()
         let realmMemos = realm.objects(RealmMemoEntity.self)
         
@@ -18,7 +18,6 @@ class SaveMemoEntityInteractor: SaveMemoEntityUseCase {
         try! realm.write {
             realmMemo.memo = parameter2
         }
-        completion(.success(()))
     }
     
 }

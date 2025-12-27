@@ -5,7 +5,6 @@ import UIKit
 protocol MemoView: AnyObject {
     
     func setText(memoId: MemoEntity.ID, text: String)
-    func memoSaved()
     func dismissView()
 }
 
@@ -30,23 +29,14 @@ class MemoViewController: UIViewController {
         presenter.didLoad(folderId: folderId, memoId: memoId)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        print("willdisappear")
-        saveMemo()
-    }
-    
     @IBAction func closeButtonAction(_ sender: Any) {
         textView.resignFirstResponder()
     }
     
     @IBAction func saveButtonAction(_ sender: Any) {
         saveMemo()
+        saveMemoAnimation()
     }
-    
-    @IBAction func editButtonAction(_ sender: Any) {
-        editButton.menu = createMenu()
-    }
-    
     
 }
 
@@ -55,22 +45,7 @@ extension MemoViewController: MemoView {
     func setText(memoId: MemoEntity.ID, text: String) {
         self.memoId = memoId
         textView.text = text
-    }
-    
-    func memoSaved() {
-        saveButton.isEnabled = false
-        saveEffectView.isHidden = false
-        UIView.animate(withDuration: 0.3, delay: 0.6) { [weak self] in
-            guard let self = self else { return }
-            saveEffectView.alpha = 0
-            saveEffectView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
-        } completion: { [weak self] _ in
-            guard let self = self else { return }
-            saveButton.isEnabled = true
-            saveEffectView.isHidden = true
-            saveEffectView.transform = .identity
-            saveEffectView.alpha = 1.0
-        }
+        textView.becomeFirstResponder()
     }
     
     func dismissView() {
@@ -83,6 +58,7 @@ private extension MemoViewController {
     func firstConfiguration() {
         
         textView.delegate = self
+        editButton.menu = createMenu()
         
         saveEffectView.frame = CGRect(x: 0, y: 0, width: 230 * UIScreen.main.bounds.size.width / 390, height: 230 * UIScreen.main.bounds.size.width / 390)
         let viewWidth = UIScreen.main.bounds.width
@@ -93,8 +69,6 @@ private extension MemoViewController {
         configureLayout()
         
         NotificationCenter.default.addObserver(self, selector: #selector(notifyKeyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(notifyWillResignActive(_:)), name: .notifyWillResignActive, object: nil)
     }
     
     func configureLayout() {
@@ -114,13 +88,25 @@ private extension MemoViewController {
         adjustTextView()
     }
     
-    @objc func notifyWillResignActive(_ notification: Notification) {
-        saveMemo()
-    }
-    
     func saveMemo() {
         let text = textView.text
         presenter.saveMemo(memoId: memoId!, text: text!)
+    }
+    
+    func saveMemoAnimation() {
+        saveButton.isEnabled = false
+        saveEffectView.isHidden = false
+        UIView.animate(withDuration: 0.3, delay: 0.6) { [weak self] in
+            guard let self = self else { return }
+            saveEffectView.alpha = 0
+            saveEffectView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
+            saveButton.isEnabled = true
+            saveEffectView.isHidden = true
+            saveEffectView.transform = .identity
+            saveEffectView.alpha = 1.0
+        }
     }
     
     func createMenu() -> UIMenu {
@@ -129,18 +115,8 @@ private extension MemoViewController {
         menuChildren.append(UIAction(title: "削除",image: UIImage(systemName: "trash"), attributes: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
             
-            let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
-            
-            let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
-                guard let self = self else { return }
-                presenter.deleteMemo(memoId: memoId!)
-            }
-            alertController.addAction(deleteAction)
-            
-            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-            alertController.addAction(cancelAction)
-            
-            present(alertController, animated: true)
+            let deleteMemoAlert = deleteMemoAlert()
+            present(deleteMemoAlert, animated: true)
         }))
         
         return UIMenu(title: "", options: .singleSelection, children: menuChildren)
@@ -152,6 +128,7 @@ extension MemoViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         adjustTextView()
+        saveMemo()
     }
 }
 
@@ -173,5 +150,23 @@ extension MemoViewController {
             let offset = CGPoint(x: 0.0, y: textView.contentOffset.y + increment)
             textView.setContentOffset(offset, animated: false)
         }
+    }
+}
+
+extension MemoViewController {
+    //alert
+    func deleteMemoAlert() -> UIAlertController {
+        let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            presenter.deleteMemo(memoId: memoId!)
+        }
+        alertController.addAction(deleteAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+        return alertController
     }
 }

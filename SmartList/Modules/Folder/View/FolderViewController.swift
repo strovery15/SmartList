@@ -20,8 +20,8 @@ class FolderViewController: UIViewController {
     var dataSource: UICollectionViewDiffableDataSource<Section, MemoTitleEntity.ID>!
     
     //reordering用の変数
-    fileprivate var sourceId: MemoEntity.ID?
-    fileprivate var destinationId: MemoEntity.ID?
+    fileprivate var sourceIndex = 0
+    fileprivate var destinationIndex = 0
     
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
@@ -60,23 +60,23 @@ class FolderViewController: UIViewController {
         switch collectionViewLongTapGesture.state {
         case .began:
             if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
-                sourceId = self.dataSource!.itemIdentifier(for: indexPath)!
                 collectionView.beginInteractiveMovementForItem(at: indexPath)
+                sourceIndex = indexPath.row
             }
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(collectionViewLongTapGesture.location(in: collectionView))
         case .ended:
             collectionView.endInteractiveMovement()
             if let indexPath = collectionView.indexPathForItem(at: collectionViewLongTapGesture.location(in: collectionView)) {
-                destinationId = self.dataSource!.itemIdentifier(for: indexPath)!
-                presenter.reorderMemo(from: sourceId!, to: destinationId!)
-                sourceId = nil
-                destinationId = nil
+                destinationIndex = indexPath.row
+                presenter.reorderMemo(folderId: folderId, from: sourceIndex, to: destinationIndex)
+                sourceIndex = 0
+                destinationIndex = 0
             }
         default:
             collectionView.cancelInteractiveMovement()
-            sourceId = nil
-            destinationId = nil
+            sourceIndex = 0
+            destinationIndex = 0
         }
     }
     
@@ -152,7 +152,9 @@ extension FolderViewController {
             configuration.memoId = memoTitle.id
             configuration.title = memoTitle.title
             configuration.deleteBlock = { [weak self] memoId in
-                self?.deleteSnapshot(memoId)
+                guard let self = self else { return }
+                let deleteMemoAlert = self.deleteMemoAlert(memoId)
+                self.present(deleteMemoAlert, animated: true)
             }
             cell.contentConfiguration = configuration
         }
@@ -162,10 +164,10 @@ extension FolderViewController {
             var configuration = cell.headerCellConfiguration()
             configuration.folderId = folderId
             configuration.deleteBlock = { folderId in
-                print("delete-folder")
+                NotificationCenter.default.post(name: .notifyDeleteFolder, object: nil, userInfo: ["folderId": folderId])
             }
             configuration.renameBlock = { folderId in
-                print("rename-folder")
+                NotificationCenter.default.post(name: .notifyRenameFolder, object: nil, userInfo: ["folderId": folderId])
             }
             cell.contentConfiguration = configuration
         }
@@ -200,6 +202,25 @@ extension FolderViewController {
         self.dataSource.apply(snapshot, animatingDifferences: true)
     }
     
+}
+
+extension FolderViewController {
+    //alert
+    func deleteMemoAlert(_ memoId: MemoTitleEntity.ID) -> UIAlertController {
+        let alertController = UIAlertController(title: "メモの削除", message: "このメモを削除しますか？", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            deleteSnapshot(memoId)
+            presenter.deleteMemo(memoId: memoId)
+        }
+        alertController.addAction(deleteAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+        return alertController
+    }
 }
 
 extension Notification.Name {

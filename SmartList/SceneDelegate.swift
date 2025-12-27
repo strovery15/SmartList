@@ -28,15 +28,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window?.rootViewController = navigation
     }
-    
-    func sceneWillResignActive(_ scene: UIScene) {
-        print("willresignactive")
-        NotificationCenter.default.post(name: .notifyWillResignActive, object: nil)
-    }
-
-}
-
-extension Notification.Name {
-    static let notifyWillResignActive = Notification.Name("notifyWillResignActive")
 }
 

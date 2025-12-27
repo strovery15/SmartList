@@ -40,14 +40,7 @@ extension MemoPresenter: MemoPresentation {
     }
     
     func saveMemo(memoId: MemoEntity.ID, text: String) {
-        dependency.saveMemoEntity.execute(memoId, text) { [weak self] result in
-            guard let  self = self else { return }
-            
-            switch result {
-            case .success():
-                self.view?.memoSaved()
-            }
-        }
+        dependency.saveMemoEntity.execute(memoId, text)
     }
     
     func deleteMemo(memoId: MemoEntity.ID) {
@@ -58,7 +51,6 @@ extension MemoPresenter: MemoPresentation {
             case .success():
                 self.view?.dismissView()
             }
-            
         }
     }
     

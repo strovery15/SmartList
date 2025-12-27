@@ -27,30 +27,9 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func addFolderButtonAction(_ sender: Any) {
-        let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
-            guard let self = self else { return }
-            if let textfields = alertController.textFields {
-                for textfield in textfields {
-                    if textfield.text!.isEmpty {
-                        presenter.addFolder(folderName: "新しいフォルダ")
-                    } else {
-                        presenter.addFolder(folderName: textfield.text!)
-                    }
-                }
-            }
-        }
-        alertController.addAction(okAction)
-        
-        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-        alertController.addTextField() { textfield in
-            textfield.text = "新しいフォルダ"
-        }
-        alertController.addAction(cancelAction)
-        
-        present(alertController, animated: true)
+        let addFolderAlert = addFolderAlert()
+        present(addFolderAlert, animated: true)
     }
-    
     
 }
 
@@ -80,45 +59,14 @@ private extension MainViewController {
 
     @objc func notifyDeleteFolder(_ notification: Notification) {
         let id = notification.userInfo!["folderId"] as! FolderEntity.ID
-        let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
-        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
-            self.presenter.deleteFolder(folderId: id)
-        }
-        alertController.addAction(deleteAction)
-
-        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-        alertController.addAction(cancelAction)
-
-        present(alertController, animated: true)
+        let deleteFolderAlert = deleteFolderAlert(id)
+        present(deleteFolderAlert, animated: true)
     }
     
     @objc func notifyRenameFolder(_ notification: Notification) {
         let id = notification.userInfo!["folderId"] as! FolderEntity.ID
-        let text = notification.userInfo!["folderName"] as! String
-        
-        let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
-            if let textfields = alertController.textFields {
-                for textfield in textfields {
-                    if textfield.text!.isEmpty {
-                        presenter.renameFolder(folderId: id, folderName: text)
-                    } else {
-                        presenter.renameFolder(folderId: id, folderName: textfield.text!)
-                    }
-                }
-            }
-        }
-        alertController.addAction(okAction)
-        
-        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
-        alertController.addTextField() { textfield in
-            textfield.text = text
-        }
-        alertController.addAction(cancelAction)
-        
-        present(alertController, animated: true)
+        let renameFolderAlert = renameFolderAlert(id)
+        present(renameFolderAlert, animated: true)
     }
     
 }
@@ -147,6 +95,74 @@ extension MainViewController {
         view.addSubview(tabPageVc.view)
         view.bringSubviewToFront(addFolderButton)
         tabPageVc.didMove(toParent: self)
+    }
+}
+
+extension MainViewController {
+    //alert
+    
+    func addFolderAlert() -> UIAlertController {
+        let alertController = UIAlertController(title: "フォルダの作成", message: nil, preferredStyle: .alert)
+        alertController.addTextField() { textfield in
+            textfield.placeholder = "新しいフォルダ名"
+        }
+        
+        let okAction = UIAlertAction(title: "OK", style: .destructive) {[weak self] _ in
+            guard let self = self else { return }
+            if let textfields = alertController.textFields {
+                for textfield in textfields {
+                    if textfield.text!.isEmpty {
+                        presenter.addFolder(folderName: "新しいフォルダ")
+                    } else {
+                        presenter.addFolder(folderName: textfield.text!)
+                    }
+                }
+            }
+        }
+        alertController.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+       return alertController
+    }
+    
+    func deleteFolderAlert(_ id: FolderEntity.ID) -> UIAlertController {
+        let alertController = UIAlertController(title: "フォルダの削除", message: "このフォルダを削除しますか？", preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: "削除", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            self.presenter.deleteFolder(folderId: id)
+        }
+        alertController.addAction(deleteAction)
+
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+        return alertController
+    }
+    
+    func renameFolderAlert(_ id: FolderEntity.ID) -> UIAlertController {
+        let alertController = UIAlertController(title: "フォルダの名前変更", message: nil, preferredStyle: .alert)
+        alertController.addTextField() { textfield in
+            textfield.placeholder = "新しいフォルダ名"
+        }
+        
+        let okAction = UIAlertAction(title: "OK", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            if let textfields = alertController.textFields {
+                for textfield in textfields {
+                    if textfield.text!.isEmpty != true {
+                        presenter.renameFolder(folderId: id, folderName: textfield.text!)
+                    }
+                }
+            }
+        }
+        alertController.addAction(okAction)
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        alertController.addAction(cancelAction)
+        
+        return alertController
     }
 }
 
